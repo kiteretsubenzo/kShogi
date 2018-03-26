@@ -25,5 +25,6 @@ worker.o: AI/worker.h
 
 clean:
 	-rm *.o
+	-rm kShogi
 
 

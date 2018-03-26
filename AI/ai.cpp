@@ -70,3 +70,8 @@ bool Ai::Tick()
 	}
 	return true;
 }
+
+void Ai::Join()
+{
+	worker->Join();
+}

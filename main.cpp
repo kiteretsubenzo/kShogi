@@ -89,8 +89,10 @@ int main()
   
   int i = 0;
   while( ai.Tick() == false ) {
-    //std::cout << "\r" << i++;
+    std::cout << "\r" << i++;
   }
+  
+  //ai.Join();
   
   std::cout << "end" << std::endl;
 }

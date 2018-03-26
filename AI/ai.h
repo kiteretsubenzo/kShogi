@@ -15,6 +15,9 @@ public:
 	Board::PAWN_MOVE GetMove() const { return move; }
 	void CallBack(std::string str);
 	bool GetJob(int &job);
+	
+	void Join();
+	
 private:
 	Board board;
 	Board::PAWN_MOVE move;
