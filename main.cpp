@@ -2,7 +2,11 @@
 #include <vector>
 #include <list>
 #include <iomanip>
+#include <thread>
+#include <mutex>
 #include "board.h"
+#include "AI/worker.h"
+#include "AI/ai.h"
 
 int main()
 { 
@@ -36,6 +40,7 @@ int main()
   }
   */
   
+  /*
   while( true )
   {
     board.PrintBoard();
@@ -78,5 +83,14 @@ int main()
       }
     }
   }
+  */
+  Ai ai;
+  ai.Start(board);
   
+  int i = 0;
+  while( ai.Tick() == false ) {
+    //std::cout << "\r" << i++;
+  }
+  
+  std::cout << "end" << std::endl;
 }
