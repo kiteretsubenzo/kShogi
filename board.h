@@ -100,6 +100,31 @@ public:
 		uchar toy;
 		PAWN_TYPE capture;
 		bool upgrade;
+		
+		bool operator==( const PAWN_MOVE& rhs ) const
+		{
+				return (
+					reserve == rhs.reserve &&
+					fromx == rhs.fromx &&
+					fromy == rhs.fromy &&
+					tox == rhs.tox &&
+					toy == rhs.toy &&
+					capture == rhs.capture &&
+					upgrade == rhs.upgrade
+				);
+		}
+		bool operator!=( const PAWN_MOVE& rhs ) const
+		{
+			return (
+					reserve != rhs.reserve ||
+					fromx != rhs.fromx ||
+					fromy != rhs.fromy ||
+					tox != rhs.tox ||
+					toy != rhs.toy ||
+					capture != rhs.capture ||
+					upgrade != rhs.upgrade
+				);
+		}
 	};
 	
 	Board();
@@ -108,6 +133,7 @@ public:
 	std::string BoardToString() const;
 	
 	void GetMoveList(std::vector<PAWN_MOVE> &moveList);
+	PAWN_MOVE GetNextMove(PAWN_MOVE &move);
 	void Move(const PAWN_MOVE &move);
 	void Back(const PAWN_MOVE &move);
 	
@@ -122,11 +148,14 @@ public:
 private:
 	bool AddMove( uchar fromx, uchar fromy, char tox, char toy, bool upgrade, std::vector<Board::PAWN_MOVE> &moveList );
 	bool IsEnd();
+	bool IsNextEnd(const PAWN_MOVE &move);
 	bool IsCapture( char tox, char toy, PLAYER enemy, bool &isCapture );
 	
 	uchar captured[(uchar)PLAYER::MAX][(uchar)PAWN_ROLL::CAPTURE_MAX];
   CELL matrix[BOARD_HEIGHT][BOARD_WIDTH];
 	PLAYER turn;
 };
+
+static const Board::PAWN_MOVE PAWN_MOVE_ZERO{ PAWN_ROLL::NONE, 0, 0, 0, 0, PAWN_TYPE::NONE, false };
 
 #endif // BOARD_H

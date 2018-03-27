@@ -27,7 +27,7 @@ void Ai::Start(Board board)
 	waits.clear();
 	results.clear();
 	isStop = false;
-	bestMove = { PAWN_ROLL::NONE, 0, 0, 0, 0, PAWN_TYPE::NONE, false };
+	bestMove = PAWN_MOVE_ZERO;
 	bestScore = 0;
 
 	std::vector<Board::PAWN_MOVE> moveList;

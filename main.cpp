@@ -84,7 +84,49 @@ int main()
     }
   }
   */
-
+  
+  std::vector<Board::PAWN_MOVE> moveList1;
+  board.GetMoveList(moveList1);
+  
+  //08 00 08 00 07 14 f
+  /*
+  Board::PAWN_MOVE test{ PAWN_ROLL::NONE, 0, 8, 0, 7, PAWN_TYPE::NONE, false };
+  std::cout << Board::MoveToString(test) << std::endl;
+  Board::PAWN_MOVE move = board.GetNextMove(test);
+  std::cout << Board::MoveToString(move) << std::endl;
+  */
+  
+  std::vector<Board::PAWN_MOVE> moveList2;
+  Board::PAWN_MOVE move = PAWN_MOVE_ZERO;
+  while(true)
+  {
+    move = board.GetNextMove(move);
+    if( move == PAWN_MOVE_ZERO )
+    {
+      break;
+    }
+    //std::cout << Board::MoveToString(move) << std::endl;
+    moveList2.push_back(move);
+  }
+  
+  if( moveList1.size() != moveList2.size() )
+  {
+    std::cout << moveList1.size() << " " << moveList2.size() << std::endl;
+  }
+  else
+  {
+    for( unsigned int i=0; i<moveList1.size(); i++ )
+    {
+      std::cout << Board::MoveToString(moveList1[i]) << " " << Board::MoveToString(moveList2[i]);
+      if( moveList1[i] == moveList2[i] )
+      {
+        std::cout << " true";
+      }
+      std::cout << std::endl;
+    }
+  }
+  
+  /*
   Ai ai;
   ai.Start(board);
 
@@ -97,6 +139,7 @@ int main()
   board.PrintKihu(aiMove);
   
   ai.Stop();
+  */
   
   std::cout << "end" << std::endl;
 }
