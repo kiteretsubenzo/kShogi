@@ -13,10 +13,10 @@ public:
 	void Start(Board board);
 	bool Tick();
 	Board::PAWN_MOVE GetMove() const { return move; }
-	void CallBack(std::string str);
-	bool GetJob(int &job);
+	void CallBack(const std::string &str);
+	void GetJob(std::string &job);
 	
-	void Join();
+	void Stop();
 	
 private:
 	Board board;
@@ -24,11 +24,13 @@ private:
 	
 	Worker *worker;
 
-	std::list<int> jobs;
-  std::list<int> waits;
-	std::list<int> results;
+	std::list<std::string> jobs;
+  std::list<std::string> waits;
+	std::list<std::string> results;
 	
 	std::mutex mtx;
+  
+  bool isStop;
 };
 
 #endif // AI_H

@@ -23,17 +23,24 @@ void Worker::Test()
 {
 	while(true)
 	{
-		int job;
-		if( ai->GetJob(job) == false )
+		std::string job;
+    ai->GetJob(job);
+		if( job == "empty" )
 		{
 			continue;
 		}
+    if( job == "stop" )
+    {
+      break;
+    }
+		
+		std::cout << job << std::endl;
 		
 		std::cout << "#prepare thread start" << std::endl;
 		std::this_thread::sleep_for(std::chrono::seconds(3));
 		std::cout << "#prepare thread finished" << std::endl;
 
-		ai->CallBack("end");
+		ai->CallBack("1");
 	}
 	
 }

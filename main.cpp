@@ -11,21 +11,19 @@
 int main()
 { 
   Board board;
-  std::string boardInit[] =
-  {
-"h01 y00 e00 g00 k00 u00 r00",
-"y_e_g_k_o_k_g_e_y_",
-" . . . . . . . . .",
-"h_h_h_h_ .h_h_h_h_",
-" . . . .y_ . . . .",
-" . . . . . . . . .",
-" . . . . . . . . .",
-"^h^h .^h^h^h^h^h^h",
-" .^u . .^o . .^r .",
-"^y^e^g^k .^k^g^e^y",
-"h01 y00 e00 g00 k00 u00 r00",
-"first"
-  };
+  std::string boardInit =
+    "h01 y00 e00 g00 k00 u00 r00\n"
+    "y_e_g_k_o_k_g_e_y_\n"
+    " . . . . . . . . .\n"
+    "h_h_h_h_ .h_h_h_h_\n"
+    " . . . .y_ . . . .\n"
+    " . . . . . . . . .\n"
+    " . . . . . . . . .\n"
+    "^h^h .^h^h^h^h^h^h\n"
+    " .^u . .^o . .^r .\n"
+    "^y^e^g^k .^k^g^e^y\n"
+    "h01 y00 e00 g00 k00 u00 r00\n"
+    "first";
   board.Init(boardInit);
   std::list<Board::PAWN_MOVE> history;
   /*
@@ -84,15 +82,16 @@ int main()
     }
   }
   */
+
   Ai ai;
   ai.Start(board);
-  
+
   int i = 0;
   while( ai.Tick() == false ) {
-    std::cout << "\r" << i++;
+    //std::cout << "\r" << i++;
   }
   
-  //ai.Join();
+  ai.Stop();
   
   std::cout << "end" << std::endl;
 }

@@ -80,7 +80,7 @@ static const std::string numberToKanji[9] =
 
 static const std::string PAWN_KANJI[(uchar)PAWN_TYPE::MAX] =
 {
-  "歩", "と", "杏", "き", "桂", "け", "銀", "全", "金", "角", "馬", "飛", "龍", "玉"
+  "歩", "と", "杏", "令", "桂", "介", "銀", "全", "金", "角", "馬", "飛", "龍", "玉"
 };
 
 static const std::string ROLL_KANJI[(uchar)PAWN_ROLL::MAX] =
@@ -104,7 +104,8 @@ public:
 	
 	Board();
 	
-	void Init(const std::string str[]);
+	void Init(const std::string str);
+	std::string BoardToString() const;
 	
 	void GetMoveList(std::vector<PAWN_MOVE> &moveList);
 	void Move(const PAWN_MOVE &move);
@@ -113,8 +114,10 @@ public:
 	CELL GetCell(uchar x, uchar y) { return matrix[y][x]; }
 	
 	void PrintBoard() const;
-	static void PrintMove(const PAWN_MOVE &move);
 	void PrintKihu(const PAWN_MOVE &move);
+	
+	static std::string MoveToString(const PAWN_MOVE &move);
+	static PAWN_MOVE StringToMove(const std::string &str);
 
 private:
 	bool AddMove( uchar fromx, uchar fromy, char tox, char toy, bool upgrade, std::vector<Board::PAWN_MOVE> &moveList );

@@ -1,4 +1,6 @@
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 #include <vector>
 #include "board.h"
 
@@ -23,82 +25,93 @@ Board::Board()
 	turn = PLAYER::FIRST;
 }
 
-void Board::Init(const std::string str[])
+void Board::Init(const std::string str)
 {
-	for( int i=0; i<(uchar)PAWN_ROLL::MAX-1; i++ )
+	std::vector<std::string> strs;
+	
+	std::stringstream ss{str};
+	std::string buf;
+	while (std::getline(ss, buf)) {
+		strs.push_back(buf);
+	}
+	
+	std::cout << strs.size() << std::endl;
+	
+	for( int i=0; i<(uchar)PAWN_ROLL::CAPTURE_MAX; i++ )
 	{
-		char first[3] = { str[BOARD_HEIGHT+1][i*4+1], str[BOARD_HEIGHT+1][i*4+2], '\0' };
-		char second[3] = { str[0][i*4+1], str[0][i*4+2], '\0' };
+		char first[3] = { strs[BOARD_HEIGHT+1][i*4+1], strs[BOARD_HEIGHT+1][i*4+2], '\0' };
+		char second[3] = { strs[0][i*4+1], strs[0][i*4+2], '\0' };
 		captured[(uchar)PLAYER::FIRST][i] = atoi(first);
 		captured[(uchar)PLAYER::SECOND][i] = atoi(second);
 	}
-	for( int i=1; i < BOARD_HEIGHT+1; i++ )
+
+	for( int j=1; j < BOARD_HEIGHT+1; j++ )
 	{
-		for( int j=0; j<BOARD_WIDTH; j++ )
+		for( int i=0; i<BOARD_WIDTH; i++ )
 		{
-			char c[2] = { str[i][j*2], str[i][j*2+1] };
+			char c[2] = { strs[j][i*2], strs[j][i*2+1] };
 			if( c[0] == ' ' )
 			{
-				matrix[i-1][j].player = PLAYER::NONE;
-				matrix[i-1][j].pawn = PAWN_TYPE::NONE;
+				matrix[j-1][i].player = PLAYER::NONE;
+				matrix[j-1][i].pawn = PAWN_TYPE::NONE;
 			}
 			else
 			{
 				char type;
 				if( c[0] == '^' )
 				{
-					matrix[i-1][j].player = PLAYER::FIRST;
+					matrix[j-1][i].player = PLAYER::FIRST;
 					type = c[1];
 				}
 				else
 				{
-					matrix[i-1][j].player = PLAYER::SECOND;
+					matrix[j-1][i].player = PLAYER::SECOND;
 					type = c[0];
 				}
 				//'h', 'H', 'y', 'Y', 'e', 'E', 'g', 'G', 'k', 'u', 'U', 'r', 'R', 'o';
 				switch( type )
 				{
 					case 'h':
-						matrix[i-1][j].pawn = PAWN_TYPE::HU;
+						matrix[j-1][i].pawn = PAWN_TYPE::HU;
 						break;
 					case 'H':
-						matrix[i-1][j].pawn = PAWN_TYPE::HUN;
+						matrix[j-1][i].pawn = PAWN_TYPE::HUN;
 						break;
 					case 'y':
-						matrix[i-1][j].pawn = PAWN_TYPE::KYOH;
+						matrix[j-1][i].pawn = PAWN_TYPE::KYOH;
 						break;
 					case 'Y':
-						matrix[i-1][j].pawn = PAWN_TYPE::KYOHN;
+						matrix[j-1][i].pawn = PAWN_TYPE::KYOHN;
 						break;
 					case 'e':
-						matrix[i-1][j].pawn = PAWN_TYPE::KEI;
+						matrix[j-1][i].pawn = PAWN_TYPE::KEI;
 						break;
 					case 'E':
-						matrix[i-1][j].pawn = PAWN_TYPE::KEIN;
+						matrix[j-1][i].pawn = PAWN_TYPE::KEIN;
 						break;
 					case 'g':
-						matrix[i-1][j].pawn = PAWN_TYPE::GIN;
+						matrix[j-1][i].pawn = PAWN_TYPE::GIN;
 						break;
 					case 'G':
-						matrix[i-1][j].pawn = PAWN_TYPE::GINN;
+						matrix[j-1][i].pawn = PAWN_TYPE::GINN;
 						break;
 					case 'k':
-						matrix[i-1][j].pawn = PAWN_TYPE::KIN;
+						matrix[j-1][i].pawn = PAWN_TYPE::KIN;
 						break;
 					case 'u':
-						matrix[i-1][j].pawn = PAWN_TYPE::KAKU;
+						matrix[j-1][i].pawn = PAWN_TYPE::KAKU;
 						break;
 					case 'U':
-						matrix[i-1][j].pawn = PAWN_TYPE::UMA;
+						matrix[j-1][i].pawn = PAWN_TYPE::UMA;
 						break;
 					case 'r':
-						matrix[i-1][j].pawn = PAWN_TYPE::HI;
+						matrix[j-1][i].pawn = PAWN_TYPE::HI;
 						break;
 					case 'R':
-						matrix[i-1][j].pawn = PAWN_TYPE::RYU;
+						matrix[j-1][i].pawn = PAWN_TYPE::RYU;
 						break;
 					case 'o':
-						matrix[i-1][j].pawn = PAWN_TYPE::GYOKU;
+						matrix[j-1][i].pawn = PAWN_TYPE::GYOKU;
 						break;
 					default:
 						break;
@@ -107,14 +120,67 @@ void Board::Init(const std::string str[])
 		}
 	}
 
-	if( str[BOARD_HEIGHT+2] == "first" )
+	if( strs[BOARD_HEIGHT+2] == "first" )
 	{
 		turn = PLAYER::FIRST;
 	}
-	else if( str[BOARD_HEIGHT+2] == "second" )
+	else if( strs[BOARD_HEIGHT+2] == "second" )
 	{
 		turn = PLAYER::SECOND;
 	}
+}
+
+std::string Board::BoardToString() const
+{
+	std::ostringstream sout;
+	
+	for( int i=0; i<(uchar)PAWN_ROLL::CAPTURE_MAX; i++ )
+	{
+		sout << ROLL_CHAR[i];
+		//std::cout << "::" << (int)captured[(uchar)PLAYER::SECOND][i] << std::endl;
+		sout << std::setfill('0') << std::setw(2) << (int)(captured[(uchar)PLAYER::SECOND][i]);
+		sout << ' ';
+	}
+	sout << '\n';
+	
+	for( int j=1; j < BOARD_HEIGHT+1; j++ )
+	{
+		for( int i=0; i<BOARD_WIDTH; i++ )
+		{
+			if( matrix[j-1][i].player == PLAYER::FIRST )
+			{
+				sout << '^' << PAWN_CHAR[(uchar)matrix[j-1][i].pawn];
+			}
+			else if( matrix[j-1][i].player == PLAYER::SECOND )
+			{
+				sout << PAWN_CHAR[(uchar)matrix[j-1][i].pawn] << '_';
+			}
+			else
+			{
+				sout << " .";
+			}
+		}
+		sout << '\n';
+	}
+	
+	for( int i=0; i<(uchar)PAWN_ROLL::CAPTURE_MAX; i++ )
+	{
+		sout << ROLL_CHAR[i];
+		sout << std::setfill('0') << std::setw(2) << (int)captured[(uchar)PLAYER::FIRST][i];
+		sout << ' ';
+	}
+	sout << '\n';
+	
+	if( turn == PLAYER::FIRST )
+	{
+		sout << "first";
+	}
+	else
+	{
+		sout << "second";
+	}
+	
+	return sout.str();
 }
 
 void Board::GetMoveList(std::vector<PAWN_MOVE> &moveList)
@@ -358,7 +424,7 @@ void Board::GetMoveList(std::vector<PAWN_MOVE> &moveList)
 	
 	PAWN_MOVE move{ PAWN_ROLL::NONE, 0, 0, 0, 0, PAWN_TYPE::NONE, false };
 	
-	for( uchar roll=0; roll<(uchar)PAWN_ROLL::MAX-1; roll++ )
+	for( uchar roll=0; roll<(uchar)PAWN_ROLL::CAPTURE_MAX; roll++ )
 	{
 		if( captured[(uchar)turn][roll] == 0 )
 		{
@@ -373,6 +439,7 @@ void Board::GetMoveList(std::vector<PAWN_MOVE> &moveList)
 				{
 					continue;
 				}
+
 				switch( (PAWN_ROLL)roll )
 				{
 					case PAWN_ROLL::HU:
@@ -734,7 +801,7 @@ void Board::Back(const PAWN_MOVE &move)
 	
 	if( move.reserve != PAWN_ROLL::NONE )
 	{
-		captured[(uchar)turn][(uchar)move.reserve]++;
+		captured[(uchar)prevTurn][(uchar)move.reserve]++;
 		matrix[move.toy][move.tox].player = PLAYER::NONE;
 		matrix[move.toy][move.tox].pawn = PAWN_TYPE::NONE;
 		turn = prevTurn;
@@ -750,6 +817,7 @@ void Board::Back(const PAWN_MOVE &move)
 	matrix[move.fromy][move.fromx].pawn = pawn;
 	if( move.capture != PAWN_TYPE::NONE )
 	{
+		captured[(uchar)prevTurn][(uchar)typeToRoll[(uchar)move.capture]]--;
 		matrix[move.toy][move.tox].player = turn;
 		matrix[move.toy][move.tox].pawn = move.capture;
 	}
@@ -798,40 +866,6 @@ void Board::PrintBoard() const
 	std::cout << PLAYER_STRING[(uchar)turn] << std::endl;
 }
 
-void Board::PrintMove(const PAWN_MOVE &move)
-{
-	if( move.reserve != PAWN_ROLL::NONE )
-	{
-		//PAWN_ROLL reserve;
-		std::cout << ROLL_CHAR[(uchar)move.reserve] << " ";
-	}
-	//uchar fromx, fromy;
-	std::cout << "( " << numberToZenkaku[(uchar)move.fromx] << ", " << numberToKanji[(uchar)move.fromy] << " )";
-	std::cout << " -> ";
-	//uchar tox, toy;
-	std::cout << "( " << numberToZenkaku[(uchar)move.tox] << ", " << numberToKanji[(uchar)move.toy] << " )";
-	//PAWN_TYPE capture;
-	if( move.capture != PAWN_TYPE::NONE )
-	{
-		std::cout << ", " << PAWN_CHAR[(uchar)move.capture];
-	}
-	else
-	{
-		std::cout << "   ";
-	}
-	
-	//bool upgrade;
-	if( move.upgrade )
-	{
-		std::cout << " nari";
-	}
-	else if( move.reserve != PAWN_ROLL::NONE )
-	{
-		std::cout << " uchi";
-	}
-	std::cout << std::endl;
-}
-
 void Board::PrintKihu(const PAWN_MOVE &move)
 {
 	//uchar tox, toy;
@@ -856,4 +890,65 @@ void Board::PrintKihu(const PAWN_MOVE &move)
 		}
 	}
 	std::cout << std::endl;
+}
+
+std::string Board::MoveToString(const PAWN_MOVE &move)
+{
+	/*
+	PAWN_ROLL reserve;
+	uchar fromx;
+	uchar fromy;
+	uchar tox;
+	uchar toy;
+	PAWN_TYPE capture;
+	bool upgrade;
+	*/
+	std::ostringstream sout;
+	
+	sout << std::setfill('0') << std::setw(2) << (int)move.reserve;
+	sout << std::setfill('0') << std::setw(2) << (int)move.fromx;
+	sout << std::setfill('0') << std::setw(2) << (int)move.fromy;
+	sout << std::setfill('0') << std::setw(2) << (int)move.tox;
+	sout << std::setfill('0') << std::setw(2) << (int)move.toy;
+	sout << std::setfill('0') << std::setw(2) << (int)move.capture;
+	if( move.upgrade )
+	{
+		sout << "t";
+	}
+	else
+	{
+		sout << "f";
+	}
+	
+	return sout.str();
+}
+
+Board::PAWN_MOVE Board::StringToMove(const std::string &str)
+{
+	/*
+	PAWN_ROLL reserve;
+	uchar fromx;
+	uchar fromy;
+	uchar tox;
+	uchar toy;
+	PAWN_TYPE capture;
+	bool upgrade;
+	*/
+	PAWN_MOVE move;
+	
+	move.reserve = (PAWN_ROLL)std::stoi(str.substr(0, 2));
+	move.fromx = std::stoi(str.substr(2, 2));
+	move.fromy = std::stoi(str.substr(4, 2));
+	move.tox = std::stoi(str.substr(6, 2));
+	move.toy = std::stoi(str.substr(8, 2));
+	move.capture = (PAWN_TYPE)std::stoi(str.substr(10, 2));
+	if( str[11] == 't' )
+	{
+		move.upgrade = true;
+	}
+	else
+	{
+		move.upgrade = false;
+	}
+	return move;
 }

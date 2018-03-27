@@ -24,30 +24,50 @@ void Ai::Start(Board board)
 	jobs.clear();
 	waits.clear();
 	results.clear();
-	jobs.push_back(1);
-}
+	isStop = false;
 
-void Ai::CallBack(std::string str)
-{
 	mtx.lock();
-	results.push_back(1);
+	std::vector<Board::PAWN_MOVE> moveList;
+	board.GetMoveList(moveList);
+	for( unsigned int i=0; i<moveList.size(); i++ )
+	{
+		Board::PAWN_MOVE &move = moveList[i];
+		board.PrintKihu(move);
+		board.Move(move);
+		jobs.push_back(Board::MoveToString(moveList[i]) + "\n" + board.BoardToString());
+		board.Back(move);
+		break;
+	}
 	mtx.unlock();
 }
 
-bool Ai::GetJob(int &job)
+void Ai::CallBack(const std::string &str)
 {
-	bool isEmpty = true;
+	mtx.lock();
+	results.push_back(str);
+	mtx.unlock();
+}
+ 
+void Ai::GetJob(std::string &job)
+{
+  if( isStop )
+  {
+    job = "stop";
+    return;
+  }
 	mtx.lock();
 	if( 0 < jobs.size() )
 	{
 		job = jobs.front();
     waits.push_back(job);
 		jobs.pop_front();
-		mtx.unlock();
-		isEmpty = false;
 	}
+  else
+  {
+    job = "empty";
+  }
 	mtx.unlock();
-	return !isEmpty;
+	return;
 }
 
 bool Ai::Tick()
@@ -55,8 +75,9 @@ bool Ai::Tick()
 	mtx.lock();
 	while( 0 < results.size() )
 	{
-		int result = results.front();
-		std::list<int>::iterator ite = std::find( waits.begin(), waits.end(), result );
+		std::string result = results.front();
+		std::list<std::string>::iterator ite = std::find( waits.begin(), waits.end(), result );
+		ite = waits.begin();
 		if( ite != waits.end() )
 		{
 			waits.erase(ite);
@@ -64,14 +85,16 @@ bool Ai::Tick()
 		results.pop_front();
 	}
 	mtx.unlock();
-	if( 0 < jobs.size() || 0 < waits.size() )
+	//std::cout << jobs.size() << waits.size() << results.size() << std::endl;
+	if( 0 < jobs.size() || 0 < waits.size() || 0 < results.size() )
 	{
 		return false;
 	}
 	return true;
 }
 
-void Ai::Join()
+void Ai::Stop()
 {
+  isStop = true;
 	worker->Join();
 }
