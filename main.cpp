@@ -4,6 +4,8 @@
 #include <iomanip>
 #include <thread>
 #include <mutex>
+#include <unordered_map>
+#include <random>
 #include "board.h"
 #include "AI/worker.h"
 #include "AI/ai.h"
@@ -90,6 +92,9 @@ int main()
   while( ai.Tick() == false ) {
     //std::cout << "\r" << i++;
   }
+  
+  Board::PAWN_MOVE aiMove = ai.GetResult();
+  board.PrintKihu(aiMove);
   
   ai.Stop();
   

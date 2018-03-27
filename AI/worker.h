@@ -17,6 +17,8 @@ private:
 	Board board;
 	bool state;
 	std::thread th;
+	
+	std::random_device rnd;
 };
 
 #endif // WORKER_H

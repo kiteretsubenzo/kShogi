@@ -35,8 +35,6 @@ void Board::Init(const std::string str)
 		strs.push_back(buf);
 	}
 	
-	std::cout << strs.size() << std::endl;
-	
 	for( int i=0; i<(uchar)PAWN_ROLL::CAPTURE_MAX; i++ )
 	{
 		char first[3] = { strs[BOARD_HEIGHT+1][i*4+1], strs[BOARD_HEIGHT+1][i*4+2], '\0' };
@@ -741,10 +739,8 @@ bool Board::IsCapture( char tox, char toy, PLAYER enemy, bool &isCapture )
 	if( matrix[utoy][utox].player == enemy && matrix[utoy][utox].pawn == PAWN_TYPE::GYOKU )
 	{
 		isCapture |= true;
-		//std::cout << " true" << std::endl;
 		return false;
 	}
-	//std::cout << " false" << std::endl;
 
 	return matrix[utoy][utox].pawn == PAWN_TYPE::NONE;
 }

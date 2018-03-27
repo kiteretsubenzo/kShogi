@@ -4,6 +4,8 @@
 #include <list>
 #include <algorithm>
 #include <mutex>
+#include <unordered_map>
+#include <random>
 #include "../board.h"
 #include "worker.h"
 #include "ai.h"
@@ -36,13 +38,17 @@ void Worker::Test()
 		
 		std::cout << job << std::endl;
 		
+		size_t index = job.find("\n");
+		std::string jobId = job.substr(0, index);
+		std::cout << "jobId is " << jobId << std::endl;
+		
 		std::cout << "#prepare thread start" << std::endl;
-		std::this_thread::sleep_for(std::chrono::seconds(3));
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 		std::cout << "#prepare thread finished" << std::endl;
 
-		ai->CallBack("1");
+		int score = rnd() % 100 + 1;
+		ai->CallBack(jobId + "\n" + std::to_string(score));
 	}
-	
 }
 
 void Worker::Join()
