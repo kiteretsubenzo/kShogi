@@ -336,10 +336,10 @@ void Board::GetMoveList(std::vector<PAWN_MOVE> &moveList)
 					{
 						ret &= AddMove( i, j, x, y, false, moveList );
 					}
-					AddMove( i, j, i+1, j+1, false, moveList );
-					AddMove( i, j, i-1, j+1, false, moveList );
-					AddMove( i, j, i+1, j-1, false, moveList );
-					AddMove( i, j, i-1, j-1, false, moveList );
+					AddMove( i, j, i+1, j, false, moveList );
+					AddMove( i, j, i-1, j, false, moveList );
+					AddMove( i, j, i, j+1, false, moveList );
+					AddMove( i, j, i, j-1, false, moveList );
 					break;
 				case PAWN_TYPE::HI:
 					x = i+1; y = j;
@@ -558,14 +558,14 @@ Board::PAWN_MOVE Board::GetNextMove(PAWN_MOVE &move)
 					case PAWN_TYPE::HU:
 						x = i;
 						y = j+forward;
-						if( y != lineMax )
-						{
-							AddMove( i, j, x, y, false, moveList );
-						}
 						if( lineMin <= y && y <= lineMax )
 						{
 							AddMove( i, j, x, y, true, moveList );
 						}
+            else
+            {
+              AddMove( i, j, x, y, false, moveList );
+            }
 						break;
 					case PAWN_TYPE::KYOH:
 						y=j+forward;
@@ -624,37 +624,49 @@ Board::PAWN_MOVE Board::GetNextMove(PAWN_MOVE &move)
 						x = i+1; y = j+1;
 						for( bool ret = true; x < BOARD_WIDTH && y < BOARD_HEIGHT && ret; x++, y++ )
 						{
-							ret &= AddMove( i, j, x, y, false, moveList );
 							if( lineMin <= y && y <= lineMax )
 							{
 								ret &= AddMove( i, j, x, y, true, moveList );
+							}
+							else
+							{
+								ret &= AddMove( i, j, x, y, false, moveList );
 							}
 						}
 						x = i+1; y = j-1;
 						for( bool ret = true; x < BOARD_WIDTH && 0 <= y && ret; x++, y -= 1 )
 						{
-							ret &= AddMove( i, j, x, y, false, moveList );
 							if( lineMin <= y && y <= lineMax )
 							{
 								ret &= AddMove( i, j, x, y, true, moveList );
+							}
+							else
+							{
+								ret &= AddMove( i, j, x, y, false, moveList );
 							}
 						}
 						x = i-1; y = j+1;
 						for( bool ret = true; 0 <= x && y < BOARD_HEIGHT && ret; x -= 1, y++ )
 						{
-							ret &= AddMove( i, j, x, y, false, moveList );
 							if( lineMin <= y && y <= lineMax )
 							{
 								ret &= AddMove( i, j, x, y, true, moveList );
+							}
+							else
+							{
+								ret &= AddMove( i, j, x, y, false, moveList );
 							}
 						}
 						x = i-1; y = j-1;
 						for( bool ret = true; 0 <= x && 0 <= y && ret; x -= 1, y -= 1 )
 						{
-							ret &= AddMove( i, j, x, y, false, moveList );
 							if( lineMin <= y && y <= lineMax )
 							{
 								ret &= AddMove( i, j, x, y, true, moveList );
+							}
+							else
+							{
+								ret &= AddMove( i, j, x, y, false, moveList );
 							}
 						}
 						break;
@@ -679,46 +691,58 @@ Board::PAWN_MOVE Board::GetNextMove(PAWN_MOVE &move)
 						{
 							ret &= AddMove( i, j, x, y, false, moveList );
 						}
-						AddMove( i, j, i+1, j+1, false, moveList );
-						AddMove( i, j, i-1, j+1, false, moveList );
-						AddMove( i, j, i+1, j-1, false, moveList );
-						AddMove( i, j, i-1, j-1, false, moveList );
+						AddMove( i, j, i+1, j, false, moveList );
+						AddMove( i, j, i-1, j, false, moveList );
+						AddMove( i, j, i, j+1, false, moveList );
+						AddMove( i, j, i, j-1, false, moveList );
 						break;
 					case PAWN_TYPE::HI:
 						x = i+1; y = j;
 						for( bool ret = true; x < BOARD_WIDTH && ret; x++ )
 						{
-							ret &= AddMove( i, j, x, y, false, moveList );
 							if( lineMin <= y && y <= lineMax )
 							{
 								ret &= AddMove( i, j, x, y, true, moveList );
+							}
+							else
+							{
+								ret &= AddMove( i, j, x, y, false, moveList );
 							}
 						}
 						x = i-1; y = j;
 						for( bool ret = true; 0 <= x && ret; x -= 1 )
 						{
-							ret &= AddMove( i, j, x, y, false, moveList );
 							if( lineMin <= y && y <= lineMax )
 							{
 								ret &= AddMove( i, j, x, y, true, moveList );
+							}
+							else
+							{
+								ret &= AddMove( i, j, x, y, false, moveList );
 							}
 						}
 						x = i; y = j+1;
 						for( bool ret = true; y < BOARD_HEIGHT && ret; y++ )
 						{
-							ret &= AddMove( i, j, x, y, false, moveList );
 							if( lineMin <= y && y <= lineMax )
 							{
 								ret &= AddMove( i, j, x, y, true, moveList );
+							}
+							else
+							{
+								ret &= AddMove( i, j, x, y, false, moveList );
 							}
 						}
 						x = i; y = j-1;
 						for( bool ret = true; 0 <= y && ret; y -= 1 )
 						{
-							ret &= AddMove( i, j, x, y, false, moveList );
 							if( lineMin <= y && y <= lineMax )
 							{
 								ret &= AddMove( i, j, x, y, true, moveList );
+							}
+							else
+							{
+								ret &= AddMove( i, j, x, y, false, moveList );
 							}
 						}
 						break;
@@ -1269,48 +1293,9 @@ void Board::PrintKihu(const PAWN_MOVE &move)
 	std::cout << std::endl;
 }
 
-std::string Board::MoveToString(const PAWN_MOVE &move)
-{
-	/*
-	PAWN_ROLL reserve;
-	uchar fromx;
-	uchar fromy;
-	uchar tox;
-	uchar toy;
-	PAWN_TYPE capture;
-	bool upgrade;
-	*/
-	std::ostringstream sout;
-	
-	sout << std::setfill('0') << std::setw(2) << (int)move.reserve;
-	sout << std::setfill('0') << std::setw(2) << (int)move.fromx;
-	sout << std::setfill('0') << std::setw(2) << (int)move.fromy;
-	sout << std::setfill('0') << std::setw(2) << (int)move.tox;
-	sout << std::setfill('0') << std::setw(2) << (int)move.toy;
-	sout << std::setfill('0') << std::setw(2) << (int)move.capture;
-	if( move.upgrade )
-	{
-		sout << "t";
-	}
-	else
-	{
-		sout << "f";
-	}
-	
-	return sout.str();
-}
-
+/*
 Board::PAWN_MOVE Board::StringToMove(const std::string &str)
 {
-	/*
-	PAWN_ROLL reserve;
-	uchar fromx;
-	uchar fromy;
-	uchar tox;
-	uchar toy;
-	PAWN_TYPE capture;
-	bool upgrade;
-	*/
 	PAWN_MOVE move;
 	
 	move.reserve = (PAWN_ROLL)std::stoi(str.substr(0, 2));
@@ -1328,4 +1313,24 @@ Board::PAWN_MOVE Board::StringToMove(const std::string &str)
 		move.upgrade = false;
 	}
 	return move;
+}
+*/
+std::ostream& operator<<(std::ostream& stream, const Board::PAWN_MOVE& move) 
+{
+	stream << std::setfill('0') << std::setw(2) << (int)move.reserve;
+	stream << std::setfill('0') << std::setw(2) << (int)move.fromx;
+	stream << std::setfill('0') << std::setw(2) << (int)move.fromy;
+	stream << std::setfill('0') << std::setw(2) << (int)move.tox;
+	stream << std::setfill('0') << std::setw(2) << (int)move.toy;
+	stream << std::setfill('0') << std::setw(2) << (int)move.capture;
+	if( move.upgrade )
+	{
+		stream << "t";
+	}
+	else
+	{
+		stream << "f";
+	}
+
+	return stream;
 }

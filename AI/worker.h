@@ -6,6 +6,12 @@ class Ai;
 class Worker
 {
 public:
+	struct NODE
+	{
+		Board::PAWN_MOVE move;
+		int score;
+	};
+	
 	Worker(Ai &aiValue);
 	
 	void Start();

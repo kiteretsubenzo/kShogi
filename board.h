@@ -130,6 +130,7 @@ public:
 	Board();
 	
 	void Init(const std::string str);
+	// TODO
 	std::string BoardToString() const;
 	
 	void GetMoveList(std::vector<PAWN_MOVE> &moveList);
@@ -139,11 +140,12 @@ public:
 	
 	CELL GetCell(uchar x, uchar y) { return matrix[y][x]; }
 	
+	// 
 	void PrintBoard() const;
 	void PrintKihu(const PAWN_MOVE &move);
 	
-	static std::string MoveToString(const PAWN_MOVE &move);
-	static PAWN_MOVE StringToMove(const std::string &str);
+	// TODO
+	//static PAWN_MOVE StringToMove(const std::string &str);
 
 private:
 	bool AddMove( uchar fromx, uchar fromy, char tox, char toy, bool upgrade, std::vector<Board::PAWN_MOVE> &moveList );
@@ -157,5 +159,7 @@ private:
 };
 
 static const Board::PAWN_MOVE PAWN_MOVE_ZERO{ PAWN_ROLL::NONE, 0, 0, 0, 0, PAWN_TYPE::NONE, false };
+
+std::ostream& operator<<(std::ostream& stream, const Board::PAWN_MOVE& move);
 
 #endif // BOARD_H

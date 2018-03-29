@@ -6,6 +6,8 @@
 #include <mutex>
 #include <unordered_map>
 #include <random>
+#include <iomanip>
+#include <sstream>
 #include "../board.h"
 #include "worker.h"
 #include "ai.h"
@@ -23,6 +25,7 @@ Ai::~Ai()
 
 void Ai::Start(Board board)
 {
+	std::cout << "start" << std::endl;
 	jobs.clear();
 	waits.clear();
 	results.clear();
@@ -31,7 +34,19 @@ void Ai::Start(Board board)
 	bestScore = 0;
 
 	std::vector<Board::PAWN_MOVE> moveList;
-	board.GetMoveList(moveList);
+	//board.GetMoveList(moveList);
+	Board::PAWN_MOVE move = PAWN_MOVE_ZERO;
+  while(true)
+  {
+    move = board.GetNextMove(move);
+    if( move == PAWN_MOVE_ZERO )
+    {
+      break;
+    }
+    std::cout << move << std::endl;
+    moveList.push_back(move);
+  }
+	
 	mtx.lock();
 	for( unsigned int i=0; i<moveList.size(); i++ )
 	{
