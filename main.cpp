@@ -42,8 +42,34 @@ int main()
     " . . . .^o . . . .\n"
     "h00 y00 e00 g00 k00 u00 r00\n"
     "first"
+  ,
+    "h00 y00 e00 g00 k00 u00 r00\n"
+    " . . . . . . .^R .\n"
+    " . . . . . .r_ . .\n"
+    " . . . . . .h_ . .\n"
+    " . . . . . . . .o_\n"
+    " . . . . . .^U . .\n"
+    " . . . . . . . . .\n"
+    " . . . . . . . . .\n"
+    " . . . . . . . . .\n"
+    " . . . .^o . . . .\n"
+    "h00 y00 e00 g00 k00 u00 r00\n"
+    "first"
+  ,
+    "h01 y00 e00 g00 k00 u00 r00\n"
+    " . . . . . . . . .\n"
+    " . . . . . .^U^R .\n"
+    " . . . . . . . . .\n"
+    " . . . . . . . . .\n"
+    " . . . . . .^uR_o_\n"
+    " . . . . . . . . .\n"
+    " . . . . . . . . .\n"
+    " . . . . . . . . .\n"
+    " . . . .^o . . . .\n"
+    "h00 y00 e00 g00 k00 u00 r00\n"
+    "first"
   };
-  board.Init(boardInits[1]);
+  board.Init(boardInits[2]);
   std::list<Board::PAWN_MOVE> history;
   /*
   board.PrintBoard();
@@ -103,7 +129,7 @@ int main()
   */
   /*
   int count = 0;
-  Board::PAWN_MOVE move{ PAWN_ROLL::NONE, 6, 4, 7, 5, PAWN_TYPE::NONE };
+  Board::PAWN_MOVE move{ PAWN_ROLL::NONE, 6, 4, 7, 5, PAWN_TYPE::NONE, PAWN_TYPE::NONE, false };
   while(count < 30)
   {
     move = board.GetNextMove(move);

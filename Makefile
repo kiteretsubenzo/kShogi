@@ -19,7 +19,7 @@ ai.o: AI/ai.h AI/worker.h
 worker.o: AI/worker.cpp
 	g++ -std=c++11 -Wall -O2 -c AI/worker.cpp -pthread
 	
-worker.o: AI/worker.h
+worker.o: AI/worker.h board.h
 
 .PHONY: clean
 

@@ -98,7 +98,8 @@ public:
 		uchar fromy;
 		uchar tox;
 		uchar toy;
-		PAWN_TYPE capture;
+		PAWN_TYPE fromPawn;
+		PAWN_TYPE toPawn;
 		bool upgrade;
 		
 		bool operator==( const PAWN_MOVE& rhs ) const
@@ -109,7 +110,8 @@ public:
 					fromy == rhs.fromy &&
 					tox == rhs.tox &&
 					toy == rhs.toy &&
-					capture == rhs.capture &&
+					fromPawn == rhs.fromPawn &&
+					toPawn == rhs.toPawn &&
 					upgrade == rhs.upgrade
 				);
 		}
@@ -121,9 +123,38 @@ public:
 					fromy != rhs.fromy ||
 					tox != rhs.tox ||
 					toy != rhs.toy ||
-					capture != rhs.capture ||
+					fromPawn != rhs.fromPawn ||
+					toPawn != rhs.toPawn ||
 					upgrade != rhs.upgrade
 				);
+		}
+		operator std::string() const
+		{
+			if( fromx == 0 && fromy == 0 && tox == 0 && toy == 0 )
+			{
+				return "ZERO";
+			}
+			
+			std::string str;
+			//uchar tox, toy;
+			str += numberToZenkaku[(uchar)tox] + numberToKanji[(uchar)toy];
+			if( reserve != PAWN_ROLL::NONE )
+			{
+				//PAWN_ROLL reserve;
+				str +=  " " + ROLL_KANJI[(uchar)reserve] + " 打ち";
+			}
+			else
+			{
+				str += " " + PAWN_KANJI[(uchar)fromPawn];
+				str += "(" + std::to_string(BOARD_WIDTH-fromx) + "," + std::to_string(fromy+1) + ")";
+				//bool upgrade;
+				if( upgrade )
+				{
+					str += " 成り";
+				}
+			}
+
+			return str;
 		}
 	};
 	
@@ -158,7 +189,7 @@ private:
 	PLAYER turn;
 };
 
-static const Board::PAWN_MOVE PAWN_MOVE_ZERO{ PAWN_ROLL::NONE, 0, 0, 0, 0, PAWN_TYPE::NONE, false };
+static const Board::PAWN_MOVE PAWN_MOVE_ZERO{ PAWN_ROLL::NONE, 0, 0, 0, 0, PAWN_TYPE::NONE, PAWN_TYPE::NONE, false };
 
 std::ostream& operator<<(std::ostream& stream, const Board::PAWN_MOVE& move);
 

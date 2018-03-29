@@ -31,7 +31,7 @@ void Ai::Start(Board board)
 	results.clear();
 	isStop = false;
 	bestMove = PAWN_MOVE_ZERO;
-	bestScore = 0;
+	bestScore = std::numeric_limits<int>::min();
 
 	std::vector<Board::PAWN_MOVE> moveList;
 	//board.GetMoveList(moveList);
@@ -43,7 +43,7 @@ void Ai::Start(Board board)
     {
       break;
     }
-    std::cout << move << std::endl;
+    //std::cout << move << std::endl;
     moveList.push_back(move);
   }
 	
@@ -51,12 +51,15 @@ void Ai::Start(Board board)
 	for( unsigned int i=0; i<moveList.size(); i++ )
 	{
 		Board::PAWN_MOVE &move = moveList[i];
-		board.PrintKihu(move);
+		//board.PrintKihu(move);
 		board.Move(move);
 		std::list<Board::PAWN_MOVE> moves;
 		moves.push_back(move);
 		JOB job = { GetJobId(), moves, board };
-		jobs.push_back(job);
+		if( i == 8 )
+		{
+			jobs.push_back(job);
+		}
 		board.Back(move);
 	}
 	mtx.unlock();
@@ -96,6 +99,7 @@ void Ai::GetJob(std::string &job)
 bool Ai::Tick()
 {
 	mtx.lock();
+	// 結果を回収
 	while( 0 < results.size() )
 	{
 		std::string result = results.front();
@@ -113,11 +117,14 @@ bool Ai::Tick()
 		results.pop_front();
 	}
 	mtx.unlock();
-	//std::cout << jobs.size() << waits.size() << results.size() << std::endl;
+	//std::cout << " " << jobs.size() << " " << waits.size() << " " << results.size() << std::endl;
 	if( 0 < jobs.size() || 0 < waits.size() || 0 < results.size() )
 	{
 		return false;
 	}
+	
+	std::cout << "best score is " << bestScore << std::endl;
+	
 	return true;
 }
 

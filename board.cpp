@@ -924,7 +924,7 @@ bool Board::AddMove( uchar fromx, uchar fromy, char tox, char toy, bool upgrade,
 		return false;
 	}
 	PAWN_TYPE capture = matrix[utoy][utox].pawn;
-	PAWN_MOVE move{ PAWN_ROLL::NONE, fromx, fromy, utox, utoy, capture, upgrade };
+	PAWN_MOVE move{ PAWN_ROLL::NONE, fromx, fromy, utox, utoy, matrix[fromy][fromx].pawn, matrix[utoy][utox].pawn, upgrade };
 	
 	if( IsNextEnd(move) == false )
 	{
@@ -1180,9 +1180,9 @@ void Board::Move(const PAWN_MOVE &move)
 	matrix[move.toy][move.tox].pawn = pawn;
 	matrix[move.fromy][move.fromx].player = PLAYER::NONE;
 	matrix[move.fromy][move.fromx].pawn = PAWN_TYPE::NONE;
-	if( move.capture != PAWN_TYPE::NONE )
+	if( move.toPawn != PAWN_TYPE::NONE )
 	{
-		PAWN_ROLL roll = typeToRoll[(uchar)move.capture];
+		PAWN_ROLL roll = typeToRoll[(uchar)move.toPawn];
 		captured[(uchar)turn][(uchar)roll]++;
 	}
 	turn = nextTurn;
@@ -1216,11 +1216,11 @@ void Board::Back(const PAWN_MOVE &move)
 	}
 	matrix[move.fromy][move.fromx].player = prevTurn;
 	matrix[move.fromy][move.fromx].pawn = pawn;
-	if( move.capture != PAWN_TYPE::NONE )
+	if( move.toPawn != PAWN_TYPE::NONE )
 	{
-		captured[(uchar)prevTurn][(uchar)typeToRoll[(uchar)move.capture]]--;
+		captured[(uchar)prevTurn][(uchar)typeToRoll[(uchar)move.toPawn]]--;
 		matrix[move.toy][move.tox].player = turn;
-		matrix[move.toy][move.tox].pawn = move.capture;
+		matrix[move.toy][move.tox].pawn = move.toPawn;
 	}
 	else
 	{
@@ -1322,7 +1322,8 @@ std::ostream& operator<<(std::ostream& stream, const Board::PAWN_MOVE& move)
 	stream << std::setfill('0') << std::setw(2) << (int)move.fromy;
 	stream << std::setfill('0') << std::setw(2) << (int)move.tox;
 	stream << std::setfill('0') << std::setw(2) << (int)move.toy;
-	stream << std::setfill('0') << std::setw(2) << (int)move.capture;
+	stream << std::setfill('0') << std::setw(2) << (int)move.fromPawn;
+	stream << std::setfill('0') << std::setw(2) << (int)move.toPawn;
 	if( move.upgrade )
 	{
 		stream << "t";
