@@ -185,14 +185,21 @@ std::string Board::BoardToString() const
 void Board::GetMoveList(std::vector<PAWN_MOVE> &moveList)
 {
 	moveList.clear();
-	uchar lineMax = 0;
-	uchar lineMid = 1;
-	uchar lineMin = 2;
-	if(turn == PLAYER::SECOND)
+	uchar lineMax, lineMin, lineTop, lineMid;
+	
+	if(turn == PLAYER::FIRST)
+	{
+		lineMax = 2;
+		lineMin = 0;
+		lineTop = 0;
+		lineMid = 1;
+	}
+	else
 	{
 		lineMax = BOARD_HEIGHT-1;
-		lineMid = BOARD_HEIGHT-2;
 		lineMin = BOARD_HEIGHT-3;
+		lineTop = BOARD_HEIGHT-1;
+		lineMid = BOARD_HEIGHT-2;
 	}
 	int forward = -1;
 	if( turn == PLAYER::SECOND )
@@ -215,7 +222,7 @@ void Board::GetMoveList(std::vector<PAWN_MOVE> &moveList)
 				case PAWN_TYPE::HU:
 					x = i;
 					y = j+forward;
-					if( y != lineMax )
+					if( y != lineTop )
 					{
 						AddMove( i, j, x, y, false, moveList );
 					}
@@ -228,7 +235,7 @@ void Board::GetMoveList(std::vector<PAWN_MOVE> &moveList)
 					y=j+forward;
 					for( bool ret = true; 0 <= (int)y && (int)y < BOARD_HEIGHT && ret; y += forward )
 					{
-						if( y != lineMax )
+						if( y != lineTop )
 						{
 							ret &= AddMove( i, j, i, y, false, moveList );
 						}
@@ -241,7 +248,7 @@ void Board::GetMoveList(std::vector<PAWN_MOVE> &moveList)
 				case PAWN_TYPE::KEI:
 					x = i-1;
 					y = j-forward-forward;
-					if( y != lineMax && y != lineMid )
+					if( y != lineTop && y != lineMid )
 					{
 						AddMove( i, j, x, y, false, moveList );
 					}
@@ -442,7 +449,7 @@ void Board::GetMoveList(std::vector<PAWN_MOVE> &moveList)
 				switch( (PAWN_ROLL)roll )
 				{
 					case PAWN_ROLL::HU:
-						if( j != lineMax )
+						if( j != lineTop )
 						{
 							uchar k;
 							for( k=0; k<BOARD_HEIGHT; k++ )
@@ -465,7 +472,7 @@ void Board::GetMoveList(std::vector<PAWN_MOVE> &moveList)
 						}
 						break;
 					case PAWN_ROLL::KYOH:
-						if( j != lineMax )
+						if( j != lineTop )
 						{
 							move.tox = i; move.toy = j;
 							Move(move);
@@ -477,7 +484,7 @@ void Board::GetMoveList(std::vector<PAWN_MOVE> &moveList)
 						}
 						break;
 					case PAWN_ROLL::KEI:
-						if( j != lineMax && j != lineMid )
+						if( j != lineTop && j != lineMid )
 						{
 							move.tox = i; move.toy = j;
 							Move(move);
@@ -511,14 +518,21 @@ void Board::GetMoveList(std::vector<PAWN_MOVE> &moveList)
 
 Board::PAWN_MOVE Board::GetNextMove(PAWN_MOVE &move)
 {
-	uchar lineMax = 0;
-	uchar lineMid = 1;
-	uchar lineMin = 2;
-	if(turn == PLAYER::SECOND)
+	uchar lineMax, lineMin, lineTop, lineMid;
+	
+	if(turn == PLAYER::FIRST)
+	{
+		lineMax = 2;
+		lineMin = 0;
+		lineTop = 0;
+		lineMid = 1;
+	}
+	else
 	{
 		lineMax = BOARD_HEIGHT-1;
-		lineMid = BOARD_HEIGHT-2;
 		lineMin = BOARD_HEIGHT-3;
+		lineTop = BOARD_HEIGHT-1;
+		lineMid = BOARD_HEIGHT-2;
 	}
 	int forward = -1;
 	if( turn == PLAYER::SECOND )
@@ -571,7 +585,7 @@ Board::PAWN_MOVE Board::GetNextMove(PAWN_MOVE &move)
 						y=j+forward;
 						for( bool ret = true; 0 <= (int)y && (int)y < BOARD_HEIGHT && ret; y += forward )
 						{
-							if( y != lineMax )
+							if( y != lineTop )
 							{
 								ret &= AddMove( i, j, i, y, false, moveList );
 							}
@@ -584,7 +598,7 @@ Board::PAWN_MOVE Board::GetNextMove(PAWN_MOVE &move)
 					case PAWN_TYPE::KEI:
 						x = i-1;
 						y = j-forward-forward;
-						if( y != lineMax && y != lineMid )
+						if( y != lineTop && y != lineMid )
 						{
 							AddMove( i, j, x, y, false, moveList );
 						}
@@ -846,7 +860,7 @@ Board::PAWN_MOVE Board::GetNextMove(PAWN_MOVE &move)
 				switch( (PAWN_ROLL)roll )
 				{
 					case PAWN_ROLL::HU:
-						if( j != lineMax )
+						if( j != lineTop )
 						{
 							uchar k;
 							for( k=0; k<BOARD_HEIGHT; k++ )
@@ -867,7 +881,7 @@ Board::PAWN_MOVE Board::GetNextMove(PAWN_MOVE &move)
 						}
 						break;
 					case PAWN_ROLL::KYOH:
-						if( j != lineMax )
+						if( j != lineTop )
 						{
 							next.tox = i; next.toy = j;
 							if( IsNextEnd(next) == false )
@@ -877,7 +891,7 @@ Board::PAWN_MOVE Board::GetNextMove(PAWN_MOVE &move)
 						}
 						break;
 					case PAWN_ROLL::KEI:
-						if( j != lineMax && j != lineMid )
+						if( j != lineTop && j != lineMid )
 						{
 							next.tox = i; next.toy = j;
 							if( IsNextEnd(next) == false )
@@ -1043,10 +1057,10 @@ bool Board::IsEnd()
 					{
 						ret &= IsCapture( x, y, enemy, isCapture );
 					}
-					IsCapture( i+1, j+1, enemy, isCapture );
-					IsCapture( i-1, j+1, enemy, isCapture );
-					IsCapture( i+1, j-1, enemy, isCapture );
-					IsCapture( i-1, j-1, enemy, isCapture );
+					IsCapture( i+1, j, enemy, isCapture );
+					IsCapture( i-1, j, enemy, isCapture );
+					IsCapture( i, j+1, enemy, isCapture );
+					IsCapture( i, j-1, enemy, isCapture );
 					break;
 				case PAWN_TYPE::HI:
 					x = i+1; y = j;
@@ -1137,10 +1151,9 @@ bool Board::IsCapture( char tox, char toy, PLAYER enemy, bool &isCapture )
 		return false;
 	}
 	
-	//std::cout << (int)tox << ", " << (int)toy;
-
 	uchar utox = (uchar)tox;
 	uchar utoy = (uchar)toy;
+	//std::cout << (int)tox << "," << (int)toy << "," << PAWN_CHAR[(int)matrix[utoy][utox].pawn] << std::endl; 
 	if( matrix[utoy][utox].player == enemy && matrix[utoy][utox].pawn == PAWN_TYPE::GYOKU )
 	{
 		isCapture |= true;

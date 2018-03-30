@@ -12,9 +12,6 @@
 #include "worker.h"
 #include "ai.h"
 
-static int SCORE_NONE = std::numeric_limits<int>::max() - 1;
-static int SCORE_WIN = 99999;
-
 Worker::Worker(Ai &aiValue)
 {
 	ai = &aiValue;
@@ -44,7 +41,7 @@ void Worker::Test()
 		//std::cout << job << std::endl;
 		size_t index = job.find("\n");
 		std::string jobId = job.substr(0, index);
-		//std::cout << "jobId is " << jobId << std::endl;
+		std::cout << "jobId is " << jobId << std::endl;
 		std::string boardStr = job.substr(index + 1);
 		board.Init(boardStr);
 		board.PrintBoard();
@@ -57,7 +54,7 @@ void Worker::Test()
 		*/
 		
 		std::list<NODE> nodeStack;
-		nodeStack.push_back({PAWN_MOVE_ZERO, SCORE_NONE});	// 自分
+		nodeStack.push_back({PAWN_MOVE_ZERO, -SCORE_NONE});	// 自分
 		nodeStack.push_back({PAWN_MOVE_ZERO, -SCORE_NONE});	// 次の指し手
 		
 		while( true )
@@ -87,7 +84,22 @@ void Worker::Test()
 			
 			// 得点をマージ
 			//std::cout << parent->score << ", " << -child.score << ", " << child.score << ", " << child.score*-1 << std::endl;
-			parent->score = std::min<int>(parent->score, -child.score);
+			if( nodeStack.size() == 1 )
+			{
+				parent->score = std::max<int>(parent->score, child.score);
+			}
+			else
+			{
+				parent->score = std::min<int>(parent->score, -child.score);
+			}
+			
+			// スコアがwindowの外側だったら終わり
+			/*
+			if( parent->score != -SCORE_NONE && parent->score != SCORE_NONE && (parent->score <= windowMin || windowMax <= parent->score) )
+			{
+				continue;
+			}
+			*/
 			
 			// 次の指し手を取得
 			std::list<NODE>::reverse_iterator ite = nodeStack.rbegin();
@@ -108,15 +120,15 @@ void Worker::Test()
 			if( tmp == PAWN_MOVE_ZERO )
 			{
 				std::list<NODE>::reverse_iterator ite = nodeStack.rbegin();
-				board.PrintBoard();
-				std::cout << "hohohohoh " << ite->score;
+				//board.PrintBoard();
+				//std::cout << "hohohohoh " << ite->score;
 				ite->score = SCORE_WIN;	// 自分絶対勝つ
 				std::cout << " -> " << ite->score << std::endl;
 				continue;
 			}
 			
 			// 新しい子が末端だったら評価
-			if( 3 <= nodeStack.size() )
+			if( 4 <= nodeStack.size() )
 			{
 				std::list<NODE>::reverse_iterator ite = nodeStack.rbegin();
 				// 点数計算

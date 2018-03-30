@@ -30,33 +30,20 @@ int main()
     "h01 y00 e00 g00 k00 u00 r00\n"
     "first"
   ,
-    "h00 y00 e00 g00 k00 u00 r00\n"
+    "h18 y04 e04 g04 k0f u00 r00\n"
     " . . . . . . . . .\n"
-    " . . . . . .r_ . .\n"
-    " . . . . . .U_ .o_\n"
-    " . . . . . . .^r .\n"
-    " . . . . . .^U . .\n"
-    " . . . . . . . . .\n"
-    " . . . . . . . . .\n"
-    " . . . . . . . . .\n"
-    " . . . .^o . . . .\n"
-    "h00 y00 e00 g00 k00 u00 r00\n"
-    "first"
-  ,
-    "h00 y00 e00 g00 k00 u00 r00\n"
     " . . . . . . .^R .\n"
-    " . . . . . .r_ . .\n"
-    " . . . . . .h_ . .\n"
-    " . . . . . . . .o_\n"
-    " . . . . . .^U . .\n"
+    " . . . . . . . . .\n"
+    " . . . . . . . .^U\n"
+    " . . . . . .^uR_o_\n"
     " . . . . . . . . .\n"
     " . . . . . . . . .\n"
     " . . . . . . . . .\n"
-    " . . . .^o . . . .\n"
+    " . . . . . . . . .\n"
     "h00 y00 e00 g00 k00 u00 r00\n"
-    "first"
+    "second"
   ,
-    "h01 y00 e00 g00 k00 u00 r00\n"
+    "h18 y04 e04 g04 k0f u00 r00\n"
     " . . . . . . . . .\n"
     " . . . . . .^U^R .\n"
     " . . . . . . . . .\n"
@@ -65,11 +52,37 @@ int main()
     " . . . . . . . . .\n"
     " . . . . . . . . .\n"
     " . . . . . . . . .\n"
+    " . . . . . . . . .\n"
+    "h00 y00 e00 g00 k00 u00 r00\n"
+    "first"
+  ,
+    "h00 y00 e00 g00 k00 u00 r00\n"
+    " . . . . .^r .^k .\n"
+    " . . . . . . . .o_\n"
+    " . . . . . .h_h_h_\n"
+    " . . . . . . . . .\n"
+    " . . . . . . . . .\n"
+    " . . . . . . . . .\n"
+    " . . . . . . . . .\n"
+    " . . . . . . . . .\n"
+    " . . . . . . . . .\n"
+    "h00 y00 e00 g00 k00 u00 r00\n"
+    "first"
+  ,
+    "h00 y00 e00 g00 k00 u00 r00\n"
+    " . . . . .^r . .^k\n"
+    " . . . . . . .o_ .\n"
+    " . . . . . .h_h_h_\n"
+    " . . . . . . . . .\n"
+    " . . . . . . . . .\n"
+    " . . . . . . . . .\n"
+    " . . . . . . . . .\n"
+    " . . . . . . . . .\n"
     " . . . .^o . . . .\n"
     "h00 y00 e00 g00 k00 u00 r00\n"
     "first"
   };
-  board.Init(boardInits[2]);
+  board.Init(boardInits[1]);
   std::list<Board::PAWN_MOVE> history;
   /*
   board.PrintBoard();
@@ -127,33 +140,38 @@ int main()
     }
   }
   */
-  /*
+  
+  // 差し手のテスト
+  board.PrintBoard();
   int count = 0;
-  Board::PAWN_MOVE move{ PAWN_ROLL::NONE, 6, 4, 7, 5, PAWN_TYPE::NONE, PAWN_TYPE::NONE, false };
-  while(count < 30)
+  Board::PAWN_MOVE move{ PAWN_ROLL::NONE, 0, 0, 0, 0, PAWN_TYPE::NONE, PAWN_TYPE::NONE, false };
+  while(true)
   {
     move = board.GetNextMove(move);
     if( move == PAWN_MOVE_ZERO )
     {
       break;
     }
-    std::cout << move << std::endl;
+    std::cout << (std::string)move << std::endl;
     count++;
   }
-  */
   
+  /*
   Ai ai;
   ai.Start(board);
 
   int i = 0;
   while( ai.Tick() == false ) {
     //std::cout << "\r" << i++;
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
   
   Board::PAWN_MOVE aiMove = ai.GetResult();
-  board.PrintKihu(aiMove);
+  std::cout << (std::string)aiMove << std::endl;
+  //board.PrintKihu(aiMove);
   
   ai.Stop();
   
   std::cout << "end" << std::endl;
+  */
 }

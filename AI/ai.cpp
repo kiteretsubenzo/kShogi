@@ -48,6 +48,7 @@ void Ai::Start(Board board)
   }
 	
 	mtx.lock();
+	/*
 	for( unsigned int i=0; i<moveList.size(); i++ )
 	{
 		Board::PAWN_MOVE &move = moveList[i];
@@ -56,12 +57,18 @@ void Ai::Start(Board board)
 		std::list<Board::PAWN_MOVE> moves;
 		moves.push_back(move);
 		JOB job = { GetJobId(), moves, board };
-		if( i == 8 )
+		if( i < 4 )
 		{
 			jobs.push_back(job);
 		}
 		board.Back(move);
 	}
+	*/
+	std::list<Board::PAWN_MOVE> moves;
+	moves.push_back(PAWN_MOVE_ZERO);
+	JOB job = { GetJobId(), moves, board };
+	jobs.push_back(job);
+
 	mtx.unlock();
 }
 
@@ -107,12 +114,13 @@ bool Ai::Tick()
 		std::string jobId = result.substr(0, index);
 		std::string scoreString = result.substr(index+1);
 		int score = stoi(scoreString);
-		std::cout << "score is " << score << std::endl;
-		if( bestScore < score )
+		std::cout << "score is " << score << " best score is " << bestScore;
+		if( bestScore < -score )
 		{
 			bestMove = waits[jobId].front();
-			bestScore = score;
+			bestScore = -score;
 		}
+		std::cout << " -> best score is " << bestScore << std::endl;
 		waits.erase(jobId);
 		results.pop_front();
 	}
@@ -123,7 +131,7 @@ bool Ai::Tick()
 		return false;
 	}
 	
-	std::cout << "best score is " << bestScore << std::endl;
+	std::cout << "-> best score is " << bestScore << std::endl;
 	
 	return true;
 }
