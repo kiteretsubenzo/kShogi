@@ -8,6 +8,7 @@
 #include <random>
 #include <iomanip>
 #include <sstream>
+#include "../definitions.h"
 #include "../board.h"
 #include "worker.h"
 #include "ai.h"
@@ -54,82 +55,80 @@ void Worker::Test()
 		*/
 		
 		std::list<NODE> nodeStack;
-		nodeStack.push_back({PAWN_MOVE_ZERO, -SCORE_NONE});	// 自分
-		nodeStack.push_back({PAWN_MOVE_ZERO, -SCORE_NONE});	// 次の指し手
+		nodeStack.push_back({board.GetMoveList(), -SCORE_NONE});	// 自分
+		std::vector<Board::PAWN_MOVE> dummy;
+		// TODO: {} でいけないか？
+		nodeStack.push_back({dummy, -SCORE_NONE});	// ダミーの子供
 		
 		while( true )
 		{
 			for( std::list<NODE>::iterator ite=nodeStack.begin(); ite != nodeStack.end(); ++ite )
 			{
-				std::cout << ":" << (std::string)(ite->move) << "(" << ite->score << ")";
+				std::cout << ":" << (ite->moves.front()).DebugString() << "(" << ite->score << ")";
 			}
 			std::cout << std::endl;
 			
 			// 子ノードを引っこ抜く
 			NODE child = nodeStack.back();
-			nodeStack.pop_back();
-			if( child.move != PAWN_MOVE_ZERO )
+			// とりあえず子ノードの着手を戻す
+			if( !child.moves.empty() )
 			{
-				board.Back(child.move);
+				board.Back(child.moves.front());
+				//child.moves.pop_front();
+				child.moves.erase(child.moves.begin());
 			}
-			
-			// 親ノードを取得
-			// 親ノードが居なかったらルートノードなので終わり
-			if( nodeStack.size() == 0 )
-			{
-				ai->CallBack(jobId + "\n" + std::to_string(child.score));
-				break;
-			}
-			std::list<NODE>::reverse_iterator parent = nodeStack.rbegin();
-			
-			// 得点をマージ
-			//std::cout << parent->score << ", " << -child.score << ", " << child.score << ", " << child.score*-1 << std::endl;
-			if( nodeStack.size() == 1 )
-			{
-				parent->score = std::max<int>(parent->score, child.score);
-			}
-			else
-			{
-				parent->score = std::min<int>(parent->score, -child.score);
-			}
-			
-			// スコアがwindowの外側だったら終わり
-			/*
-			if( parent->score != -SCORE_NONE && parent->score != SCORE_NONE && (parent->score <= windowMin || windowMax <= parent->score) )
-			{
-				continue;
-			}
-			*/
-			
 			// 次の指し手を取得
-			std::list<NODE>::reverse_iterator ite = nodeStack.rbegin();
-			Board::PAWN_MOVE next = board.GetNextMove(child.move);
-			if( next == PAWN_MOVE_ZERO )
+			if( child.moves.empty() )
 			{
 				// 指し手が無いので今のノードは終わり
+				nodeStack.pop_back();
+				
+				// 親ノードが居なかったらルートノードなので終わり
+				if( nodeStack.empty() )
+				{
+					ai->CallBack(jobId + "\n" + std::to_string(child.score));
+					break;
+				}
+				
+				// 親ノードに得点をマージ
+				std::list<NODE>::reverse_iterator parent = nodeStack.rbegin();
+				//std::cout << parent->score << ", " << -child.score << ", " << child.score << ", " << child.score*-1 << std::endl;
+				parent->score = std::min<int>(parent->score, -child.score);
+
+				// スコアがwindowの外側だったら終わり
+				/*
+				if( parent->score != -SCORE_NONE && parent->score != SCORE_NONE && (parent->score <= windowMin || windowMax <= parent->score) )
+				{
+					continue;
+				}
+				*/
+				
 				continue;
 			}
-			
-			// 次の指し手を新しい子として追加
-			nodeStack.push_back({next, SCORE_NONE});
+			Board::PAWN_MOVE next = child.moves.front();
+			//child.move.pop_front();
+			child.moves.erase(child.moves.begin());
+			// 盤面を進める
 			board.Move(next);
+
 			
-			// 新しい子に着手が無かったら勝負あり
-			Board::PAWN_MOVE tmp = PAWN_MOVE_ZERO;
-			tmp = board.GetNextMove(tmp);
-			if( tmp == PAWN_MOVE_ZERO )
+			
+			// 着手を取得
+			std::vector<Board::PAWN_MOVE> moveList = board.GetMoveList();
+			
+			int score = -SCORE_NONE;
+			
+			// 新しい盤面に着手が無かったら勝負あり
+			if( moveList.empty() )
 			{
-				std::list<NODE>::reverse_iterator ite = nodeStack.rbegin();
 				//board.PrintBoard();
 				//std::cout << "hohohohoh " << ite->score;
-				ite->score = SCORE_WIN;	// 自分絶対勝つ
-				std::cout << " -> " << ite->score << std::endl;
-				continue;
+				//std::cout << " -> " << ite->score << std::endl;
+				score = SCORE_WIN;
 			}
-			
-			// 新しい子が末端だったら評価
-			if( 4 <= nodeStack.size() )
+			else if( 4 <= nodeStack.size() )
 			{
+				// 新しい子が末端だったら追加せずに評価
 				std::list<NODE>::reverse_iterator ite = nodeStack.rbegin();
 				// 点数計算
 				// 相手が置ける場所の数
@@ -148,13 +147,14 @@ void Worker::Test()
 				}
 				*/
 				// 評価
-				ite->score = -1;
-				// 上のノードに戻る
-				continue;
+				moveList.clear();
+				score = -1;
 			}
 			
-			// 新しい子を追加
-			nodeStack.push_back({PAWN_MOVE_ZERO, -SCORE_NONE});
+			// 子供を追加
+			nodeStack.push_back({moveList, score});
+			
+			
 		}
 	}
 }

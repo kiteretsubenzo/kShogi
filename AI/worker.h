@@ -11,7 +11,7 @@ class Worker
 public:
 	struct NODE
 	{
-		Board::PAWN_MOVE move;
+		std::vector<Board::PAWN_MOVE> moves;
 		int score;
 	};
 	

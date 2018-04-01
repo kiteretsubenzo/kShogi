@@ -8,6 +8,7 @@
 #include <random>
 #include <iomanip>
 #include <sstream>
+#include "../definitions.h"
 #include "../board.h"
 #include "worker.h"
 #include "ai.h"
@@ -33,19 +34,7 @@ void Ai::Start(Board board)
 	bestMove = PAWN_MOVE_ZERO;
 	bestScore = std::numeric_limits<int>::min();
 
-	std::vector<Board::PAWN_MOVE> moveList;
-	//board.GetMoveList(moveList);
-	Board::PAWN_MOVE move = PAWN_MOVE_ZERO;
-  while(true)
-  {
-    move = board.GetNextMove(move);
-    if( move == PAWN_MOVE_ZERO )
-    {
-      break;
-    }
-    //std::cout << move << std::endl;
-    moveList.push_back(move);
-  }
+	std::vector<Board::PAWN_MOVE> moveList = board.GetMoveList();
 	
 	mtx.lock();
 	/*

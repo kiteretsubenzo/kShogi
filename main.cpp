@@ -8,6 +8,7 @@
 #include <random>
 #include <iomanip>
 #include <sstream>
+#include "definitions.h"
 #include "board.h"
 #include "AI/worker.h"
 #include "AI/ai.h"
@@ -143,17 +144,10 @@ int main()
   
   // 差し手のテスト
   board.PrintBoard();
-  int count = 0;
-  Board::PAWN_MOVE move{ PAWN_ROLL::NONE, 0, 0, 0, 0, PAWN_TYPE::NONE, PAWN_TYPE::NONE, false };
-  while(true)
+  std::vector<Board::PAWN_MOVE> moveList = board.GetMoveList();
+  for( std::vector<Board::PAWN_MOVE>::iterator ite = moveList.begin(); ite != moveList.end(); ++ite )
   {
-    move = board.GetNextMove(move);
-    if( move == PAWN_MOVE_ZERO )
-    {
-      break;
-    }
-    std::cout << (std::string)move << std::endl;
-    count++;
+    std::cout << (*ite).DebugString() << std::endl;
   }
   
   /*
