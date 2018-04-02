@@ -28,8 +28,6 @@ static const std::string numberToKanji[9] =
 	"一", "二", "三", "四", "五", "六", "七", "八", "九"
 };
 
-std::vector<std::string> split(std::string str, char c);
-
 class Board
 {
 public:
@@ -46,7 +44,7 @@ public:
 		
 		std::string DebugString() const
 		{
-			if( fromx == 0 && fromy == 0 && tox == 0 && toy == 0 )
+			if( reserve == PAWN_ROLL::NONE && fromx == 0 && fromy == 0 && tox == 0 && toy == 0 )
 			{
 				return "ZERO";
 			}

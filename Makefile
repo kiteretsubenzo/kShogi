@@ -9,7 +9,7 @@ definitions.o: definitions.h
 main.o: main.cpp
 	g++ -std=c++11 -Wall -O2 -c main.cpp -pthread
 	
-main.o: board.h definitions.h AI/ai.h AI/worker.h
+main.o: board.h definitions.h AI/ai.h AI/worker.h Test/test.h Test/move.h Test/put.h
 
 board.o: board.cpp
 	g++ -std=c++11 -Wall -O2 -c board.cpp -pthread

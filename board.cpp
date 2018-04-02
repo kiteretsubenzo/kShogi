@@ -29,13 +29,7 @@ Board::Board()
 
 void Board::Init(const std::string str)
 {
-	std::vector<std::string> strs;
-	
-	std::stringstream ss{str};
-	std::string buf;
-	while (std::getline(ss, buf)) {
-		strs.push_back(buf);
-	}
+	std::vector<std::string> strs = split(str, '\n');
 	
 	for( int i=0; i<(uchar)PAWN_ROLL::CAPTURE_MAX; i++ )
 	{
@@ -879,14 +873,3 @@ std::ostream& operator<<(std::ostream& stream, const Board::PAWN_MOVE& move)
 	
 }
 */
-std::vector<std::string> split(std::string str, char c)
-{
-  std::vector<std::string> ret;
-  std::stringstream ss{str};
-  std::string buf;
-  while (std::getline(ss, buf, c)) {
-    ret.push_back(buf);
-  }
-  
-  return ret;
-}

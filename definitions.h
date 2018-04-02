@@ -110,4 +110,6 @@ private:
 	ROLL roll;
 };
 
+std::vector<std::string> split(std::string str, char c);
+
 #endif // DEFINITIONS_H

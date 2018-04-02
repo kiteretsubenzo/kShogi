@@ -12,6 +12,7 @@
 #include "board.h"
 #include "AI/worker.h"
 #include "AI/ai.h"
+#include "Test/test.h"
 
 int main()
 { 
@@ -143,12 +144,16 @@ int main()
   */
   
   // 差し手のテスト
+  /*
   board.PrintBoard();
   std::vector<Board::PAWN_MOVE> moveList = board.GetMoveList();
   for( std::vector<Board::PAWN_MOVE>::iterator ite = moveList.begin(); ite != moveList.end(); ++ite )
   {
     std::cout << (*ite).DebugString() << std::endl;
   }
+  */
+  
+  Test();
   
   /*
   Ai ai;

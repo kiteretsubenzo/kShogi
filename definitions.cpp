@@ -1,4 +1,6 @@
 #include <iostream>
+#include <sstream>
+#include <vector>
 #include "definitions.h"
 
 // PAWN_TYPE
@@ -78,4 +80,16 @@ PAWN_ROLL::PAWN_ROLL(const PAWN_TYPE &type)
 		PAWN_ROLL::GIN, PAWN_ROLL::GIN, PAWN_ROLL::KIN, PAWN_ROLL::KAKU, PAWN_ROLL::KAKU, PAWN_ROLL::HI, PAWN_ROLL::HI, PAWN_ROLL::GYOKU
 	};
 	roll = typeToRoll[(int)type];
+}
+
+std::vector<std::string> split(std::string str, char c)
+{
+  std::vector<std::string> ret;
+  std::stringstream ss{str};
+  std::string buf;
+  while (std::getline(ss, buf, c)) {
+    ret.push_back(buf);
+  }
+  
+  return ret;
 }
