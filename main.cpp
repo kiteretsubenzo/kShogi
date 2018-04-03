@@ -16,6 +16,11 @@
 
 int main()
 { 
+  if( !Test() )
+  {
+    return 1;
+  }
+  
   Board board;
   std::string boardInits[] =
   {
@@ -84,7 +89,7 @@ int main()
     "h00 y00 e00 g00 k00 u00 r00\n"
     "first"
   };
-  board.Init(boardInits[1]);
+  board.Init(boardInits[2);
   std::list<Board::PAWN_MOVE> history;
   /*
   board.PrintBoard();
@@ -143,18 +148,6 @@ int main()
   }
   */
   
-  // 差し手のテスト
-  /*
-  board.PrintBoard();
-  std::vector<Board::PAWN_MOVE> moveList = board.GetMoveList();
-  for( std::vector<Board::PAWN_MOVE>::iterator ite = moveList.begin(); ite != moveList.end(); ++ite )
-  {
-    std::cout << (*ite).DebugString() << std::endl;
-  }
-  */
-  
-  Test();
-  
   /*
   Ai ai;
   ai.Start(board);
@@ -173,4 +166,6 @@ int main()
   
   std::cout << "end" << std::endl;
   */
+  
+  return 0;
 }
