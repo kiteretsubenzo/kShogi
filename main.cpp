@@ -89,7 +89,7 @@ int main()
     "h00 y00 e00 g00 k00 u00 r00\n"
     "first"
   };
-  board.Init(boardInits[2);
+  board.Init(boardInits[2]);
   std::list<Board::PAWN_MOVE> history;
   /*
   board.PrintBoard();
