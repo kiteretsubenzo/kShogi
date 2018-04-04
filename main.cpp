@@ -37,20 +37,20 @@ int main()
     "h01 y00 e00 g00 k00 u00 r00\n"
     "first"
   ,
-    "h18 y04 e04 g04 k0f u00 r00\n"
+    "h18 y04 e04 g04 k04 u01 r00\n"
     " . . . . . . . . .\n"
     " . . . . . . .^R .\n"
     " . . . . . . . . .\n"
-    " . . . . . . . .^U\n"
-    " . . . . . .^uR_o_\n"
+    " . . . . . . . .o_\n"
+    " . . . . . .^uR_ .\n"
     " . . . . . . . . .\n"
     " . . . . . . . . .\n"
     " . . . . . . . . .\n"
     " . . . . . . . . .\n"
     "h00 y00 e00 g00 k00 u00 r00\n"
-    "second"
+    "first"
   ,
-    "h18 y04 e04 g04 k0f u00 r00\n"
+    "h18 y04 e04 g04 k04 u00 r00\n"
     " . . . . . . . . .\n"
     " . . . . . .^U^R .\n"
     " . . . . . . . . .\n"
@@ -76,18 +76,18 @@ int main()
     "h00 y00 e00 g00 k00 u00 r00\n"
     "first"
   ,
-    "h00 y00 e00 g00 k00 u00 r00\n"
-    " . . . . .^r . .^k\n"
-    " . . . . . . .o_ .\n"
-    " . . . . . .h_h_h_\n"
+    "h18 y04 e04 g04 k04 u01 r00 \n"
+    " . . . . . . . . .\n"
+    " . . . . . .R_ . .\n"
+    " . . . . . . . . .\n"
+    " . . . . . . . .o_\n"
+    " . . . . . . .R_ .\n"
+    " . . . . . . .^u .\n"
     " . . . . . . . . .\n"
     " . . . . . . . . .\n"
     " . . . . . . . . .\n"
-    " . . . . . . . . .\n"
-    " . . . . . . . . .\n"
-    " . . . .^o . . . .\n"
-    "h00 y00 e00 g00 k00 u00 r00\n"
-    "first"
+    "h01 y00 e00 g00 k00 u00 r00\n"
+    "second\n"
   };
   board.Init(boardInits[2]);
   std::list<Board::PAWN_MOVE> history;
@@ -149,6 +149,17 @@ int main()
   */
   
   /*
+  Board::PAWN_MOVE move{ PAWN_ROLL::NONE, 6, 1, 7, 1, PAWN_TYPE::RYU, PAWN_TYPE::NONE, false };
+
+  std::cout << board.BoardToString() << std::endl;
+  std::cout << (std::string)move << std::endl;
+  std::cout << move.DebugString() << std::endl;
+
+  board.Back(move);
+
+  std::cout << board.BoardToString() << std::endl;
+  */
+  
   Ai ai;
   ai.Start(board);
 
@@ -165,7 +176,6 @@ int main()
   ai.Stop();
   
   std::cout << "end" << std::endl;
-  */
   
   return 0;
 }

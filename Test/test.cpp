@@ -26,17 +26,17 @@ bool Test()
 		std::vector<std::string> tests = split(strs[1], '\n');
 		std::vector<Board::PAWN_MOVE> moveList = board.GetMoveList();
 		unsigned int size = std::max<unsigned int>(moveList.size(), tests.size());
-		for( unsigned int i=0; i<size; i++ )
+		for( unsigned int j=0; j<size; j++ )
 		{
 			std::string result = "NONE";
 			std::string test = "NONE";
-			if( i < moveList.size() )
+			if( j < moveList.size() )
 			{
-				result = moveList[i].DebugString();
+				result = moveList[j].DebugString();
 			}
-			if( i < tests.size() )
+			if( j < tests.size() )
 			{
-				test = tests[i];
+				test = tests[j];
 			}
 			if( result == test )
 			{
@@ -45,10 +45,10 @@ bool Test()
 			}
 			else
 			{
-				std::cout << "NO." << (i+1) << std::endl;
-				board.PrintBoard();
+				//std::cout << "NO." << (i+1) << std::endl;
+				//board.PrintBoard();
 				std::cout << result << ":" << test << " -> false" << std::endl;
-				return false;
+				//return false;
 			}
 		}
 	}
@@ -66,17 +66,17 @@ bool Test()
 		std::vector<std::string> tests = split(strs[1], '\n');
 		std::vector<Board::PAWN_MOVE> moveList = board.GetMoveList();
 		unsigned int size = std::max<unsigned int>(moveList.size(), tests.size());
-		for( unsigned int i=0; i<size; i++ )
+		for( unsigned int j=0; j<size; j++ )
 		{
 			std::string result = "NONE";
 			std::string test = "NONE";
-			if( i < moveList.size() )
+			if( j < moveList.size() )
 			{
-				result = moveList[i].DebugString();
+				result = moveList[j].DebugString();
 			}
-			if( i < tests.size() )
+			if( j < tests.size() )
 			{
-				test = tests[i];
+				test = tests[j];
 			}
 			if( result == test )
 			{
@@ -106,17 +106,17 @@ bool Test()
 		std::vector<std::string> tests = split(strs[1], '\n');
 		std::vector<Board::PAWN_MOVE> moveList = board.GetMoveList();
 		unsigned int size = std::max<unsigned int>(moveList.size(), tests.size());
-		for( unsigned int i=0; i<size; i++ )
+		for( unsigned int j=0; j<size; j++ )
 		{
 			std::string result = "NONE";
 			std::string test = "NONE";
-			if( i < moveList.size() )
+			if( j < moveList.size() )
 			{
-				result = moveList[i].DebugString();
+				result = moveList[j].DebugString();
 			}
-			if( i < tests.size() )
+			if( j < tests.size() )
 			{
-				test = tests[i];
+				test = tests[j];
 			}
 			if( result == test )
 			{

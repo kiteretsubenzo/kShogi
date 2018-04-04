@@ -148,6 +148,4 @@ private:
 
 static const Board::PAWN_MOVE PAWN_MOVE_ZERO{ PAWN_ROLL::NONE, 0, 0, 0, 0, PAWN_TYPE::NONE, PAWN_TYPE::NONE, false };
 
-//std::ostream& operator<<(std::ostream& stream, const Board::PAWN_MOVE& move);
-
 #endif // BOARD_H

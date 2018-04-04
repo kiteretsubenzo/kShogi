@@ -867,9 +867,3 @@ void Board::PrintBoard() const
 	std::cout << std::endl;
 	std::cout << PLAYER_STRING[(uchar)turn] << std::endl;
 }
-/*
-std::ostream& operator<<(std::ostream& stream, const Board::PAWN_MOVE& move) 
-{
-	
-}
-*/

@@ -55,45 +55,64 @@ void Worker::Test()
 		*/
 		
 		std::list<NODE> nodeStack;
-		nodeStack.push_back({board.GetMoveList(), -SCORE_NONE});	// 自分
-		std::vector<Board::PAWN_MOVE> dummy;
-		// TODO: {} でいけないか？
-		nodeStack.push_back({dummy, -SCORE_NONE});	// ダミーの子供
+		std::vector<Board::PAWN_MOVE> tmpMoveList = board.GetMoveList();
+		tmpMoveList.insert(tmpMoveList.begin(), PAWN_MOVE_ZERO);	// ダミーの子供
+		nodeStack.push_back({tmpMoveList, -SCORE_NONE});	// 自分
 		
 		while( true )
 		{
 			for( std::list<NODE>::iterator ite=nodeStack.begin(); ite != nodeStack.end(); ++ite )
 			{
-				std::cout << ":" << (ite->moves.front()).DebugString() << "(" << ite->score << ")";
+				if( 0 < ite->moves.size() )
+				{
+					//std::cout << ":" << (ite->moves.front()).DebugString() << "+" << (int)(ite->moves.size()-1) << "(" << (int)(ite->score) << ")";
+					std::cout << ":" << (ite->moves.front()).DebugString() << "(" << (int)(ite->score) << ")";
+				}
+				else
+				{
+					std::cout << ":EMPTY(" << (int)(ite->score) << ")";
+				}
 			}
 			std::cout << std::endl;
 			
 			// 子ノードを引っこ抜く
-			NODE child = nodeStack.back();
+			std::list<NODE>::reverse_iterator childItr = nodeStack.rbegin();
+
 			// とりあえず子ノードの着手を戻す
-			if( !child.moves.empty() )
+			if( !childItr->moves.empty() )
 			{
-				board.Back(child.moves.front());
-				//child.moves.pop_front();
-				child.moves.erase(child.moves.begin());
+				if( childItr->moves.front() != PAWN_MOVE_ZERO )
+				{
+					board.Back(childItr->moves.front());
+				}
 			}
-			// 次の指し手を取得
-			if( child.moves.empty() )
+			
+			// 親ノードを取得
+			std::list<NODE>::reverse_iterator parentItr = nodeStack.rbegin();
+			if( parentItr != nodeStack.rend() )
 			{
-				// 指し手が無いので今のノードは終わり
+				++parentItr;
+			}
+			
+			// 親ノードに得点をマージ
+			if( parentItr != nodeStack.rend() )
+			{
+				parentItr->score = std::min<int>(parentItr->score, -childItr->score);
+			}
+
+			// 次の指し手を取得
+			std::vector<Board::PAWN_MOVE>::iterator nextMoveItr = childItr->moves.erase(childItr->moves.begin());
+			if( nextMoveItr == childItr->moves.end() )
+			{
+				// 次の指し手が無いので今のノードは終わり
 				nodeStack.pop_back();
-				
-				// 親ノードが居なかったらルートノードなので終わり
+
+				// 誰も居なくなったらルートノードなので終わり
 				if( nodeStack.empty() )
 				{
-					ai->CallBack(jobId + "\n" + std::to_string(child.score));
+					ai->CallBack(jobId + "\n" + std::to_string(childItr->score));
 					break;
 				}
-				
-				// 親ノードに得点をマージ
-				std::list<NODE>::reverse_iterator parent = nodeStack.rbegin();
-				//std::cout << parent->score << ", " << -child.score << ", " << child.score << ", " << child.score*-1 << std::endl;
-				parent->score = std::min<int>(parent->score, -child.score);
 
 				// スコアがwindowの外側だったら終わり
 				/*
@@ -105,56 +124,37 @@ void Worker::Test()
 				
 				continue;
 			}
-			Board::PAWN_MOVE next = child.moves.front();
-			//child.move.pop_front();
-			child.moves.erase(child.moves.begin());
-			// 盤面を進める
-			board.Move(next);
-
 			
+			// 盤面を進める
+			board.Move(*nextMoveItr);
 			
 			// 着手を取得
 			std::vector<Board::PAWN_MOVE> moveList = board.GetMoveList();
-			
+
 			int score = -SCORE_NONE;
-			
+				
 			// 新しい盤面に着手が無かったら勝負あり
 			if( moveList.empty() )
 			{
-				//board.PrintBoard();
-				//std::cout << "hohohohoh " << ite->score;
-				//std::cout << " -> " << ite->score << std::endl;
-				score = SCORE_WIN;
+				childItr->score = SCORE_WIN;
+				continue;
 			}
-			else if( 4 <= nodeStack.size() )
+			if( 2 <= nodeStack.size() )
 			{
 				// 新しい子が末端だったら追加せずに評価
 				std::list<NODE>::reverse_iterator ite = nodeStack.rbegin();
 				// 点数計算
 				// 相手が置ける場所の数
-				/*
-				//std::cout << "bottom" << std::endl;
-				int count = 0;
-				Board::PAWN_MOVE moveTmp = PAWN_MOVE_ZERO;
-				while(true)
-				{
-					moveTmp = board.GetNextMove(moveTmp);
-					if( moveTmp == PAWN_MOVE_ZERO )
-					{
-						break;
-					}
-					count++;
-				}
-				*/
 				// 評価
 				moveList.clear();
 				score = -1;
+				childItr->score = std::max( childItr->score, score );
+				continue;
 			}
-			
+
 			// 子供を追加
+			moveList.insert(moveList.begin(), PAWN_MOVE_ZERO);
 			nodeStack.push_back({moveList, score});
-			
-			
 		}
 	}
 }
