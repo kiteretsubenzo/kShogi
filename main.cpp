@@ -176,6 +176,9 @@ int main()
   ai.Stop();
   
   std::cout << "end" << std::endl;
+
+  std::string str;
+  std::cin >> str;
   
   return 0;
 }
