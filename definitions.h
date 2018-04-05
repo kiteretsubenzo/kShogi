@@ -1,4 +1,4 @@
-#ifndef DEFINITIONS_H
+﻿#ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
 #define BOARD_WIDTH 9
@@ -91,6 +91,14 @@ public:
 	bool operator!=( const ROLL& rhs ) const
 	{
 		return roll != rhs;
+	}
+	bool operator==(const PAWN_ROLL& rhs) const
+	{
+		return roll == rhs.roll;
+	}
+	bool operator!=(const PAWN_ROLL& rhs) const
+	{
+		return roll != rhs.roll;
 	}
 	
 	PAWN_ROLL& operator=( const ROLL& rhs )

@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <thread>
 #include <vector>
 #include <list>
@@ -63,11 +63,15 @@ void Worker::Test()
 		while( true )
 		{
 			std::list<NODE>::iterator top = nodeStack.begin();
-			Board::PAWN_MOVE moveTop = *(top->moves.begin());
+			
 			bool debugPrint = true;
-			if( moveTop.tox == 8 && moveTop.toy == 3 && moveTop.fromPawn == PAWN_TYPE::UMA )
+			if ( !top->moves.empty() )
 			{
-				debugPrint = true;
+				Board::PAWN_MOVE moveTop = *(top->moves.begin());
+				if (moveTop.tox == 8 && moveTop.toy == 3 && moveTop.fromPawn == PAWN_TYPE::UMA)
+				{
+					debugPrint = true;
+				}
 			}
 			
 			if( debugPrint )

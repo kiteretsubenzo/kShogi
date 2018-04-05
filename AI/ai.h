@@ -1,4 +1,4 @@
-#ifndef AI_H
+﻿#ifndef AI_H
 #define AI_H
 
 class Worker;

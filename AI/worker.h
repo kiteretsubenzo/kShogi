@@ -1,4 +1,4 @@
-#ifndef WORKER_H
+﻿#ifndef WORKER_H
 #define WORKER_H
 
 static int SCORE_NONE = std::numeric_limits<int>::max() - 1;

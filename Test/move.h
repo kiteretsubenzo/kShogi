@@ -1,4 +1,4 @@
-std::vector<std::string> testMove
+﻿std::vector<std::string> testMove
 {
 	// NO.1
 	"h00 y00 e00 g00 k00 u00 r00\n"

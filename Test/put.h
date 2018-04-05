@@ -1,4 +1,4 @@
-std::vector<std::string> testPut
+﻿std::vector<std::string> testPut
 {
 	// NO.1
 	"h00 y00 e00 g00 k00 u00 r00\n"

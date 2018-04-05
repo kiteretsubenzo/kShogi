@@ -1,7 +1,8 @@
-#include <iostream>
+﻿#include <iostream>
 #include <sstream>
 #include <iomanip>
 #include <vector>
+#include <algorithm>
 #include "../definitions.h"
 #include "../board.h"
 #include "move.h"

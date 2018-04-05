@@ -1,4 +1,4 @@
-std::vector<std::string> testEscape
+﻿std::vector<std::string> testEscape
 {
 	// NO.1
 	"h18 y04 e04 g04 k0f u00 r00\n"
