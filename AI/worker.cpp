@@ -39,7 +39,6 @@ void Worker::Test()
       break;
     }
 		
-		//std::cout << job << std::endl;
 		size_t index = job.find("\n");
 		std::string jobId = job.substr(0, index);
 		std::cout << "jobId is " << jobId << std::endl;
@@ -55,28 +54,68 @@ void Worker::Test()
 		*/
 		
 		std::list<NODE> nodeStack;
+		nodeStack.push_back({{}, SCORE_NONE}); // ルート
 		std::vector<Board::PAWN_MOVE> tmpMoveList = board.GetMoveList();
 		tmpMoveList.insert(tmpMoveList.begin(), PAWN_MOVE_ZERO);	// ダミーの子供
-		nodeStack.push_back({tmpMoveList, -SCORE_NONE});	// 自分
+		nodeStack.push_back({tmpMoveList, SCORE_NONE});	// 自分
 		
+		std::cout << std::endl;
 		while( true )
 		{
-			for( std::list<NODE>::iterator ite=nodeStack.begin(); ite != nodeStack.end(); ++ite )
+			std::list<NODE>::iterator top = nodeStack.begin();
+			Board::PAWN_MOVE moveTop = *(top->moves.begin());
+			bool debugPrint = true;
+			if( moveTop.tox == 8 && moveTop.toy == 3 && moveTop.fromPawn == PAWN_TYPE::UMA )
 			{
-				if( 0 < ite->moves.size() )
-				{
-					//std::cout << ":" << (ite->moves.front()).DebugString() << "+" << (int)(ite->moves.size()-1) << "(" << (int)(ite->score) << ")";
-					std::cout << ":" << (ite->moves.front()).DebugString() << "(" << (int)(ite->score) << ")";
-				}
-				else
-				{
-					std::cout << ":EMPTY(" << (int)(ite->score) << ")";
-				}
+				debugPrint = true;
 			}
-			std::cout << std::endl;
 			
+			if( debugPrint )
+			{
+				for( std::list<NODE>::iterator ite=nodeStack.begin(); ite != nodeStack.end(); ++ite )
+				{
+					if( 0 < ite->moves.size() )
+					{
+						//std::cout << ":" << (ite->moves.front()).DebugString() << "+" << (int)(ite->moves.size()-1) << "(" << (int)(ite->score) << ")";
+						std::cout << ":" << (ite->moves.front()).DebugString() << "(" << (int)(ite->score) << ")";
+					}
+					else
+					{
+						std::cout << ":EMPTY(" << (int)(ite->score) << ")";
+					}
+				}
+				std::cout << std::endl;
+			}
+
 			// 子ノードを引っこ抜く
 			std::list<NODE>::reverse_iterator childItr = nodeStack.rbegin();
+			
+			// 親ノードに得点をマージ
+			std::list<NODE>::reverse_iterator parentItr = childItr;
+			if( parentItr != nodeStack.rend() )
+			{
+				++parentItr;
+			}
+
+			if( parentItr != nodeStack.rend() )
+			{
+				//if( debugPrint )
+				//{
+					//std::cout << parentItr->score << " " << -childItr->score << std::endl;
+				//}
+				
+				if( childItr->score != SCORE_NONE )
+				{
+					if( parentItr->score == SCORE_NONE )
+					{
+						parentItr->score = -childItr->score;
+					}
+					else
+					{
+						parentItr->score = std::min<int>(parentItr->score, -childItr->score);
+					}
+				}
+			}
 
 			// とりあえず子ノードの着手を戻す
 			if( !childItr->moves.empty() )
@@ -86,29 +125,16 @@ void Worker::Test()
 					board.Back(childItr->moves.front());
 				}
 			}
-			
-			// 親ノードを取得
-			std::list<NODE>::reverse_iterator parentItr = nodeStack.rbegin();
-			if( parentItr != nodeStack.rend() )
-			{
-				++parentItr;
-			}
-			
-			// 親ノードに得点をマージ
-			if( parentItr != nodeStack.rend() )
-			{
-				parentItr->score = std::min<int>(parentItr->score, -childItr->score);
-			}
 
 			// 次の指し手を取得
 			std::vector<Board::PAWN_MOVE>::iterator nextMoveItr = childItr->moves.erase(childItr->moves.begin());
 			if( nextMoveItr == childItr->moves.end() )
 			{
+				//std::cout << "end" << nodeStack.size() << std::endl;
 				// 次の指し手が無いので今のノードは終わり
 				nodeStack.pop_back();
-
-				// 誰も居なくなったらルートノードなので終わり
-				if( nodeStack.empty() )
+				// ルートノードなので終わり
+				if( nodeStack.size() <= 1 )
 				{
 					ai->CallBack(jobId + "\n" + std::to_string(childItr->score));
 					break;
@@ -124,6 +150,9 @@ void Worker::Test()
 				
 				continue;
 			}
+			//std::cout << "continue" << std::endl;
+			
+			childItr->score = SCORE_NONE;
 			
 			// 盤面を進める
 			board.Move(*nextMoveItr);
@@ -131,30 +160,34 @@ void Worker::Test()
 			// 着手を取得
 			std::vector<Board::PAWN_MOVE> moveList = board.GetMoveList();
 
-			int score = -SCORE_NONE;
-				
 			// 新しい盤面に着手が無かったら勝負あり
 			if( moveList.empty() )
 			{
 				childItr->score = SCORE_WIN;
 				continue;
 			}
-			if( 2 <= nodeStack.size() )
+
+			if( 4 <= nodeStack.size() )
 			{
 				// 新しい子が末端だったら追加せずに評価
-				std::list<NODE>::reverse_iterator ite = nodeStack.rbegin();
-				// 点数計算
-				// 相手が置ける場所の数
+				int score = SCORE_NONE;
+
+				// TODO: 相手が置ける場所の数
 				// 評価
-				moveList.clear();
-				score = -1;
-				childItr->score = std::max( childItr->score, score );
+				score = 1;
+
+				// 親ノードに得点をマージ
+				if( score != SCORE_NONE )
+				{
+					childItr->score = std::min<int>(childItr->score, -score);
+				}
+				
 				continue;
 			}
 
 			// 子供を追加
 			moveList.insert(moveList.begin(), PAWN_MOVE_ZERO);
-			nodeStack.push_back({moveList, score});
+			nodeStack.push_back({moveList, SCORE_NONE});
 		}
 	}
 }
