@@ -73,10 +73,10 @@ int main()
     " . . .h_ . . . . .\n"
     " . . . . . . . . .\n"
     " . . . . . . . . .\n"
-    "h01 y00 e00 g00 k00 u00 r00\n"
-    "second\n"
+    "h00 y00 e00 g00 k00 u00 r00\n"
+    "first\n"
   };
-  board.Init(boardInits[1]);
+  board.Init(boardInits[3]);
   std::list<Board::PAWN_MOVE> history;
   /*
   board.PrintBoard();

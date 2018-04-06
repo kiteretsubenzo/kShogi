@@ -55,7 +55,7 @@ void Ai::Start(Board board)
 	*/
 	std::list<Board::PAWN_MOVE> moves;
 	moves.push_back(PAWN_MOVE_ZERO);
-	JOB job = { GetJobId(), moves, 0, board };
+	JOB job = { GetJobId(), moves, -12, board };
 	jobs.push_back(job);
 
 	mtx.unlock();

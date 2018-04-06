@@ -122,7 +122,7 @@ void Worker::Test()
 			{
 				board.Back(childItr->moves.front());
 			}
-
+			
 			// スコアがwindowの外側だったら終わり
 			if ( childItr->score != SCORE_NONE )
 			{
@@ -133,13 +133,13 @@ void Worker::Test()
 					windowTmp = -window;
 				}
 
-				if (windowTmp <= childItr->score)
+				if (windowTmp < childItr->score)
 				{
 					childItr->moves.erase(childItr->moves.begin() + 1, childItr->moves.end());
 					std::cout << "cut" << std::endl;
 				}
 			}
-
+			
 			// 次の指し手を取得
 			childItr->moves.erase(childItr->moves.begin());
 			if( childItr->moves.empty() )
@@ -177,9 +177,8 @@ void Worker::Test()
 				// 新しい子が末端だったら追加せずに評価
 				int score = SCORE_NONE;
 
-				// TODO: 相手が置ける場所の数
 				// 評価
-				score = -1;
+				score = moveList.size();
 
 				// 親ノードに得点をマージ
 				if( score != SCORE_NONE )
