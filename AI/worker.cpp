@@ -39,13 +39,12 @@ void Worker::Test()
 		  break;
 		}
 		
-		std::vector<std::string> strs = split(job, ':');
-		std::string jobId = strs[0];
-		std::string windowStr = strs[1];
-		std::string deepStr = strs[2];
-		std::string debugStr = strs[3];
-		std::string boardStr = strs[4];
-		
+		std::unordered_map<std::string, std::string> params = fromJson(job);
+		std::string jobId = params["jobid"];
+		std::string windowStr = params["window"];
+		std::string deepStr = params["deep"];
+		std::string debugStr = params["debug"];
+		std::string boardStr = params["board"];
 
 		if (debugStr == "true")
 		{

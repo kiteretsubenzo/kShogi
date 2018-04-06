@@ -122,5 +122,6 @@ static int SCORE_NONE = std::numeric_limits<int>::max() - 1;
 static int SCORE_WIN = 99999;
 
 std::vector<std::string> split(std::string str, char c);
+std::unordered_map<std::string, std::string> fromJson(std::string str);
 
 #endif // DEFINITIONS_H

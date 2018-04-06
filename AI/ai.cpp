@@ -89,18 +89,18 @@ void Ai::GetJob(std::string &job)
 	{
 		JOB jobStruct = jobs.front();
 		std::string jobIdString = std::to_string(jobStruct.jobId);
-		job = jobIdString;
-		job += ":" + std::to_string(jobStruct.window);
-		job += ":" + std::to_string(jobStruct.deep);
+		job = "jobid:" + jobIdString;
+		job += ",window:" + std::to_string(jobStruct.window);
+		job += ",deep:" + std::to_string(jobStruct.deep);
 		if (debug)
 		{
-			job += ":true";
+			job += ",debug:true";
 		}
 		else
 		{
-			job += ":false";
+			job += ",debug:false";
 		}
-		job += ":" + jobStruct.board.BoardToString();
+		job += ",board:" + jobStruct.board.BoardToString();
 		waits[jobIdString] = jobStruct.moves;
 		jobs.pop_front();
 	}

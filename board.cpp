@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <vector>
+#include <unordered_map>
 #include "definitions.h"
 #include "board.h"
 
