@@ -42,11 +42,17 @@ void Worker::Test()
 		std::vector<std::string> strs = split(job, ':');
 		std::string jobId = strs[0];
 		std::string windowStr = strs[1];
-		std::string boardStr = strs[2];
+		std::string deepStr = strs[2];
+		std::string boardStr = strs[3];
 		board.Init(boardStr);
 		board.PrintBoard();
 
-		const int window = std::stoi(windowStr);
+		int window = SCORE_NONE;
+		if (windowStr != "none")
+		{
+			window = std::stoi(windowStr);
+		}
+		const int deep = std::stoi(deepStr);
 		
 		/*
 		std::cout << "#prepare thread start" << std::endl;
@@ -124,7 +130,7 @@ void Worker::Test()
 			}
 			
 			// スコアがwindowの外側だったら終わり
-			if ( childItr->score != SCORE_NONE )
+			if ( childItr->score != SCORE_NONE && window != SCORE_NONE)
 			{
 				int windowTmp = window;
 
@@ -172,9 +178,9 @@ void Worker::Test()
 				continue;
 			}
 
-			if( 4 <= nodeStack.size() )
+			// 新しい子が末端だったら追加せずに評価
+			if( deep <= nodeStack.size() )
 			{
-				// 新しい子が末端だったら追加せずに評価
 				int score = SCORE_NONE;
 
 				// 評価

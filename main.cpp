@@ -156,7 +156,11 @@ int main()
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
   
-  Board::PAWN_MOVE aiMove = ai.GetResult();
+  Board::PAWN_MOVE aiMove;
+  int aiScore;
+  aiMove = ai.GetResult();
+  //ai.GetResult(aiMove, aiScore);
+
   std::cout << (std::string)aiMove << std::endl;
   //board.PrintKihu(aiMove);
   

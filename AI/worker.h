@@ -1,9 +1,6 @@
 ﻿#ifndef WORKER_H
 #define WORKER_H
 
-static int SCORE_NONE = std::numeric_limits<int>::max() - 1;
-static int SCORE_WIN = 99999;
-
 class Ai;
 
 class Worker

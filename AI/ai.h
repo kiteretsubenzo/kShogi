@@ -11,6 +11,7 @@ public:
 		unsigned int jobId;
 		std::list<Board::PAWN_MOVE> moves;
 		int window;
+		int deep;
 		Board board;
 	};
 
@@ -18,6 +19,7 @@ public:
 	~Ai();
 	
 	void SetBoard(const Board &boardValue) { board = boardValue; }
+	void SetMode(const std::string &modeValue) { mode = modeValue; }
 	void Start(Board board);
 	bool Tick();
 	Board::PAWN_MOVE GetMove() const { return move; }
@@ -32,6 +34,8 @@ private:
 	Board board;
 	Board::PAWN_MOVE move;
 	
+	std::string mode = "scout";
+
 	Board::PAWN_MOVE bestMove;
 	int bestScore;
 	
@@ -45,7 +49,7 @@ private:
 	unsigned int jobId = 0;
 	unsigned int GetJobId() { return jobId++; }
   
-  bool isStop;
+	bool isStop;
 };
 
 #endif // AI_H

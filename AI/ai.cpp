@@ -24,13 +24,14 @@ Ai::~Ai()
 	delete worker;
 }
 
-void Ai::Start(Board board)
+void Ai::Start(Board boardValue)
 {
 	std::cout << "start" << std::endl;
 	jobs.clear();
 	waits.clear();
 	results.clear();
 	isStop = false;
+	board = boardValue;
 	bestMove = PAWN_MOVE_ZERO;
 	bestScore = std::numeric_limits<int>::min();
 
@@ -55,8 +56,17 @@ void Ai::Start(Board board)
 	*/
 	std::list<Board::PAWN_MOVE> moves;
 	moves.push_back(PAWN_MOVE_ZERO);
-	JOB job = { GetJobId(), moves, -12, board };
-	jobs.push_back(job);
+	if (mode == "scout")
+	{
+		bestScore = 0;
+		JOB job = { GetJobId(), { PAWN_MOVE_ZERO }, -bestScore, 4, board };
+		jobs.push_back(job);
+	}
+	else
+	{
+		JOB job = { GetJobId(), moves, SCORE_NONE, 4, board };
+		jobs.push_back(job);
+	}
 
 	mtx.unlock();
 }
@@ -80,7 +90,7 @@ void Ai::GetJob(std::string &job)
 	{
 		JOB jobStruct = jobs.front();
 		std::string jobIdString = std::to_string(jobStruct.jobId);
-		job = jobIdString + ":" + std::to_string(jobStruct.window) + ":" + jobStruct.board.BoardToString();
+		job = jobIdString + ":" + std::to_string(jobStruct.window) + ":" + std::to_string(jobStruct.deep) + ":" + jobStruct.board.BoardToString();
 		waits[jobIdString] = jobStruct.moves;
 		jobs.pop_front();
 	}
@@ -103,13 +113,32 @@ bool Ai::Tick()
 		std::string jobId = result.substr(0, index);
 		std::string scoreString = result.substr(index+1);
 		int score = stoi(scoreString);
-		std::cout << "score is " << score << " best score is " << bestScore;
-		if( bestScore < -score )
+		if (mode == "scout")
 		{
-			bestMove = waits[jobId].front();
-			bestScore = -score;
+			std::cout << "score is " << score << " best score is " << bestScore << std::endl;
+			//std::string str;
+			//std::cin >> str;
+			if (bestScore == score)
+			{
+				bestMove = waits[jobId].front();
+				bestScore = -score;
+			}
+			else
+			{
+				bestScore = score;
+				JOB job = { GetJobId(), { PAWN_MOVE_ZERO }, -bestScore, 4, board };
+				jobs.push_back(job);
+			}
 		}
-		std::cout << " -> best score is " << bestScore << std::endl;
+		else
+		{
+			std::cout << "score is " << score << " best score is " << bestScore;
+			if (bestScore < -score)
+			{
+				bestMove = waits[jobId].front();
+				bestScore = -score;
+			}
+		}
 		waits.erase(jobId);
 		results.pop_front();
 	}
