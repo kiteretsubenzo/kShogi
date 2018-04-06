@@ -55,7 +55,7 @@ void Ai::Start(Board board)
 	*/
 	std::list<Board::PAWN_MOVE> moves;
 	moves.push_back(PAWN_MOVE_ZERO);
-	JOB job = { GetJobId(), moves, board };
+	JOB job = { GetJobId(), moves, 0, board };
 	jobs.push_back(job);
 
 	mtx.unlock();
@@ -80,7 +80,7 @@ void Ai::GetJob(std::string &job)
 	{
 		JOB jobStruct = jobs.front();
 		std::string jobIdString = std::to_string(jobStruct.jobId);
-		job = jobIdString + "\n" + jobStruct.board.BoardToString();
+		job = jobIdString + ":" + std::to_string(jobStruct.window) + ":" + jobStruct.board.BoardToString();
 		waits[jobIdString] = jobStruct.moves;
 		jobs.pop_front();
 	}

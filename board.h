@@ -142,7 +142,7 @@ private:
 	bool IsCapture( char tox, char toy, PLAYER enemy, bool &isCapture );
 	
 	uchar captured[(uchar)PLAYER::MAX][(uchar)PAWN_ROLL::CAPTURE_MAX];
-  CELL matrix[BOARD_HEIGHT][BOARD_WIDTH];
+	CELL matrix[BOARD_HEIGHT][BOARD_WIDTH];
 	PLAYER turn;
 };
 

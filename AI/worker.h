@@ -24,8 +24,6 @@ public:
 private:
 	Ai *ai;
 	Board board;
-	int windowMax = SCORE_WIN;
-	int windowMin = -SCORE_WIN;
 	bool state;
 	std::thread th;
 	

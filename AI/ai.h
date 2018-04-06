@@ -10,6 +10,7 @@ public:
 	{
 		unsigned int jobId;
 		std::list<Board::PAWN_MOVE> moves;
+		int window;
 		Board board;
 	};
 

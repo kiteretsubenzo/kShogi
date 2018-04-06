@@ -29,22 +29,24 @@ void Worker::Test()
 	while(true)
 	{
 		std::string job;
-    ai->GetJob(job);
+		ai->GetJob(job);
 		if( job == "empty" )
 		{
 			continue;
 		}
-    if( job == "stop" )
-    {
-      break;
-    }
+		if( job == "stop" )
+		{
+		  break;
+		}
 		
-		size_t index = job.find("\n");
-		std::string jobId = job.substr(0, index);
-		std::cout << "jobId is " << jobId << std::endl;
-		std::string boardStr = job.substr(index + 1);
+		std::vector<std::string> strs = split(job, ':');
+		std::string jobId = strs[0];
+		std::string windowStr = strs[1];
+		std::string boardStr = strs[2];
 		board.Init(boardStr);
 		board.PrintBoard();
+
+		const int window = std::stoi(windowStr);
 		
 		/*
 		std::cout << "#prepare thread start" << std::endl;
@@ -122,9 +124,20 @@ void Worker::Test()
 			}
 
 			// スコアがwindowの外側だったら終わり
-			if (childItr->score != SCORE_NONE && (childItr->score <= windowMin || windowMax <= childItr->score))
+			if ( childItr->score != SCORE_NONE )
 			{
-				childItr->moves.erase(childItr->moves.begin() + 1, childItr->moves.end());
+				int windowTmp = window;
+
+				if ((nodeStack.size() & 01) == 1)
+				{
+					windowTmp = -window;
+				}
+
+				if (windowTmp <= childItr->score)
+				{
+					childItr->moves.erase(childItr->moves.begin() + 1, childItr->moves.end());
+					std::cout << "cut" << std::endl;
+				}
 			}
 
 			// 次の指し手を取得
@@ -166,7 +179,7 @@ void Worker::Test()
 
 				// TODO: 相手が置ける場所の数
 				// 評価
-				score = 1;
+				score = -1;
 
 				// 親ノードに得点をマージ
 				if( score != SCORE_NONE )
