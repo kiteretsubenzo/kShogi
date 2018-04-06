@@ -20,13 +20,14 @@ public:
 	
 	void SetBoard(const Board &boardValue) { board = boardValue; }
 	void SetMode(const std::string &modeValue) { mode = modeValue; }
+	void SetDebug(const bool &debugValue) { debug = debugValue; }
 	void Start(Board board);
 	bool Tick();
 	Board::PAWN_MOVE GetMove() const { return move; }
 	void CallBack(const std::string &str);
 	void GetJob(std::string &job);
 	
-	Board::PAWN_MOVE GetResult() { return bestMove; }
+	void GetResult(Board::PAWN_MOVE &moveValue, int &scoreValue);
 
 	void Stop();
 	
@@ -34,7 +35,8 @@ private:
 	Board board;
 	Board::PAWN_MOVE move;
 	
-	std::string mode = "scout";
+	std::string mode = "minimax";
+	bool debug = true;
 
 	Board::PAWN_MOVE bestMove;
 	int bestScore;

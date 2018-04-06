@@ -6,7 +6,6 @@
 #include <mutex>
 #include <unordered_map>
 #include <random>
-#include <iomanip>
 #include <sstream>
 #include "definitions.h"
 #include "board.h"
@@ -146,7 +145,7 @@ int main()
 
   std::cout << board.BoardToString() << std::endl;
   */
-  
+  /*
   Ai ai;
   ai.Start(board);
 
@@ -158,16 +157,16 @@ int main()
   
   Board::PAWN_MOVE aiMove;
   int aiScore;
-  aiMove = ai.GetResult();
-  //ai.GetResult(aiMove, aiScore);
+  ai.GetResult(aiMove, aiScore);
 
-  std::cout << (std::string)aiMove << std::endl;
+  std::cout << "best move is " << aiMove.DebugString() << std::endl;
+  std::cout << "best score is " << aiScore << std::endl;
   //board.PrintKihu(aiMove);
   
   ai.Stop();
   
   std::cout << "end" << std::endl;
-
+  */
   std::string str;
   std::cin >> str;
   

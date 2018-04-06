@@ -26,7 +26,6 @@ Ai::~Ai()
 
 void Ai::Start(Board boardValue)
 {
-	std::cout << "start" << std::endl;
 	jobs.clear();
 	waits.clear();
 	results.clear();
@@ -90,7 +89,18 @@ void Ai::GetJob(std::string &job)
 	{
 		JOB jobStruct = jobs.front();
 		std::string jobIdString = std::to_string(jobStruct.jobId);
-		job = jobIdString + ":" + std::to_string(jobStruct.window) + ":" + std::to_string(jobStruct.deep) + ":" + jobStruct.board.BoardToString();
+		job = jobIdString;
+		job += ":" + std::to_string(jobStruct.window);
+		job += ":" + std::to_string(jobStruct.deep);
+		if (debug)
+		{
+			job += ":true";
+		}
+		else
+		{
+			job += ":false";
+		}
+		job += ":" + jobStruct.board.BoardToString();
 		waits[jobIdString] = jobStruct.moves;
 		jobs.pop_front();
 	}
@@ -100,6 +110,12 @@ void Ai::GetJob(std::string &job)
   }
 	mtx.unlock();
 	return;
+}
+
+void Ai::GetResult(Board::PAWN_MOVE &moveValue, int &scoreValue)
+{
+	moveValue = bestMove;
+	scoreValue = bestScore;
 }
 
 bool Ai::Tick()
@@ -115,7 +131,10 @@ bool Ai::Tick()
 		int score = stoi(scoreString);
 		if (mode == "scout")
 		{
-			std::cout << "score is " << score << " best score is " << bestScore << std::endl;
+			if (debug)
+			{
+				std::cout << "score is " << score << " best score is " << bestScore << std::endl;
+			}
 			//std::string str;
 			//std::cin >> str;
 			if (bestScore == score)
@@ -132,7 +151,10 @@ bool Ai::Tick()
 		}
 		else
 		{
-			std::cout << "score is " << score << " best score is " << bestScore;
+			if (debug)
+			{
+				std::cout << "score is " << score << " best score is " << bestScore;
+			}
 			if (bestScore < -score)
 			{
 				bestMove = waits[jobId].front();
@@ -149,7 +171,10 @@ bool Ai::Tick()
 		return false;
 	}
 	
-	std::cout << "-> best score is " << bestScore << std::endl;
+	if (debug)
+	{
+		std::cout << "-> best score is " << bestScore << std::endl;
+	}
 	
 	return true;
 }

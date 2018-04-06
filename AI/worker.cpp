@@ -43,9 +43,24 @@ void Worker::Test()
 		std::string jobId = strs[0];
 		std::string windowStr = strs[1];
 		std::string deepStr = strs[2];
-		std::string boardStr = strs[3];
+		std::string debugStr = strs[3];
+		std::string boardStr = strs[4];
+		
+
+		if (debugStr == "true")
+		{
+			debug = true;
+		}
+		else
+		{
+			debug = false;
+		}
+
 		board.Init(boardStr);
-		board.PrintBoard();
+		if (debug)
+		{
+			board.PrintBoard();
+		}
 
 		int window = SCORE_NONE;
 		if (windowStr != "none")
@@ -67,12 +82,15 @@ void Worker::Test()
 		tmpMoveList.insert(tmpMoveList.begin(), PAWN_MOVE_ZERO);	// ダミーの子供
 		nodeStack.push_back({tmpMoveList, SCORE_NONE});	// 自分
 		
-		std::cout << std::endl;
+		if (debug)
+		{
+			std::cout << std::endl;
+		}
 		while( true )
 		{
 			std::list<NODE>::iterator top = nodeStack.begin();
 			
-			bool debugPrint = true;
+			bool debugPrint = true && debug;
 			/*
 			if ( !top->moves.empty() )
 			{
@@ -142,7 +160,10 @@ void Worker::Test()
 				if (windowTmp < childItr->score)
 				{
 					childItr->moves.erase(childItr->moves.begin() + 1, childItr->moves.end());
-					std::cout << "cut" << std::endl;
+					if (debugPrint)
+					{
+						std::cout << "cut" << std::endl;
+					}
 				}
 			}
 			

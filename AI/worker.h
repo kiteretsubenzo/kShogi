@@ -23,8 +23,8 @@ private:
 	Board board;
 	bool state;
 	std::thread th;
-	
-	std::random_device rnd;
+
+	bool debug = true;
 };
 
 #endif // WORKER_H

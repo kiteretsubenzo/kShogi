@@ -1,13 +1,20 @@
 ﻿#include <iostream>
 #include <sstream>
 #include <iomanip>
+#include <list>
 #include <vector>
+#include <unordered_map>
 #include <algorithm>
+#include <thread>
+#include <mutex>
 #include "../definitions.h"
 #include "../board.h"
+#include "../AI/worker.h"
+#include "../AI/ai.h"
 #include "move.h"
 #include "put.h"
 #include "escape.h"
+#include "scout.h"
 
 bool Test()
 {
@@ -133,6 +140,55 @@ bool Test()
 			}
 		}
 	}
+
+	// スカウトテスト
+	Ai ai;
+	ai.SetDebug(false);
+	std::cout << "scout test" << std::endl;
+	for (unsigned int i = 0; i < testScout.size(); i++)
+	{
+		board.Init(testScout[i]);
+
+		ai.SetMode("minimax");
+		ai.Start(board);
+
+		while (ai.Tick() == false) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		}
+
+		Board::PAWN_MOVE minimaxMove;
+		int minimaxScore;
+		ai.GetResult(minimaxMove, minimaxScore);
+		
+		ai.SetMode("scout");
+		ai.Start(board);
+
+		while (ai.Tick() == false) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		}
+
+		Board::PAWN_MOVE scoutMove;
+		int scoutScore;
+		ai.GetResult(scoutMove, scoutScore);
+
+		std::cout << minimaxScore << " -> " << scoutScore << std::endl;
+	}
+	/*
+	ai.Start(board);
+
+	while (ai.Tick() == false) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	}
+
+	Board::PAWN_MOVE aiMove;
+	int aiScore;
+	ai.GetResult(aiMove, aiScore);
+
+	std::cout << "best move is " << aiMove.DebugString() << std::endl;
+	std::cout << "best score is " << aiScore << std::endl;
+	*/
+
+	ai.Stop();
 	
 	return true;
 }

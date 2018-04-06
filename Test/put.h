@@ -1,4 +1,7 @@
-﻿std::vector<std::string> testPut
+﻿#ifndef TEST_PUT_H
+#define TEST_PUT_H
+
+std::vector<std::string> testPut
 {
 	// NO.1
 	"h00 y00 e00 g00 k00 u00 r00\n"
@@ -1040,3 +1043,5 @@
 	"２九 飛 打ち\n"
 	"１九 飛 打ち\n"
 };
+
+#endif // TEST_PUT_H

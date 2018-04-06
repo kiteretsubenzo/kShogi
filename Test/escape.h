@@ -1,4 +1,7 @@
-﻿std::vector<std::string> testEscape
+﻿#ifndef TEST_ESCAPE_H
+#define TEST_ESCAPE_H
+
+std::vector<std::string> testEscape
 {
 	// NO.1
 	"h18 y04 e04 g04 k0f u00 r00\n"
@@ -57,3 +60,5 @@
 	"１三 金 打ち\n"
 	"１三 角 打ち\n"
 };
+
+#endif // TEST_ESCAPE_H

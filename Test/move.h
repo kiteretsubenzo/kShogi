@@ -1,4 +1,7 @@
-﻿std::vector<std::string> testMove
+﻿#ifndef TEST_MOVE_H
+#define TEST_MOVE_H
+
+std::vector<std::string> testMove
 {
 	// NO.1
 	"h00 y00 e00 g00 k00 u00 r00\n"
@@ -1526,3 +1529,5 @@
 	"１八 玉(1,9)\n"
 	"２九 玉(1,9)\n"
 };
+
+#endif // TEST_MOVE_H
