@@ -4,6 +4,7 @@
 #include <thread>
 #include <algorithm>
 #include <mutex>
+#include <map>
 #include <unordered_map>
 #include <random>
 #include <iomanip>
@@ -34,7 +35,7 @@ void Ai::Start(Board boardValue)
 	bestMove = PAWN_MOVE_ZERO;
 	bestScore = std::numeric_limits<int>::min();
 
-	std::vector<Board::PAWN_MOVE> moveList = board.GetMoveList();
+	std::vector<Board::PAWN_MOVE> moveList = board.GetMoveList<std::vector<Board::PAWN_MOVE>>();
 	
 	mtx.lock();
 	/*
@@ -79,11 +80,11 @@ void Ai::CallBack(const std::string &str)
  
 void Ai::GetJob(std::string &job)
 {
-  if( isStop )
-  {
-    job = "stop";
-    return;
-  }
+	if( isStop )
+	{
+		job = "stop";
+		return;
+	}
 	mtx.lock();
 	if( 0 < jobs.size() )
 	{
@@ -104,10 +105,10 @@ void Ai::GetJob(std::string &job)
 		waits[jobIdString] = jobStruct.moves;
 		jobs.pop_front();
 	}
-  else
-  {
-    job = "empty";
-  }
+	else
+	{
+		job = "empty";
+	}
 	mtx.unlock();
 	return;
 }

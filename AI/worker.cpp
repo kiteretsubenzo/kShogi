@@ -4,6 +4,7 @@
 #include <list>
 #include <algorithm>
 #include <mutex>
+#include <map>
 #include <unordered_map>
 #include <random>
 #include <iomanip>
@@ -21,10 +22,21 @@ Worker::Worker(Ai &aiValue)
 void Worker::Start()
 {
 	state = false;
-	th = std::thread(&Worker::Test, this);
+	if (container == "list")
+	{
+		th = std::thread(&Worker::Search<std::list<Board::PAWN_MOVE>>, this);
+	}
+	else if (container == "vector")
+	{
+		th = std::thread(&Worker::Search<std::vector<Board::PAWN_MOVE>>, this);
+	}
+	else if (container == "multimap")
+	{
+		th = std::thread(&Worker::Search<std::multimap<int, Board::PAWN_MOVE>>, this);
+	}
 }
 
-void Worker::Test()
+template <typename T> void Worker::Search()
 {
 	while(true)
 	{
@@ -75,11 +87,12 @@ void Worker::Test()
 		int score = rnd() % 100 + 1;
 		*/
 		
-		std::list<NODE> nodeStack;
-		nodeStack.push_back({{}, SCORE_NONE}); // ルート
-		std::vector<Board::PAWN_MOVE> tmpMoveList = board.GetMoveList();
-		tmpMoveList.insert(tmpMoveList.begin(), PAWN_MOVE_ZERO);	// ダミーの子供
-		nodeStack.push_back({tmpMoveList, SCORE_NONE});	// 自分
+		std::list<NODE<T>> nodeStack;
+		// ルート
+		nodeStack.push_back({{}, SCORE_NONE});
+		// 自分
+		nodeStack.push_back({ board.GetMoveList<T>(), SCORE_NONE});
+		nodeStack.rbegin()->InsertBegin(PAWN_MOVE_ZERO);
 		
 		if (debug)
 		{
@@ -87,7 +100,7 @@ void Worker::Test()
 		}
 		while( true )
 		{
-			std::list<NODE>::iterator top = nodeStack.begin();
+			std::list<NODE<T>>::iterator top = nodeStack.begin();
 			
 			bool debugPrint = true && debug;
 			/*
@@ -104,11 +117,11 @@ void Worker::Test()
 			if( debugPrint )
 			{
 				//std::cout << '\r' << std::flush;
-				for( std::list<NODE>::iterator ite=nodeStack.begin(); ite != nodeStack.end(); ++ite )
+				for( std::list<NODE<T>>::iterator ite=nodeStack.begin(); ite != nodeStack.end(); ++ite )
 				{
 					if( 0 < ite->moves.size() )
 					{
-						std::cout << ":" << (ite->moves.front()).DebugString() << "(" << (int)(ite->score) << ")";
+						std::cout << ":" << (ite->GetFirstMove()).DebugString() << "(" << (int)(ite->score) << ")";
 					}
 					else
 					{
@@ -119,12 +132,12 @@ void Worker::Test()
 			}
 
 			// 子ノードを引っこ抜く
-			std::list<NODE>::reverse_iterator childItr = nodeStack.rbegin();
+			std::list<NODE<T>>::reverse_iterator childItr = nodeStack.rbegin();
 			
 			// 親ノードに得点をマージ
 			if( 2 <= nodeStack.size() && childItr->score != SCORE_NONE )
 			{
-				std::list<NODE>::reverse_iterator parentItr = std::next(nodeStack.rbegin());
+				std::list<NODE<T>>::reverse_iterator parentItr = std::next(nodeStack.rbegin());
 				//if( debugPrint )
 				//{
 					//std::cout << parentItr->score << " " << -childItr->score << std::endl;
@@ -141,9 +154,9 @@ void Worker::Test()
 			}
 
 			// とりあえず子ノードの着手を戻す
-			if (childItr->moves.front() != PAWN_MOVE_ZERO)
+			if (childItr->GetFirstMove() != PAWN_MOVE_ZERO)
 			{
-				board.Back(childItr->moves.front());
+				board.Back(childItr->GetFirstMove());
 			}
 			
 			// スコアがwindowの外側だったら終わり
@@ -158,7 +171,9 @@ void Worker::Test()
 
 				if (windowTmp < childItr->score)
 				{
-					childItr->moves.erase(childItr->moves.begin() + 1, childItr->moves.end());
+					T::iterator ite = childItr->moves.begin();
+					++ite;
+					childItr->moves.erase(ite, childItr->moves.end());
 					if (debugPrint)
 					{
 						std::cout << "cut" << std::endl;
@@ -186,11 +201,11 @@ void Worker::Test()
 			childItr->score = SCORE_NONE;
 			
 			// 盤面を進める
-			board.Move(*(childItr->moves.cbegin()));
+			board.Move(childItr->GetFirstMove());
 			
 			// 着手を取得
-			std::vector<Board::PAWN_MOVE> moveList = board.GetMoveList();
-
+			T moveList = board.GetMoveList<T>();
+			
 			// 新しい盤面に着手が無かったら勝負あり
 			if( moveList.empty() )
 			{
@@ -216,8 +231,8 @@ void Worker::Test()
 			}
 
 			// 子供を追加
-			moveList.insert(moveList.cbegin(), PAWN_MOVE_ZERO);
 			nodeStack.push_back({std::move(moveList), SCORE_NONE});
+			nodeStack.rbegin()->InsertBegin(PAWN_MOVE_ZERO);
 		}
 	}
 }

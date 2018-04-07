@@ -120,6 +120,7 @@ private:
 
 static int SCORE_NONE = std::numeric_limits<int>::max() - 1;
 static int SCORE_WIN = 99999;
+static int MOVE_MAX = (BOARD_HEIGHT*BOARD_WIDTH)*(BOARD_HEIGHT*BOARD_WIDTH)*PAWN_ROLL::CAPTURE_MAX;
 
 std::vector<std::string> split(std::string str, char c);
 std::unordered_map<std::string, std::string> fromJson(std::string str);

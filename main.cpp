@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <thread>
 #include <mutex>
+#include <map>
 #include <unordered_map>
 #include <random>
 #include <sstream>
@@ -15,10 +16,16 @@
 
 int main()
 { 
-  if( !Test() )
-  {
-    return 1;
-  }
+	if (Test())
+	{
+		std::cout << "test is ok" << std::endl;
+		std::string str;
+		//std::cin >> str;
+	}
+	else
+	{
+		return 1;
+	}
   
   Board board;
   std::string boardInits[] =
@@ -61,21 +68,8 @@ int main()
 	" . . . . . . . . .\n"
 	"h00 y00 e00 g00 k00 u00 r00\n"
 	"second"
-  ,
-	"h00 y00 e00 g00 k00 u00 r00\n"
-    " . . . . . . . . .\n"
-    " . . . . . . . . .\n"
-    " .^h . . . . . . .\n"
-    " . . . . . .u_ . .\n"
-    " . . . . . . . . .\n"
-    " .^r . . . . . . .\n"
-    " . . .h_ . . . . .\n"
-    " . . . . . . . . .\n"
-    " . . . . . . . . .\n"
-    "h00 y00 e00 g00 k00 u00 r00\n"
-    "first\n"
   };
-  board.Init(boardInits[3]);
+  board.Init(boardInits[1]);
   std::list<Board::PAWN_MOVE> history;
   /*
   board.PrintBoard();
@@ -145,8 +139,9 @@ int main()
 
   std::cout << board.BoardToString() << std::endl;
   */
-  /*
+  
   Ai ai;
+  ai.SetMode("scout");
   ai.Start(board);
 
   int i = 0;
@@ -166,7 +161,7 @@ int main()
   ai.Stop();
   
   std::cout << "end" << std::endl;
-  */
+  
   std::string str;
   std::cin >> str;
   

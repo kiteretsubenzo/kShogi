@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <list>
 #include <vector>
+#include <map>
 #include <unordered_map>
 #include <algorithm>
 #include <thread>
@@ -32,7 +33,7 @@ bool Test()
 		//board.PrintBoard();
 		//std::cout << strs[1] << std::endl;
 		std::vector<std::string> tests = split(strs[1], '\n');
-		std::vector<Board::PAWN_MOVE> moveList = board.GetMoveList();
+		std::vector<Board::PAWN_MOVE> moveList = board.GetMoveList<std::vector<Board::PAWN_MOVE>>();
 		unsigned int size = std::max<unsigned int>(moveList.size(), tests.size());
 		for( unsigned int j=0; j<size; j++ )
 		{
@@ -72,7 +73,7 @@ bool Test()
 		//board.PrintBoard();
 		//std::cout << strs[1] << std::endl;
 		std::vector<std::string> tests = split(strs[1], '\n');
-		std::vector<Board::PAWN_MOVE> moveList = board.GetMoveList();
+		std::vector<Board::PAWN_MOVE> moveList = board.GetMoveList<std::vector<Board::PAWN_MOVE>>();
 		unsigned int size = std::max<unsigned int>(moveList.size(), tests.size());
 		for( unsigned int j=0; j<size; j++ )
 		{
@@ -112,7 +113,7 @@ bool Test()
 		//board.PrintBoard();
 		//std::cout << strs[1] << std::endl;
 		std::vector<std::string> tests = split(strs[1], '\n');
-		std::vector<Board::PAWN_MOVE> moveList = board.GetMoveList();
+		std::vector<Board::PAWN_MOVE> moveList = board.GetMoveList<std::vector<Board::PAWN_MOVE>>();
 		unsigned int size = std::max<unsigned int>(moveList.size(), tests.size());
 		for( unsigned int j=0; j<size; j++ )
 		{
@@ -171,22 +172,14 @@ bool Test()
 		int scoutScore;
 		ai.GetResult(scoutMove, scoutScore);
 
-		std::cout << minimaxScore << " -> " << scoutScore << std::endl;
+		if (minimaxScore != scoutScore)
+		{
+			std::cout << "NO." << (i + 1) << std::endl;
+			board.PrintBoard();
+			std::cout << minimaxScore << " -> " << scoutScore << " -> false" << std::endl;
+			return false;
+		}
 	}
-	/*
-	ai.Start(board);
-
-	while (ai.Tick() == false) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
-	}
-
-	Board::PAWN_MOVE aiMove;
-	int aiScore;
-	ai.GetResult(aiMove, aiScore);
-
-	std::cout << "best move is " << aiMove.DebugString() << std::endl;
-	std::cout << "best score is " << aiScore << std::endl;
-	*/
 
 	ai.Stop();
 	
