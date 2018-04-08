@@ -35,7 +35,7 @@ void Ai::Start(Board boardValue)
 	bestMove = PAWN_MOVE_ZERO;
 	bestScore = std::numeric_limits<int>::min();
 
-	std::vector<Board::PAWN_MOVE> moveList = board.GetMoveList<std::vector<Board::PAWN_MOVE>>();
+	std::list<Board::PAWN_MOVE> moveList = board.GetMoveList();
 	
 	mtx.lock();
 	/*
@@ -125,10 +125,10 @@ bool Ai::Tick()
 	// 結果を回収
 	while( 0 < results.size() )
 	{
-		std::string result = results.front();
-		size_t index = result.find("\n");
-		std::string jobId = result.substr(0, index);
-		std::string scoreString = result.substr(index+1);
+		std::unordered_map<std::string, std::string> strs = fromJson(results.front());
+		std::string jobId = strs["jobid"];
+		std::string scoreString = strs["score"];
+		std::string countString = strs["count"];
 		int score = stoi(scoreString);
 		if (mode == "scout")
 		{

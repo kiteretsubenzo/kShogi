@@ -139,6 +139,14 @@ int main()
 
   std::cout << board.BoardToString() << std::endl;
   */
+  /*
+  board.PrintBoard();
+  std::list<Board::PAWN_MOVE> moveList = board.GetMoveList();
+  for (std::list<Board::PAWN_MOVE>::iterator ite = moveList.begin(); ite != moveList.end(); ++ite)
+  {
+	  std::cout << ite->DebugString() << std::endl;
+  }
+  */
   
   Ai ai;
   ai.SetMode("scout");

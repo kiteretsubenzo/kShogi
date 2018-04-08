@@ -180,6 +180,319 @@ std::string Board::BoardToString() const
 	return sout.str();
 }
 
+std::list<Board::PAWN_MOVE> Board::GetMoveList()
+{
+	std::list<Board::PAWN_MOVE> moveList;
+	uchar lineMax, lineMin, lineTop, lineMid;
+
+	if (turn == PLAYER::FIRST)
+	{
+		lineMax = 2;
+		lineMin = 0;
+		lineTop = 0;
+		lineMid = 1;
+	}
+	else
+	{
+		lineMax = BOARD_HEIGHT - 1;
+		lineMin = BOARD_HEIGHT - 3;
+		lineTop = BOARD_HEIGHT - 1;
+		lineMid = BOARD_HEIGHT - 2;
+	}
+	int forward = -1;
+	if (turn == PLAYER::SECOND)
+	{
+		forward = +1;
+	}
+	for (char j = 0; j<BOARD_HEIGHT; j++)
+	{
+		for (char i = 0; i<BOARD_WIDTH; i++)
+		{
+			CELL cell = matrix[(uchar)j][(uchar)i];
+			if (cell.player != turn)
+			{
+				continue;
+			}
+			PAWN_TYPE pawn = cell.pawn;
+			int x, y;
+			switch ((PAWN_TYPE::TYPE)pawn)
+			{
+			case PAWN_TYPE::HU:
+				x = i;
+				y = j + forward;
+				if (y != lineTop)
+				{
+					AddMove(PAWN_ROLL::NONE, i, j, x, y, false, moveList);
+				}
+				if (lineMin <= y && y <= lineMax)
+				{
+					AddMove(PAWN_ROLL::NONE, i, j, x, y, true, moveList);
+				}
+				break;
+			case PAWN_TYPE::KYOH:
+				y = j + forward;
+				for (bool ret = true; 0 <= (int)y && (int)y < BOARD_HEIGHT && ret; y += forward)
+				{
+					if (y != lineTop)
+					{
+						ret &= AddMove(PAWN_ROLL::NONE, i, j, i, y, false, moveList);
+					}
+					if (lineMin <= y && y <= lineMax)
+					{
+						ret &= AddMove(PAWN_ROLL::NONE, i, j, i, y, true, moveList);
+					}
+				}
+				break;
+			case PAWN_TYPE::KEI:
+				x = i - 1;
+				y = j - forward - forward;
+				if (y != lineTop && y != lineMid)
+				{
+					AddMove(PAWN_ROLL::NONE, i, j, x, y, false, moveList);
+				}
+				if (lineMin <= y && y <= lineMax)
+				{
+					AddMove(PAWN_ROLL::NONE, i, j, x, y, true, moveList);
+				}
+				break;
+			case PAWN_TYPE::GIN:
+				AddMove(PAWN_ROLL::NONE, i, j, i - 1, j + forward, false, moveList);
+				AddMove(PAWN_ROLL::NONE, i, j, i, j + forward, false, moveList);
+				AddMove(PAWN_ROLL::NONE, i, j, i + 1, j + forward, false, moveList);
+				AddMove(PAWN_ROLL::NONE, i, j, i - 1, j - forward, false, moveList);
+				AddMove(PAWN_ROLL::NONE, i, j, i + 1, j - forward, false, moveList);
+				if ((lineMin <= (j + forward) && (j + forward) <= lineMax) || (lineMin <= j && j <= lineMax))
+				{
+					AddMove(PAWN_ROLL::NONE, i, j, i - 1, j + forward, true, moveList);
+					AddMove(PAWN_ROLL::NONE, i, j, i, j + forward, true, moveList);
+					AddMove(PAWN_ROLL::NONE, i, j, i + 1, j + forward, true, moveList);
+					AddMove(PAWN_ROLL::NONE, i, j, i - 1, j - forward, true, moveList);
+					AddMove(PAWN_ROLL::NONE, i, j, i + 1, j - forward, true, moveList);
+				}
+				break;
+			case PAWN_TYPE::KIN:
+			case PAWN_TYPE::HUN:
+			case PAWN_TYPE::KYOHN:
+			case PAWN_TYPE::KEIN:
+			case PAWN_TYPE::GINN:
+				AddMove(PAWN_ROLL::NONE, i, j, i - 1, j + forward, false, moveList);
+				AddMove(PAWN_ROLL::NONE, i, j, i, j + forward, false, moveList);
+				AddMove(PAWN_ROLL::NONE, i, j, i + 1, j + forward, false, moveList);
+				AddMove(PAWN_ROLL::NONE, i, j, i - 1, j, false, moveList);
+				AddMove(PAWN_ROLL::NONE, i, j, i + 1, j, false, moveList);
+				AddMove(PAWN_ROLL::NONE, i, j, i, j - forward, false, moveList);
+				break;
+			case PAWN_TYPE::KAKU:
+				x = i + 1; y = j + 1;
+				for (bool ret = true; x < BOARD_WIDTH && y < BOARD_HEIGHT && ret; x++, y++)
+				{
+					ret &= AddMove(PAWN_ROLL::NONE, i, j, x, y, false, moveList);
+					if (lineMin <= y && y <= lineMax)
+					{
+						ret &= AddMove(PAWN_ROLL::NONE, i, j, x, y, true, moveList);
+					}
+				}
+				x = i + 1; y = j - 1;
+				for (bool ret = true; x < BOARD_WIDTH && 0 <= y && ret; x++, y -= 1)
+				{
+					ret &= AddMove(PAWN_ROLL::NONE, i, j, x, y, false, moveList);
+					if (lineMin <= y && y <= lineMax)
+					{
+						ret &= AddMove(PAWN_ROLL::NONE, i, j, x, y, true, moveList);
+					}
+				}
+				x = i - 1; y = j + 1;
+				for (bool ret = true; 0 <= x && y < BOARD_HEIGHT && ret; x -= 1, y++)
+				{
+					ret &= AddMove(PAWN_ROLL::NONE, i, j, x, y, false, moveList);
+					if (lineMin <= y && y <= lineMax)
+					{
+						ret &= AddMove(PAWN_ROLL::NONE, i, j, x, y, true, moveList);
+					}
+				}
+				x = i - 1; y = j - 1;
+				for (bool ret = true; 0 <= x && 0 <= y && ret; x -= 1, y -= 1)
+				{
+					ret &= AddMove(PAWN_ROLL::NONE, i, j, x, y, false, moveList);
+					if (lineMin <= y && y <= lineMax)
+					{
+						ret &= AddMove(PAWN_ROLL::NONE, i, j, x, y, true, moveList);
+					}
+				}
+				break;
+			case PAWN_TYPE::UMA:
+				x = i + 1; y = j + 1;
+				for (bool ret = true; x < BOARD_WIDTH && y < BOARD_HEIGHT && ret; x++, y++)
+				{
+					ret &= AddMove(PAWN_ROLL::NONE, i, j, x, y, false, moveList);
+				}
+				x = i + 1; y = j - 1;
+				for (bool ret = true; x < BOARD_WIDTH && 0 <= y && ret; x++, y -= 1)
+				{
+					ret &= AddMove(PAWN_ROLL::NONE, i, j, x, y, false, moveList);
+				}
+				x = i - 1; y = j + 1;
+				for (bool ret = true; 0 <= x && y < BOARD_HEIGHT && ret; x -= 1, y++)
+				{
+					ret &= AddMove(PAWN_ROLL::NONE, i, j, x, y, false, moveList);
+				}
+				x = i - 1; y = j - 1;
+				for (bool ret = true; 0 <= x && 0 <= y && ret; x -= 1, y -= 1)
+				{
+					ret &= AddMove(PAWN_ROLL::NONE, i, j, x, y, false, moveList);
+				}
+				AddMove(PAWN_ROLL::NONE, i, j, i + 1, j, false, moveList);
+				AddMove(PAWN_ROLL::NONE, i, j, i - 1, j, false, moveList);
+				AddMove(PAWN_ROLL::NONE, i, j, i, j + 1, false, moveList);
+				AddMove(PAWN_ROLL::NONE, i, j, i, j - 1, false, moveList);
+				break;
+			case PAWN_TYPE::HI:
+				x = i + 1; y = j;
+				for (bool ret = true; x < BOARD_WIDTH && ret; x++)
+				{
+					ret &= AddMove(PAWN_ROLL::NONE, i, j, x, y, false, moveList);
+					if (lineMin <= y && y <= lineMax)
+					{
+						ret &= AddMove(PAWN_ROLL::NONE, i, j, x, y, true, moveList);
+					}
+				}
+				x = i - 1; y = j;
+				for (bool ret = true; 0 <= x && ret; x -= 1)
+				{
+					ret &= AddMove(PAWN_ROLL::NONE, i, j, x, y, false, moveList);
+					if (lineMin <= y && y <= lineMax)
+					{
+						ret &= AddMove(PAWN_ROLL::NONE, i, j, x, y, true, moveList);
+					}
+				}
+				x = i; y = j + 1;
+				for (bool ret = true; y < BOARD_HEIGHT && ret; y++)
+				{
+					ret &= AddMove(PAWN_ROLL::NONE, i, j, x, y, false, moveList);
+					if (lineMin <= y && y <= lineMax)
+					{
+						ret &= AddMove(PAWN_ROLL::NONE, i, j, x, y, true, moveList);
+					}
+				}
+				x = i; y = j - 1;
+				for (bool ret = true; 0 <= y && ret; y -= 1)
+				{
+					ret &= AddMove(PAWN_ROLL::NONE, i, j, x, y, false, moveList);
+					if (lineMin <= y && y <= lineMax)
+					{
+						ret &= AddMove(PAWN_ROLL::NONE, i, j, x, y, true, moveList);
+					}
+				}
+				break;
+			case PAWN_TYPE::RYU:
+				x = i + 1; y = j;
+				for (bool ret = true; x < BOARD_WIDTH && ret; x++)
+				{
+					ret &= AddMove(PAWN_ROLL::NONE, i, j, x, y, false, moveList);
+				}
+				x = i - 1; y = j;
+				for (bool ret = true; 0 <= x && ret; x -= 1)
+				{
+					ret &= AddMove(PAWN_ROLL::NONE, i, j, x, y, false, moveList);
+				}
+				x = i; y = j + 1;
+				for (bool ret = true; y < BOARD_HEIGHT && ret; y++)
+				{
+					ret &= AddMove(PAWN_ROLL::NONE, i, j, x, y, false, moveList);
+				}
+				x = i; y = j - 1;
+				for (bool ret = true; 0 <= y && ret; y -= 1)
+				{
+					ret &= AddMove(PAWN_ROLL::NONE, i, j, x, y, false, moveList);
+				}
+				AddMove(PAWN_ROLL::NONE, i, j, i + 1, j + 1, false, moveList);
+				AddMove(PAWN_ROLL::NONE, i, j, i - 1, j + 1, false, moveList);
+				AddMove(PAWN_ROLL::NONE, i, j, i + 1, j - 1, false, moveList);
+				AddMove(PAWN_ROLL::NONE, i, j, i - 1, j - 1, false, moveList);
+				break;
+			case PAWN_TYPE::GYOKU:
+				AddMove(PAWN_ROLL::NONE, i, j, i - 1, j - 1, false, moveList);
+				AddMove(PAWN_ROLL::NONE, i, j, i, j - 1, false, moveList);
+				AddMove(PAWN_ROLL::NONE, i, j, i + 1, j - 1, false, moveList);
+				AddMove(PAWN_ROLL::NONE, i, j, i - 1, j, false, moveList);
+				AddMove(PAWN_ROLL::NONE, i, j, i + 1, j, false, moveList);
+				AddMove(PAWN_ROLL::NONE, i, j, i - 1, j + 1, false, moveList);
+				AddMove(PAWN_ROLL::NONE, i, j, i, j + 1, false, moveList);
+				AddMove(PAWN_ROLL::NONE, i, j, i + 1, j + 1, false, moveList);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	PAWN_MOVE move = PAWN_MOVE_ZERO;
+
+	for (uchar roll = 0; roll<(uchar)PAWN_ROLL::CAPTURE_MAX; roll++)
+	{
+		if (captured[(uchar)turn][roll] == 0)
+		{
+			continue;
+		}
+		move.reserve = (PAWN_ROLL)roll;
+		for (uchar j = 0; j<BOARD_HEIGHT; j++)
+		{
+			for (uchar i = 0; i<BOARD_WIDTH; i++)
+			{
+				if (matrix[j][i].player != PLAYER::NONE || matrix[j][i].pawn != PAWN_TYPE::NONE)
+				{
+					continue;
+				}
+
+				switch (roll)
+				{
+				case PAWN_ROLL::HU:
+					if (j != lineTop)
+					{
+						uchar k;
+						for (k = 0; k<BOARD_HEIGHT; k++)
+						{
+							if (matrix[k][i].player == turn && matrix[k][i].pawn == PAWN_TYPE::HU)
+							{
+								break;
+							}
+						}
+						if (BOARD_HEIGHT <= k)
+						{
+							AddMove((PAWN_ROLL)roll, 0, 0, i, j, false, moveList);
+						}
+					}
+					break;
+				case PAWN_ROLL::KYOH:
+					if (j != lineTop)
+					{
+						AddMove((PAWN_ROLL)roll, 0, 0, i, j, false, moveList);
+					}
+					break;
+				case PAWN_ROLL::KEI:
+					if (j != lineTop && j != lineMid)
+					{
+						AddMove((PAWN_ROLL)roll, 0, 0, i, j, false, moveList);
+					}
+					break;
+					break;
+				case PAWN_ROLL::GIN:
+				case PAWN_ROLL::KIN:
+				case PAWN_ROLL::KAKU:
+				case PAWN_ROLL::HI:
+					AddMove((PAWN_ROLL)roll, 0, 0, i, j, false, moveList);
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
+
+	moveList.sort();
+	return moveList;
+}
+
 bool Board::AddMove(PAWN_ROLL roll, uchar fromx, uchar fromy, char tox, char toy, bool upgrade, std::list<Board::PAWN_MOVE> &moveList)
 {
 	if (tox < 0 || BOARD_WIDTH <= tox)
@@ -197,12 +510,13 @@ bool Board::AddMove(PAWN_ROLL roll, uchar fromx, uchar fromy, char tox, char toy
 		return false;
 	}
 	PAWN_TYPE capture = matrix[utoy][utox].pawn;
-	PAWN_MOVE move{ roll, fromx, fromy, utox, utoy, matrix[fromy][fromx].pawn, matrix[utoy][utox].pawn, upgrade };
+	PAWN_MOVE move{ roll, fromx, fromy, utox, utoy, matrix[fromy][fromx].pawn, matrix[utoy][utox].pawn, upgrade, 0 };
 
 	Move(move);
 	// 負ける手は指さない
 	if (IsEnd() == false)
 	{
+		move.priority = GetPriority(move);
 		moveList.push_back(move);
 	}
 	Back(move);
@@ -210,82 +524,29 @@ bool Board::AddMove(PAWN_ROLL roll, uchar fromx, uchar fromy, char tox, char toy
 	return capture == PAWN_TYPE::NONE;
 }
 
-bool Board::AddMove(PAWN_ROLL roll, uchar fromx, uchar fromy, char tox, char toy, bool upgrade, std::vector<Board::PAWN_MOVE> &moveList)
+int Board::GetPriority(const Board::PAWN_MOVE &move)
 {
-	if (tox < 0 || BOARD_WIDTH <= tox)
-	{
-		return false;
-	}
-	if (toy < 0 || BOARD_HEIGHT <= toy)
-	{
-		return false;
-	}
-	uchar utox = (uchar)tox;
-	uchar utoy = (uchar)toy;
-	if (matrix[utoy][utox].player == turn)
-	{
-		return false;
-	}
-	PAWN_TYPE capture = matrix[utoy][utox].pawn;
-	PAWN_MOVE move{ roll, fromx, fromy, utox, utoy, matrix[fromy][fromx].pawn, matrix[utoy][utox].pawn, upgrade };
-
-	Move(move);
-	// 負ける手は指さない
-	if (IsEnd() == false)
-	{
-		moveList.push_back(move);
-	}
-	Back(move);
-
-	return capture == PAWN_TYPE::NONE;
-}
-
-bool Board::AddMove( PAWN_ROLL roll, uchar fromx, uchar fromy, char tox, char toy, bool upgrade, std::multimap<int, PAWN_MOVE> &moveMap )
-{
-	if( tox < 0 || BOARD_WIDTH <= tox )
-	{
-		return false;
-	}
-	if( toy < 0 || BOARD_HEIGHT <= toy )
-	{
-		return false;
-	}
-	uchar utox = (uchar)tox;
-	uchar utoy = (uchar)toy;
-	if( matrix[utoy][utox].player == turn)
-	{
-		return false;
-	}
-	PAWN_TYPE capture = matrix[utoy][utox].pawn;
-	PAWN_MOVE move{ roll, fromx, fromy, utox, utoy, matrix[fromy][fromx].pawn, matrix[utoy][utox].pawn, upgrade };
+	int priority = 0;
 	
-	Move(move);
-	// 負ける手は指さない
-	if( IsEnd() == false )
+	// 王手がかかってるか？
+	SwitchTurn();
+	if (IsEnd())
 	{
-		int priority = 0;
-		// 王手がかかってるか？
-		SwitchTurn();
-		if (IsEnd())
-		{
-			priority += 1000;
-		}
-		SwitchTurn();
-		// 駒を取るか？
-		if (move.toPawn != PAWN_TYPE::NONE)
-		{
-			priority += (int)(move.toPawn) + (int)PAWN_TYPE::MAX;
-		}
-		// 成るか？
-		if (move.upgrade)
-		{
-			priority += (int)(move.fromPawn);
-		}
-		moveMap.insert(std::make_pair(-priority, move));
+		priority += 1000;
 	}
-	Back(move);
+	SwitchTurn();
+	// 駒を取るか？
+	if (move.toPawn != PAWN_TYPE::NONE)
+	{
+		priority += (int)(move.toPawn) + (int)PAWN_TYPE::MAX;
+	}
+	// 成るか？
+	if (move.upgrade)
+	{
+		priority += (int)(move.fromPawn);
+	}
 	
-	return capture == PAWN_TYPE::NONE;
+	return priority;
 }
 
 bool Board::IsEnd()

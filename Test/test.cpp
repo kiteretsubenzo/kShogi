@@ -23,6 +23,7 @@ bool Test()
 	
 	// 差し手のテスト
 	// 移動テスト
+	/*
 	std::cout << "move test" << std::endl;
 	for( unsigned int i=0; i<testMove.size(); i++ )
 	{
@@ -141,7 +142,7 @@ bool Test()
 			}
 		}
 	}
-
+	*/
 	// スカウトテスト
 	Ai ai;
 	ai.SetDebug(false);

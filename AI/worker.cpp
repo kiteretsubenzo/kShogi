@@ -22,21 +22,10 @@ Worker::Worker(Ai &aiValue)
 void Worker::Start()
 {
 	state = false;
-	if (container == "list")
-	{
-		th = std::thread(&Worker::Search<std::list<Board::PAWN_MOVE>>, this);
-	}
-	else if (container == "vector")
-	{
-		th = std::thread(&Worker::Search<std::vector<Board::PAWN_MOVE>>, this);
-	}
-	else if (container == "multimap")
-	{
-		th = std::thread(&Worker::Search<std::multimap<int, Board::PAWN_MOVE>>, this);
-	}
+	th = std::thread(&Worker::Search, this);
 }
 
-template <typename T> void Worker::Search()
+void Worker::Search()
 {
 	while(true)
 	{
@@ -87,22 +76,25 @@ template <typename T> void Worker::Search()
 		int score = rnd() % 100 + 1;
 		*/
 		
-		std::list<NODE<T>> nodeStack;
+		std::list<NODE> nodeStack;
 		// ルート
 		nodeStack.push_back({{}, SCORE_NONE});
 		// 自分
-		nodeStack.push_back({ board.GetMoveList<T>(), SCORE_NONE});
-		nodeStack.rbegin()->InsertBegin(PAWN_MOVE_ZERO);
+		nodeStack.push_back({ board.GetMoveList(), SCORE_NONE});
+		nodeStack.rbegin()->moves.insert(nodeStack.rbegin()->moves.cbegin(), PAWN_MOVE_ZERO);
 		
+		int count = 0;
 		if (debug)
 		{
 			std::cout << std::endl;
 		}
 		while( true )
 		{
-			std::list<NODE<T>>::iterator top = nodeStack.begin();
+			count++;
+
+			std::list<NODE>::iterator top = nodeStack.begin();
 			
-			bool debugPrint = true && debug;
+			bool debugPrint = false && debug;
 			/*
 			if ( !top->moves.empty() )
 			{
@@ -117,11 +109,11 @@ template <typename T> void Worker::Search()
 			if( debugPrint )
 			{
 				//std::cout << '\r' << std::flush;
-				for( std::list<NODE<T>>::iterator ite=nodeStack.begin(); ite != nodeStack.end(); ++ite )
+				for( std::list<NODE>::iterator ite=nodeStack.begin(); ite != nodeStack.end(); ++ite )
 				{
 					if( 0 < ite->moves.size() )
 					{
-						std::cout << ":" << (ite->GetFirstMove()).DebugString() << "(" << (int)(ite->score) << ")";
+						std::cout << ":" << ite->moves.front().DebugString() << "(" << (int)(ite->score) << ")";
 					}
 					else
 					{
@@ -132,12 +124,12 @@ template <typename T> void Worker::Search()
 			}
 
 			// 子ノードを引っこ抜く
-			std::list<NODE<T>>::reverse_iterator childItr = nodeStack.rbegin();
+			std::list<NODE>::reverse_iterator childItr = nodeStack.rbegin();
 			
 			// 親ノードに得点をマージ
 			if( 2 <= nodeStack.size() && childItr->score != SCORE_NONE )
 			{
-				std::list<NODE<T>>::reverse_iterator parentItr = std::next(nodeStack.rbegin());
+				std::list<NODE>::reverse_iterator parentItr = std::next(nodeStack.rbegin());
 				//if( debugPrint )
 				//{
 					//std::cout << parentItr->score << " " << -childItr->score << std::endl;
@@ -154,9 +146,9 @@ template <typename T> void Worker::Search()
 			}
 
 			// とりあえず子ノードの着手を戻す
-			if (childItr->GetFirstMove() != PAWN_MOVE_ZERO)
+			if (childItr->moves.front() != PAWN_MOVE_ZERO)
 			{
-				board.Back(childItr->GetFirstMove());
+				board.Back(childItr->moves.front());
 			}
 			
 			// スコアがwindowの外側だったら終わり
@@ -171,7 +163,7 @@ template <typename T> void Worker::Search()
 
 				if (windowTmp < childItr->score)
 				{
-					T::iterator ite = childItr->moves.begin();
+					std::list<Board::PAWN_MOVE>::iterator ite = childItr->moves.begin();
 					++ite;
 					childItr->moves.erase(ite, childItr->moves.end());
 					if (debugPrint)
@@ -191,7 +183,7 @@ template <typename T> void Worker::Search()
 				// ルートノードなので終わり
 				if( nodeStack.size() <= 1 )
 				{
-					ai->CallBack(jobId + "\n" + std::to_string(childItr->score));
+					ai->CallBack("jobid:" + jobId + ",score:" + std::to_string(childItr->score) + ",count:" + std::to_string(count));
 					break;
 				}
 				
@@ -201,10 +193,10 @@ template <typename T> void Worker::Search()
 			childItr->score = SCORE_NONE;
 			
 			// 盤面を進める
-			board.Move(childItr->GetFirstMove());
+			board.Move(childItr->moves.front());
 			
 			// 着手を取得
-			T moveList = board.GetMoveList<T>();
+			std::list<Board::PAWN_MOVE> moveList = board.GetMoveList();
 			
 			// 新しい盤面に着手が無かったら勝負あり
 			if( moveList.empty() )
@@ -232,7 +224,7 @@ template <typename T> void Worker::Search()
 
 			// 子供を追加
 			nodeStack.push_back({std::move(moveList), SCORE_NONE});
-			nodeStack.rbegin()->InsertBegin(PAWN_MOVE_ZERO);
+			nodeStack.rbegin()->moves.insert(nodeStack.rbegin()->moves.cbegin(), PAWN_MOVE_ZERO);
 		}
 	}
 }
