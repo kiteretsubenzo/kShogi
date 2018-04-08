@@ -489,7 +489,7 @@ std::list<Board::PAWN_MOVE> Board::GetMoveList()
 		}
 	}
 
-	moveList.sort();
+	//moveList.sort();
 	return moveList;
 }
 
@@ -510,7 +510,7 @@ bool Board::AddMove(PAWN_ROLL roll, uchar fromx, uchar fromy, char tox, char toy
 		return false;
 	}
 	PAWN_TYPE capture = matrix[utoy][utox].pawn;
-	PAWN_MOVE move{ roll, fromx, fromy, utox, utoy, matrix[fromy][fromx].pawn, matrix[utoy][utox].pawn, upgrade, 0 };
+	PAWN_MOVE move{ roll, {fromx, fromy, utox, utoy}, matrix[fromy][fromx].pawn, matrix[utoy][utox].pawn, upgrade, 0 };
 
 	Move(move);
 	// 負ける手は指さない
@@ -524,10 +524,14 @@ bool Board::AddMove(PAWN_ROLL roll, uchar fromx, uchar fromy, char tox, char toy
 	return capture == PAWN_TYPE::NONE;
 }
 
+int Board::GetEvaluate(const std::list<Board::PAWN_MOVE> &moveList)
+{
+	return moveList.size();
+}
+
 int Board::GetPriority(const Board::PAWN_MOVE &move)
 {
 	int priority = 0;
-	
 	// 王手がかかってるか？
 	SwitchTurn();
 	if (IsEnd())
@@ -567,9 +571,9 @@ bool Board::IsEnd()
 		forward = +1;
 	}
 	for( char j=0; j<BOARD_HEIGHT; j++ )
-  {
-    for( char i=0; i<BOARD_WIDTH; i++ )
-    {
+	{
+		for( char i=0; i<BOARD_WIDTH; i++ )
+		{
 			CELL cell = matrix[(uchar)j][(uchar)i];
 			if(cell.player != turn)
 			{
@@ -728,8 +732,8 @@ bool Board::IsEnd()
 			{
 				return true;
 			}
-    }
-  }
+		}
+	}
 	return isCapture;
 }
 
@@ -771,21 +775,21 @@ void Board::Move(const PAWN_MOVE &move)
 	if( move.reserve != PAWN_ROLL::NONE )
 	{
 		captured[(int)turn][(int)move.reserve]--;
-		matrix[move.toy][move.tox].player = turn;
-		matrix[move.toy][move.tox].pawn = (PAWN_TYPE)move.reserve;
+		matrix[move.pos.pos.toy][move.pos.pos.tox].player = turn;
+		matrix[move.pos.pos.toy][move.pos.pos.tox].pawn = (PAWN_TYPE)move.reserve;
 		turn = nextTurn;
 		return;
 	}
 	
-	PAWN_TYPE pawn = matrix[move.fromy][move.fromx].pawn;
+	PAWN_TYPE pawn = matrix[move.pos.pos.fromy][move.pos.pos.fromx].pawn;
 	if( move.upgrade )
 	{
 		pawn.Upgrade();
 	}
-	matrix[move.toy][move.tox].player = turn;
-	matrix[move.toy][move.tox].pawn = pawn;
-	matrix[move.fromy][move.fromx].player = PLAYER::NONE;
-	matrix[move.fromy][move.fromx].pawn = PAWN_TYPE::NONE;
+	matrix[move.pos.pos.toy][move.pos.pos.tox].player = turn;
+	matrix[move.pos.pos.toy][move.pos.pos.tox].pawn = pawn;
+	matrix[move.pos.pos.fromy][move.pos.pos.fromx].player = PLAYER::NONE;
+	matrix[move.pos.pos.fromy][move.pos.pos.fromx].pawn = PAWN_TYPE::NONE;
 	if( move.toPawn != PAWN_TYPE::NONE )
 	{
 		PAWN_ROLL roll = (PAWN_ROLL)(move.toPawn);
@@ -809,29 +813,29 @@ void Board::Back(const PAWN_MOVE &move)
 	if( move.reserve != PAWN_ROLL::NONE )
 	{
 		captured[(uchar)prevTurn][(int)move.reserve]++;
-		matrix[move.toy][move.tox].player = PLAYER::NONE;
-		matrix[move.toy][move.tox].pawn = PAWN_TYPE::NONE;
+		matrix[move.pos.pos.toy][move.pos.pos.tox].player = PLAYER::NONE;
+		matrix[move.pos.pos.toy][move.pos.pos.tox].pawn = PAWN_TYPE::NONE;
 		turn = prevTurn;
 		return;
 	}
 	
-	PAWN_TYPE pawn = matrix[move.toy][move.tox].pawn;
+	PAWN_TYPE pawn = matrix[move.pos.pos.toy][move.pos.pos.tox].pawn;
 	if( move.upgrade )
 	{
 		pawn.Downgrade();
 	}
-	matrix[move.fromy][move.fromx].player = prevTurn;
-	matrix[move.fromy][move.fromx].pawn = pawn;
+	matrix[move.pos.pos.fromy][move.pos.pos.fromx].player = prevTurn;
+	matrix[move.pos.pos.fromy][move.pos.pos.fromx].pawn = pawn;
 	if( move.toPawn != PAWN_TYPE::NONE )
 	{
 		captured[(uchar)prevTurn][(int)((PAWN_ROLL)move.toPawn)]--;
-		matrix[move.toy][move.tox].player = turn;
-		matrix[move.toy][move.tox].pawn = move.toPawn;
+		matrix[move.pos.pos.toy][move.pos.pos.tox].player = turn;
+		matrix[move.pos.pos.toy][move.pos.pos.tox].pawn = move.toPawn;
 	}
 	else
 	{
-		matrix[move.toy][move.tox].player = PLAYER::NONE;
-		matrix[move.toy][move.tox].pawn = PAWN_TYPE::NONE;
+		matrix[move.pos.pos.toy][move.pos.pos.tox].player = PLAYER::NONE;
+		matrix[move.pos.pos.toy][move.pos.pos.tox].pawn = PAWN_TYPE::NONE;
 	}
 	turn = prevTurn;
 }

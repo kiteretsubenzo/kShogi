@@ -211,7 +211,7 @@ void Worker::Search()
 				int score = SCORE_NONE;
 
 				// 評価
-				score = moveList.size();
+				score = board.GetEvaluate(moveList);
 
 				// 親ノードに得点をマージ
 				if( score != SCORE_NONE )

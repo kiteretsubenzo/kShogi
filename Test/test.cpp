@@ -16,6 +16,7 @@
 #include "put.h"
 #include "escape.h"
 #include "scout.h"
+#include "problem_3.h"
 
 bool Test()
 {

@@ -34,10 +34,16 @@ public:
 	struct PAWN_MOVE
 	{
 		PAWN_ROLL reserve;
-		uchar fromx;
-		uchar fromy;
-		uchar tox;
-		uchar toy;
+		struct position {
+			uchar fromx;
+			uchar fromy;
+			uchar tox;
+			uchar toy;
+		};
+		union {
+			struct position pos;
+			uint32_t uint32_pos;
+		} pos;
 		PAWN_TYPE fromPawn;
 		PAWN_TYPE toPawn;
 		bool upgrade;
@@ -45,14 +51,14 @@ public:
 		
 		std::string DebugString() const
 		{
-			if( reserve == PAWN_ROLL::NONE && fromx == 0 && fromy == 0 && tox == 0 && toy == 0 )
+			if( reserve == PAWN_ROLL::NONE && pos.uint32_pos == 0 )
 			{
 				return "ZERO";
 			}
 			
 			std::string str;
 			//uchar tox, toy;
-			str += numberToZenkaku[(uchar)tox] + numberToKanji[(uchar)toy];
+			str += numberToZenkaku[(uchar)pos.pos.tox] + numberToKanji[(uchar)pos.pos.toy];
 			if( reserve != PAWN_ROLL::NONE )
 			{
 				//PAWN_ROLL reserve;
@@ -61,7 +67,7 @@ public:
 			else
 			{
 				str += " " + (std::string)fromPawn;
-				str += "(" + std::to_string(BOARD_WIDTH-fromx) + "," + std::to_string(fromy+1) + ")";
+				str += "(" + std::to_string(BOARD_WIDTH-pos.pos.fromx) + "," + std::to_string(pos.pos.fromy+1) + ")";
 				//bool upgrade;
 				if( upgrade )
 				{
@@ -76,28 +82,18 @@ public:
 		{
 			return (
 				reserve == rhs.reserve &&
-				fromx == rhs.fromx &&
-				fromy == rhs.fromy &&
-				tox == rhs.tox &&
-				toy == rhs.toy &&
-				fromPawn == rhs.fromPawn &&
+				pos.uint32_pos == rhs.pos.uint32_pos &&
 				toPawn == rhs.toPawn &&
-				upgrade == rhs.upgrade &&
-				priority == rhs.priority
+				upgrade == rhs.upgrade
 			);
 		}
 		bool operator!=( const PAWN_MOVE& rhs ) const
 		{
 			return (
 				reserve != rhs.reserve ||
-				fromx != rhs.fromx ||
-				fromy != rhs.fromy ||
-				tox != rhs.tox ||
-				toy != rhs.toy ||
-				fromPawn != rhs.fromPawn ||
+				pos.uint32_pos != rhs.pos.uint32_pos ||
 				toPawn != rhs.toPawn ||
-				upgrade != rhs.upgrade ||
-				priority != rhs.priority
+				upgrade != rhs.upgrade
 			);
 		}
 		bool operator<(const PAWN_MOVE& rhs) const
@@ -110,10 +106,10 @@ public:
 			std::stringstream stream;
 			
 			stream << std::setfill('0') << std::setw(2) << (int)reserve;
-			stream << std::setfill('0') << std::setw(2) << (int)fromx;
-			stream << std::setfill('0') << std::setw(2) << (int)fromy;
-			stream << std::setfill('0') << std::setw(2) << (int)tox;
-			stream << std::setfill('0') << std::setw(2) << (int)toy;
+			stream << std::setfill('0') << std::setw(2) << (int)pos.pos.fromx;
+			stream << std::setfill('0') << std::setw(2) << (int)pos.pos.fromy;
+			stream << std::setfill('0') << std::setw(2) << (int)pos.pos.tox;
+			stream << std::setfill('0') << std::setw(2) << (int)pos.pos.toy;
 			stream << std::setfill('0') << std::setw(2) << (int)fromPawn;
 			stream << std::setfill('0') << std::setw(2) << (int)toPawn;
 			if( upgrade )
@@ -141,6 +137,7 @@ public:
 	void Back(const PAWN_MOVE &move);
 	void SwitchTurn();
 
+	virtual int GetEvaluate(const std::list<Board::PAWN_MOVE> &moveList);
 	virtual int GetPriority(const Board::PAWN_MOVE &move);
 	
 	CELL GetCell(uchar x, uchar y) { return matrix[y][x]; }
