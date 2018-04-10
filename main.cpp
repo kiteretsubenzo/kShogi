@@ -19,11 +19,13 @@ int main()
 	if (Test())
 	{
 		std::cout << "test is ok" << std::endl;
-		std::string str;
+		//std::string str;
 		//std::cin >> str;
 	}
 	else
 	{
+		std::string str;
+		std::cin >> str;
 		return 1;
 	}
   
@@ -68,8 +70,21 @@ int main()
 	" . . . . . . . . .\n"
 	"h00 y00 e00 g00 k00 u00 r00\n"
 	"second"
+	,
+	"h00 y00 e00 g00 k00 u00 r00\n"
+	" . . . . . . .^Ry_\n"
+	" . . . . . . . .h_\n"
+	" . . . . . . . .o_\n"
+	" . . . . . . .h_ .\n"
+	" . . . . . . .^h .\n"
+	" . . . . . .^y . .\n"
+	" . . . . . . . . .\n"
+	" . . . . . . . . .\n"
+	" . . . . . . . . .\n"
+	"h00 y00 e00 g00 k00 u00 r00\n"
+	"first"
   };
-  board.Init(boardInits[1]);
+  board.Init(boardInits[3]);
   std::list<Board::PAWN_MOVE> history;
   /*
   board.PrintBoard();
@@ -139,17 +154,19 @@ int main()
 
   std::cout << board.BoardToString() << std::endl;
   */
-  /*
+#if false
   board.PrintBoard();
   std::list<Board::PAWN_MOVE> moveList = board.GetMoveList();
   for (std::list<Board::PAWN_MOVE>::iterator ite = moveList.begin(); ite != moveList.end(); ++ite)
   {
 	  std::cout << ite->DebugString() << std::endl;
   }
-  */
-  
+#endif
+#if false
   Ai ai;
-  ai.SetMode("scout");
+  ai.SetMode("minimax");
+  //ai.SetSearchScore(0);
+  ai.SetDebug(true);
   ai.Start(board);
 
   int i = 0;
@@ -169,7 +186,7 @@ int main()
   ai.Stop();
   
   std::cout << "end" << std::endl;
-  
+#endif
   std::string str;
   std::cin >> str;
   

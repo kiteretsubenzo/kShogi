@@ -148,6 +148,7 @@ private:
 	bool AddMove(PAWN_ROLL roll, uchar fromx, uchar fromy, char tox, char toy, bool upgrade, std::list<Board::PAWN_MOVE> &moveList);
 	bool IsEnd();
 	bool IsCapture( char tox, char toy, PLAYER enemy, bool &isCapture );
+	bool GetCell(char tox, char toy, CELL &cell) const;
 	
 	uchar captured[(uchar)PLAYER::MAX][(uchar)PAWN_ROLL::CAPTURE_MAX];
 	CELL matrix[BOARD_HEIGHT][BOARD_WIDTH];

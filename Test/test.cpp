@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <thread>
 #include <mutex>
+#include <chrono>
 #include "../definitions.h"
 #include "../board.h"
 #include "../AI/worker.h"
@@ -24,7 +25,7 @@ bool Test()
 	
 	// 差し手のテスト
 	// 移動テスト
-	/*
+#if true
 	std::cout << "move test" << std::endl;
 	for( unsigned int i=0; i<testMove.size(); i++ )
 	{
@@ -35,7 +36,12 @@ bool Test()
 		//board.PrintBoard();
 		//std::cout << strs[1] << std::endl;
 		std::vector<std::string> tests = split(strs[1], '\n');
-		std::vector<Board::PAWN_MOVE> moveList = board.GetMoveList<std::vector<Board::PAWN_MOVE>>();
+		std::list<Board::PAWN_MOVE> moveListTmp = board.GetMoveList();
+		std::vector<Board::PAWN_MOVE> moveList;
+		for (std::list<Board::PAWN_MOVE>::iterator ite = moveListTmp.begin(); ite != moveListTmp.end(); ++ite)
+		{
+			moveList.push_back(*ite);
+		}
 		unsigned int size = std::max<unsigned int>(moveList.size(), tests.size());
 		for( unsigned int j=0; j<size; j++ )
 		{
@@ -56,14 +62,15 @@ bool Test()
 			}
 			else
 			{
-				//std::cout << "NO." << (i+1) << std::endl;
-				//board.PrintBoard();
+				std::cout << "NO." << (i+1) << std::endl;
+				board.PrintBoard();
 				std::cout << result << ":" << test << " -> false" << std::endl;
-				//return false;
+				return false;
 			}
 		}
 	}
-	
+#endif
+#if true
 	// 打ちテスト
 	std::cout << "put test" << std::endl;
 	for( unsigned int i=0; i<testPut.size(); i++ )
@@ -75,7 +82,12 @@ bool Test()
 		//board.PrintBoard();
 		//std::cout << strs[1] << std::endl;
 		std::vector<std::string> tests = split(strs[1], '\n');
-		std::vector<Board::PAWN_MOVE> moveList = board.GetMoveList<std::vector<Board::PAWN_MOVE>>();
+		std::list<Board::PAWN_MOVE> moveListTmp = board.GetMoveList();
+		std::vector<Board::PAWN_MOVE> moveList;
+		for (std::list<Board::PAWN_MOVE>::iterator ite = moveListTmp.begin(); ite != moveListTmp.end(); ++ite)
+		{
+			moveList.push_back(*ite);
+		}
 		unsigned int size = std::max<unsigned int>(moveList.size(), tests.size());
 		for( unsigned int j=0; j<size; j++ )
 		{
@@ -103,7 +115,8 @@ bool Test()
 			}
 		}
 	}
-
+#endif
+#if true
 	// 大手逃れテスト
 	std::cout << "escape test" << std::endl;
 	for( unsigned int i=0; i<testEscape.size(); i++ )
@@ -115,7 +128,12 @@ bool Test()
 		//board.PrintBoard();
 		//std::cout << strs[1] << std::endl;
 		std::vector<std::string> tests = split(strs[1], '\n');
-		std::vector<Board::PAWN_MOVE> moveList = board.GetMoveList<std::vector<Board::PAWN_MOVE>>();
+		std::list<Board::PAWN_MOVE> moveListTmp = board.GetMoveList();
+		std::vector<Board::PAWN_MOVE> moveList;
+		for (std::list<Board::PAWN_MOVE>::iterator ite = moveListTmp.begin(); ite != moveListTmp.end(); ++ite)
+		{
+			moveList.push_back(*ite);
+		}
 		unsigned int size = std::max<unsigned int>(moveList.size(), tests.size());
 		for( unsigned int j=0; j<size; j++ )
 		{
@@ -143,9 +161,11 @@ bool Test()
 			}
 		}
 	}
-	*/
+#endif
+
 	// スカウトテスト
 	Ai ai;
+	/*
 	ai.SetDebug(false);
 	std::cout << "scout test" << std::endl;
 	for (unsigned int i = 0; i < testScout.size(); i++)
@@ -182,7 +202,59 @@ bool Test()
 			return false;
 		}
 	}
+	*/
+	// 3手詰めテスト
+#if true
+	std::chrono::system_clock::time_point  start, end;
+	start = std::chrono::system_clock::now();
 
+	ai.SetDebug(false);
+	std::cout << "problem 3 test" << std::endl;
+	for (unsigned int i = 0; i < testProblem3.size(); i++)
+	{
+		std::cout << "NO." << (i + 1) << std::endl;
+
+		std::vector<std::string> strs = split(testProblem3[i], ':');
+
+		board.Init(strs[0]);
+
+		ai.SetMode("scout");
+		ai.Start(board);
+
+		while (ai.Tick() == false) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		}
+
+		Board::PAWN_MOVE scoutMove;
+		int scoutScore;
+		ai.GetResult(scoutMove, scoutScore);
+		
+		std::cout << scoutScore << std::endl;
+		
+		ai.SetMode("move");
+		ai.SetSearchScore(-scoutScore);
+		ai.Start(board);
+
+		while (ai.Tick() == false) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		}
+
+		ai.GetResult(scoutMove, scoutScore);
+		std::cout << scoutMove.DebugString() << " " << strs[1] << std::endl;
+		if (scoutMove.DebugString() != strs[1])
+		{
+			std::cout << "NO." << (i + 1) << std::endl;
+			board.PrintBoard();
+			std::cout << strs[1] << " -> " << scoutMove.DebugString() << " -> false" << std::endl;
+			ai.Stop();
+			return false;
+		}
+	}
+
+	end = std::chrono::system_clock::now();
+	long long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+	std::cout << milliseconds << std::endl;
+#endif
 	ai.Stop();
 	
 	return true;

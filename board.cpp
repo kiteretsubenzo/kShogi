@@ -532,6 +532,7 @@ int Board::GetEvaluate(const std::list<Board::PAWN_MOVE> &moveList)
 int Board::GetPriority(const Board::PAWN_MOVE &move)
 {
 	int priority = 0;
+	/*
 	// 王手がかかってるか？
 	SwitchTurn();
 	if (IsEnd())
@@ -549,7 +550,7 @@ int Board::GetPriority(const Board::PAWN_MOVE &move)
 	{
 		priority += (int)(move.fromPawn);
 	}
-	
+	*/
 	return priority;
 }
 
@@ -570,6 +571,7 @@ bool Board::IsEnd()
 	{
 		forward = +1;
 	}
+#if false
 	for( char j=0; j<BOARD_HEIGHT; j++ )
 	{
 		for( char i=0; i<BOARD_WIDTH; i++ )
@@ -735,6 +737,467 @@ bool Board::IsEnd()
 		}
 	}
 	return isCapture;
+#else
+	char gyokux = -1;
+	char gyokuy = -1;
+	for (char j = 0; j < BOARD_HEIGHT; j++)
+	{
+		for (char i = 0; i < BOARD_WIDTH; i++)
+		{
+			if (matrix[j][i].player == enemy && matrix[j][i].pawn == PAWN_TYPE::GYOKU)
+			{
+				gyokux = i;
+				gyokuy = j;
+				break;
+			}
+		}
+		if (gyokux != -1)
+		{
+			break;
+		}
+	}
+	if (gyokux == -1)
+	{
+		return false;
+	}
+	CELL cell;
+	if (GetCell(gyokux - 1, gyokuy, cell))
+	{
+		if (cell.pawn == PAWN_TYPE::KIN ||
+			cell.pawn == PAWN_TYPE::HUN ||
+			cell.pawn == PAWN_TYPE::KYOHN ||
+			cell.pawn == PAWN_TYPE::KEIN ||
+			cell.pawn == PAWN_TYPE::GINN ||
+			cell.pawn == PAWN_TYPE::UMA ||
+			cell.pawn == PAWN_TYPE::GYOKU)
+		{
+			return true;
+		}
+	}
+	if (GetCell(gyokux + 1, gyokuy, cell))
+	{
+		if (cell.pawn == PAWN_TYPE::KIN ||
+			cell.pawn == PAWN_TYPE::HUN ||
+			cell.pawn == PAWN_TYPE::KYOHN ||
+			cell.pawn == PAWN_TYPE::KEIN ||
+			cell.pawn == PAWN_TYPE::GINN ||
+			cell.pawn == PAWN_TYPE::UMA ||
+			cell.pawn == PAWN_TYPE::GYOKU)
+		{
+			return true;
+		}
+	}
+	if (GetCell(gyokux, gyokuy - 1, cell))
+	{
+		if (turn == PLAYER::FIRST)
+		{
+			if (cell.pawn == PAWN_TYPE::KIN ||
+				cell.pawn == PAWN_TYPE::HUN ||
+				cell.pawn == PAWN_TYPE::KYOHN ||
+				cell.pawn == PAWN_TYPE::KEIN ||
+				cell.pawn == PAWN_TYPE::GINN ||
+				cell.pawn == PAWN_TYPE::UMA ||
+				cell.pawn == PAWN_TYPE::GYOKU)
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if (cell.pawn == PAWN_TYPE::HU ||
+				cell.pawn == PAWN_TYPE::GIN ||
+				cell.pawn == PAWN_TYPE::KIN ||
+				cell.pawn == PAWN_TYPE::HUN ||
+				cell.pawn == PAWN_TYPE::KYOHN ||
+				cell.pawn == PAWN_TYPE::KEIN ||
+				cell.pawn == PAWN_TYPE::GINN ||
+				cell.pawn == PAWN_TYPE::UMA ||
+				cell.pawn == PAWN_TYPE::GYOKU)
+			{
+				return true;
+			}
+		}
+	}
+	if (GetCell(gyokux, gyokuy + 1, cell))
+	{
+		if (turn == PLAYER::FIRST)
+		{
+			if (cell.pawn == PAWN_TYPE::HU ||
+				cell.pawn == PAWN_TYPE::KIN ||
+				cell.pawn == PAWN_TYPE::HUN ||
+				cell.pawn == PAWN_TYPE::KYOHN ||
+				cell.pawn == PAWN_TYPE::KEIN ||
+				cell.pawn == PAWN_TYPE::GINN ||
+				cell.pawn == PAWN_TYPE::UMA ||
+				cell.pawn == PAWN_TYPE::GYOKU)
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if (cell.pawn == PAWN_TYPE::GIN ||
+				cell.pawn == PAWN_TYPE::KIN ||
+				cell.pawn == PAWN_TYPE::HUN ||
+				cell.pawn == PAWN_TYPE::KYOHN ||
+				cell.pawn == PAWN_TYPE::KEIN ||
+				cell.pawn == PAWN_TYPE::GINN ||
+				cell.pawn == PAWN_TYPE::UMA ||
+				cell.pawn == PAWN_TYPE::GYOKU)
+			{
+				return true;
+			}
+		}
+	}
+	if (GetCell( gyokux - 1, gyokuy - 1, cell))
+	{
+		if (turn == PLAYER::FIRST)
+		{
+			if (cell.pawn == PAWN_TYPE::GIN ||
+				cell.pawn == PAWN_TYPE::RYU ||
+				cell.pawn == PAWN_TYPE::GYOKU)
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if (cell.pawn == PAWN_TYPE::GIN ||
+				cell.pawn == PAWN_TYPE::KIN ||
+				cell.pawn == PAWN_TYPE::HUN ||
+				cell.pawn == PAWN_TYPE::KYOHN ||
+				cell.pawn == PAWN_TYPE::KEIN ||
+				cell.pawn == PAWN_TYPE::GINN ||
+				cell.pawn == PAWN_TYPE::RYU ||
+				cell.pawn == PAWN_TYPE::GYOKU)
+			{
+				return true;
+			}
+		}
+	}
+	if (GetCell(gyokux + 1, gyokuy - 1, cell))
+	{
+		if (turn == PLAYER::FIRST)
+		{
+			if (cell.pawn == PAWN_TYPE::GIN ||
+				cell.pawn == PAWN_TYPE::RYU ||
+				cell.pawn == PAWN_TYPE::GYOKU)
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if (cell.pawn == PAWN_TYPE::GIN ||
+				cell.pawn == PAWN_TYPE::KIN ||
+				cell.pawn == PAWN_TYPE::HUN ||
+				cell.pawn == PAWN_TYPE::KYOHN ||
+				cell.pawn == PAWN_TYPE::KEIN ||
+				cell.pawn == PAWN_TYPE::GINN ||
+				cell.pawn == PAWN_TYPE::RYU ||
+				cell.pawn == PAWN_TYPE::GYOKU)
+			{
+				return true;
+			}
+		}
+	}
+	if (GetCell(gyokux + 1, gyokuy + 1, cell))
+	{
+		if (turn == PLAYER::FIRST)
+		{
+			if (cell.pawn == PAWN_TYPE::GIN ||
+				cell.pawn == PAWN_TYPE::KIN ||
+				cell.pawn == PAWN_TYPE::HUN ||
+				cell.pawn == PAWN_TYPE::KYOHN ||
+				cell.pawn == PAWN_TYPE::KEIN ||
+				cell.pawn == PAWN_TYPE::GINN ||
+				cell.pawn == PAWN_TYPE::RYU ||
+				cell.pawn == PAWN_TYPE::GYOKU)
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if (cell.pawn == PAWN_TYPE::GIN ||
+				cell.pawn == PAWN_TYPE::RYU ||
+				cell.pawn == PAWN_TYPE::GYOKU)
+			{
+				return true;
+			}
+		}
+	}
+	if (GetCell( gyokux - 1, gyokuy + 1, cell))
+	{
+		if (turn == PLAYER::FIRST)
+		{
+			if (cell.pawn == PAWN_TYPE::GIN ||
+				cell.pawn == PAWN_TYPE::KIN ||
+				cell.pawn == PAWN_TYPE::HUN ||
+				cell.pawn == PAWN_TYPE::KYOHN ||
+				cell.pawn == PAWN_TYPE::KEIN ||
+				cell.pawn == PAWN_TYPE::GINN ||
+				cell.pawn == PAWN_TYPE::RYU ||
+				cell.pawn == PAWN_TYPE::GYOKU)
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if (cell.pawn == PAWN_TYPE::GIN ||
+				cell.pawn == PAWN_TYPE::RYU ||
+				cell.pawn == PAWN_TYPE::GYOKU)
+			{
+				return true;
+			}
+		}
+	}
+
+	if (turn == PLAYER::FIRST)
+	{
+		if (GetCell(gyokux - 1, gyokuy + 2, cell))
+		{
+			if (cell.pawn == PAWN_TYPE::KEI)
+			{
+				return true;
+			}
+		}
+		if (GetCell(gyokux + 1, gyokuy + 2, cell))
+		{
+			if (cell.pawn == PAWN_TYPE::KEI)
+			{
+				return true;
+			}
+		}
+	}
+	else
+	{
+		if (GetCell(gyokux - 1, gyokuy - 2, cell))
+		{
+			if (cell.pawn == PAWN_TYPE::KEI)
+			{
+				return true;
+			}
+		}
+		if (GetCell(gyokux + 1, gyokuy - 2, cell))
+		{
+			if (cell.pawn == PAWN_TYPE::KEI)
+			{
+				return true;
+			}
+		}
+	}
+
+	for (char i = gyokux + 1; i < BOARD_WIDTH; i++)
+	{
+		if (matrix[gyokuy][i].player == PLAYER::NONE)
+		{
+			continue;
+		}
+		if (matrix[gyokuy][i].player == enemy)
+		{
+			break;
+		}
+		if (matrix[gyokuy][i].pawn == PAWN_TYPE::HI ||
+			matrix[gyokuy][i].pawn == PAWN_TYPE::RYU)
+		{
+			return true;
+		}
+		else
+		{
+			break;
+		}
+	}
+	for (char i = gyokux - 1; i >= 0; i--)
+	{
+		if (matrix[gyokuy][i].player == PLAYER::NONE)
+		{
+			continue;
+		}
+		if (matrix[gyokuy][i].player == enemy)
+		{
+			break;
+		}
+		if (matrix[gyokuy][i].pawn == PAWN_TYPE::HI ||
+			matrix[gyokuy][i].pawn == PAWN_TYPE::RYU)
+		{
+			return true;
+		}
+		else
+		{
+			break;
+		}
+	}
+	for (char j = gyokuy + 1; j < BOARD_HEIGHT; j++)
+	{
+		if (matrix[j][gyokux].player == PLAYER::NONE)
+		{
+			continue;
+		}
+		if (matrix[j][gyokux].player == enemy)
+		{
+			break;
+		}
+		if (matrix[j][gyokux].pawn == PAWN_TYPE::HI ||
+			matrix[j][gyokux].pawn == PAWN_TYPE::RYU)
+		{
+			return true;
+		}
+		else
+		{
+			break;
+		}
+	}
+	for (char j = gyokuy - 1; j >= 0; j--)
+	{
+		if (matrix[j][gyokux].player == PLAYER::NONE)
+		{
+			continue;
+		}
+		if (matrix[j][gyokux].player == enemy)
+		{
+			break;
+		}
+		if (matrix[j][gyokux].pawn == PAWN_TYPE::HI ||
+			matrix[j][gyokux].pawn == PAWN_TYPE::RYU)
+		{
+			return true;
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	for (char i = gyokux + 1, j = gyokuy + 1; i < BOARD_WIDTH && j < BOARD_HEIGHT; i++, j++)
+	{
+		if (matrix[j][i].player == PLAYER::NONE)
+		{
+			continue;
+		}
+		if (matrix[j][i].player == enemy)
+		{
+			break;
+		}
+		if (matrix[j][i].pawn == PAWN_TYPE::KAKU ||
+			matrix[j][i].pawn == PAWN_TYPE::UMA)
+		{
+			return true;
+		}
+		else
+		{
+			break;
+		}
+	}
+	for (char i = gyokux - 1, j = gyokuy + 1; i >= 0 && j < BOARD_HEIGHT; i--, j++)
+	{
+		if (matrix[j][i].player == PLAYER::NONE)
+		{
+			continue;
+		}
+		if (matrix[j][i].player == enemy)
+		{
+			break;
+		}
+		if (matrix[j][i].pawn == PAWN_TYPE::KAKU ||
+			matrix[j][i].pawn == PAWN_TYPE::UMA)
+		{
+			return true;
+		}
+		else
+		{
+			break;
+		}
+	}
+	for (char i = gyokux - 1, j = gyokuy - 1; i >= 0 && j >= 0; i--, j--)
+	{
+		if (matrix[j][i].player == PLAYER::NONE)
+		{
+			continue;
+		}
+		if (matrix[j][i].player == enemy)
+		{
+			break;
+		}
+		if (matrix[j][i].pawn == PAWN_TYPE::KAKU ||
+			matrix[j][i].pawn == PAWN_TYPE::UMA)
+		{
+			return true;
+		}
+		else
+		{
+			break;
+		}
+	}
+	for (char i = gyokux + 1, j = gyokuy - 1; i < BOARD_WIDTH && j >= 0; i++, j--)
+	{
+		if (matrix[j][i].player == PLAYER::NONE)
+		{
+			continue;
+		}
+		if (matrix[j][i].player == enemy)
+		{
+			break;
+		}
+		if (matrix[j][i].pawn == PAWN_TYPE::KAKU ||
+			matrix[j][i].pawn == PAWN_TYPE::UMA)
+		{
+			return true;
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	if (turn == PLAYER::FIRST)
+	{
+		for (char j = gyokuy + 1; j < BOARD_HEIGHT; j++)
+		{
+			if (matrix[j][gyokux].player == PLAYER::NONE)
+			{
+				continue;
+			}
+			if (matrix[j][gyokux].player == enemy)
+			{
+				break;
+			}
+			if (matrix[j][gyokux].pawn == PAWN_TYPE::KYOH)
+			{
+				return true;
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+	else
+	{
+		for (char j = gyokuy - 1; j >= 0; j--)
+		{
+			if (matrix[j][gyokux].player == PLAYER::NONE)
+			{
+				continue;
+			}
+			if (matrix[j][gyokux].player == enemy)
+			{
+				break;
+			}
+			if (matrix[j][gyokux].pawn == PAWN_TYPE::KYOH)
+			{
+				return true;
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+
+	return false;
+#endif
 }
 
 bool Board::IsCapture( char tox, char toy, PLAYER enemy, bool &isCapture )
@@ -758,6 +1221,26 @@ bool Board::IsCapture( char tox, char toy, PLAYER enemy, bool &isCapture )
 	}
 
 	return matrix[utoy][utox].pawn == PAWN_TYPE::NONE;
+}
+
+bool Board::GetCell(char tox, char toy, CELL &cell) const
+{
+	if (tox < 0 || BOARD_WIDTH <= tox)
+	{
+		return false;
+	}
+	if (toy < 0 || BOARD_HEIGHT <= toy)
+	{
+		return false;
+	}
+	if (matrix[toy][tox].player != turn)
+	{
+		return false;
+	}
+
+	cell = matrix[toy][tox];
+
+	return true;
 }
 
 void Board::Move(const PAWN_MOVE &move)

@@ -37,7 +37,7 @@ void Worker::Search()
 		}
 		if( job == "stop" )
 		{
-		  break;
+			break;
 		}
 		
 		std::unordered_map<std::string, std::string> params = fromJson(job);
@@ -59,7 +59,7 @@ void Worker::Search()
 		board.Init(boardStr);
 		if (debug)
 		{
-			board.PrintBoard();
+			//board.PrintBoard();
 		}
 
 		int window = SCORE_NONE;
@@ -86,7 +86,7 @@ void Worker::Search()
 		int count = 0;
 		if (debug)
 		{
-			std::cout << std::endl;
+			//std::cout << std::endl;
 		}
 		while( true )
 		{
@@ -94,7 +94,7 @@ void Worker::Search()
 
 			std::list<NODE>::iterator top = nodeStack.begin();
 			
-			bool debugPrint = false && debug;
+			bool debugPrint = true && debug;
 			/*
 			if ( !top->moves.empty() )
 			{

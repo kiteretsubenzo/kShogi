@@ -4,6 +4,7 @@
 #include <thread>
 #include <algorithm>
 #include <mutex>
+#include <condition_variable>
 #include <map>
 #include <unordered_map>
 #include <random>
@@ -35,9 +36,10 @@ void Ai::Start(Board boardValue)
 	bestMove = PAWN_MOVE_ZERO;
 	bestScore = std::numeric_limits<int>::min();
 
-	std::list<Board::PAWN_MOVE> moveList = board.GetMoveList();
-	
-	mtx.lock();
+	std::unique_lock<std::mutex> uniq(mtx);
+	//std::cout << "Start::lock" << std::endl;
+	cv.wait(uniq, [&] {return ready; });
+	ready = false;
 	/*
 	for( unsigned int i=0; i<moveList.size(); i++ )
 	{
@@ -54,28 +56,63 @@ void Ai::Start(Board boardValue)
 		board.Back(move);
 	}
 	*/
-	std::list<Board::PAWN_MOVE> moves;
-	moves.push_back(PAWN_MOVE_ZERO);
+	
 	if (mode == "scout")
 	{
+		std::list<Board::PAWN_MOVE> moves;
+		moves.push_back(PAWN_MOVE_ZERO);
 		bestScore = 0;
-		JOB job = { GetJobId(), { PAWN_MOVE_ZERO }, -bestScore, 4, board };
+		JOB job = { GetJobId(), { PAWN_MOVE_ZERO }, -searchScore, 4, board };
 		jobs.push_back(job);
 	}
-	else
+	if (mode == "scouttest")
 	{
+		std::list<Board::PAWN_MOVE> moves;
+		moves.push_back(PAWN_MOVE_ZERO);
+		bestScore = 0;
+		JOB job = { GetJobId(),{ PAWN_MOVE_ZERO }, -searchScore, 4, board };
+		jobs.push_back(job);
+	}
+	else if(mode == "minimax")
+	{
+		std::list<Board::PAWN_MOVE> moves;
+		moves.push_back(PAWN_MOVE_ZERO);
 		JOB job = { GetJobId(), moves, SCORE_NONE, 4, board };
 		jobs.push_back(job);
 	}
+	else if (mode == "move")
+	{
+		std::list<Board::PAWN_MOVE> moveList = board.GetMoveList();
+		for (std::list<Board::PAWN_MOVE>::iterator ite = moveList.begin(); ite != moveList.end(); ++ite)
+		{
+			Board::PAWN_MOVE &move = *ite;
+			//board.PrintKihu(move);
+			board.Move(move);
+			std::list<Board::PAWN_MOVE> moves;
+			moves.push_back(move);
+			JOB job = { GetJobId(), moves, searchScore, 4, board };
+			jobs.push_back(job);
+			board.Back(move);
+		}
+	}
 
-	mtx.unlock();
+	ready = true;
+	cv.notify_all();
+	//std::cout << "Start::unlock" << std::endl;
 }
 
 void Ai::CallBack(const std::string &str)
 {
-	mtx.lock();
+	std::unique_lock<std::mutex> uniq(mtx);
+	//std::cout << "CallBack::lock" << std::endl;
+	cv.wait(uniq, [&] {return ready; });
+
+	ready = false;
 	results.push_back(str);
-	mtx.unlock();
+
+	ready = true;
+	cv.notify_all();
+	//std::cout << "CallBack::unlock" << std::endl;
 }
  
 void Ai::GetJob(std::string &job)
@@ -85,7 +122,11 @@ void Ai::GetJob(std::string &job)
 		job = "stop";
 		return;
 	}
-	mtx.lock();
+	std::unique_lock<std::mutex> uniq(mtx);
+	//std::cout << "GetJob::lock" << std::endl;
+	cv.wait(uniq, [&] {return ready; });
+	ready = false;
+
 	if( 0 < jobs.size() )
 	{
 		JOB jobStruct = jobs.front();
@@ -109,8 +150,10 @@ void Ai::GetJob(std::string &job)
 	{
 		job = "empty";
 	}
-	mtx.unlock();
-	return;
+
+	ready = true;
+	cv.notify_all();
+	//std::cout << "GetJob::unlock" << std::endl;
 }
 
 void Ai::GetResult(Board::PAWN_MOVE &moveValue, int &scoreValue)
@@ -121,7 +164,11 @@ void Ai::GetResult(Board::PAWN_MOVE &moveValue, int &scoreValue)
 
 bool Ai::Tick()
 {
-	mtx.lock();
+	std::unique_lock<std::mutex> uniq(mtx);
+	//std::cout << "Tick::lock" << std::endl;
+	cv.wait(uniq, [&] {return ready; });
+	ready = false;
+
 	// 結果を回収
 	while( 0 < results.size() )
 	{
@@ -150,11 +197,11 @@ bool Ai::Tick()
 				jobs.push_back(job);
 			}
 		}
-		else
+		else if (mode == "scouttest")
 		{
 			if (debug)
 			{
-				std::cout << "score is " << score << " best score is " << bestScore;
+				std::cout << "score is " << score << " best score is " << bestScore << std::endl;
 			}
 			if (bestScore < -score)
 			{
@@ -162,10 +209,42 @@ bool Ai::Tick()
 				bestScore = -score;
 			}
 		}
+		else if(mode == "minimax")
+		{
+			if (debug)
+			{
+				std::cout << "score is " << score << " best score is " << bestScore << std::endl;
+			}
+			if (bestScore < -score)
+			{
+				bestMove = waits[jobId].front();
+				bestScore = -score;
+			}
+		}
+		else if (mode == "move")
+		{
+			if (debug)
+			{
+				//std::cout << waits[jobId].front().DebugString() << " score is " << score << " " << moveScore << std::endl;;
+			}
+			if (searchScore == -score)
+			{
+				bestMove = waits[jobId].front();
+				bestScore = -score;
+				jobs.clear();
+				waits.clear();
+				results.clear();
+				break;
+			}
+		}
 		waits.erase(jobId);
 		results.pop_front();
 	}
-	mtx.unlock();
+
+	ready = true;
+	cv.notify_all();
+	//std::cout << "Tick::unlock" << std::endl;
+
 	//std::cout << " " << jobs.size() << " " << waits.size() << " " << results.size() << std::endl;
 	if( 0 < jobs.size() || 0 < waits.size() || 0 < results.size() )
 	{
@@ -182,6 +261,6 @@ bool Ai::Tick()
 
 void Ai::Stop()
 {
-  isStop = true;
+	isStop = true;
 	worker->Join();
 }

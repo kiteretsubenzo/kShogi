@@ -20,6 +20,7 @@ public:
 	
 	void SetBoard(const Board &boardValue) { board = boardValue; }
 	void SetMode(const std::string &modeValue) { mode = modeValue; }
+	void SetSearchScore(const int &score) { searchScore = score; }
 	void SetDebug(const bool &debugValue) { debug = debugValue; }
 	void Start(Board board);
 	bool Tick();
@@ -36,6 +37,7 @@ private:
 	Board::PAWN_MOVE move;
 	
 	std::string mode = "minimax";
+	int searchScore = std::numeric_limits<int>::min();
 	bool debug = true;
 
 	Board::PAWN_MOVE bestMove;
@@ -43,6 +45,8 @@ private:
 	
 	Worker *worker;
 	std::mutex mtx;
+	std::condition_variable cv;
+	bool ready = true;
 
 	std::list<JOB> jobs;
 	std::unordered_map<std::string, std::list<Board::PAWN_MOVE>> waits;
