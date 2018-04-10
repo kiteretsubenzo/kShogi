@@ -71,13 +71,13 @@ int main()
 	"h00 y00 e00 g00 u00 r00 k00\n"
 	"second"
 	,
-	"h18 y04 e04 g04 u00 r00 k03\n"
+	"h16 y02 e04 g04 u02 r01 k03\n"
+	" . . . . .^R . .y_\n"
+	" . . . . . . .o_h_\n"
 	" . . . . . . . . .\n"
-	" . . . . . .r_ . .\n"
-	" . . . . . .U_ .o_\n"
-	" . . . . . . .^r .\n"
-	" . . . . . .^U . .\n"
-	" . . . . . . . . .\n"
+	" . . . . . . .h_ .\n"
+	" . . . . . . .^h .\n"
+	" . . . . . .^y . .\n"
 	" . . . . . . . . .\n"
 	" . . . . . . . . .\n"
 	" . . . . . . . . .\n"
@@ -165,7 +165,7 @@ int main()
 #if false
   Ai ai;
   ai.SetMode("scout");
-  ai.SetSearchScore(0);
+  //ai.SetSearchScore(0);
   ai.SetDebug(true);
   ai.Start(board);
 

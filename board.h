@@ -163,7 +163,7 @@ public:
 
 private:
 	bool AddMove(PAWN roll, uchar fromx, uchar fromy, char tox, char toy, bool upgrade, std::list<Board::PAWN_MOVE> &moveList);
-	bool IsEnd();
+	bool IsEnd() const;
 	bool GetCell(char tox, char toy, CELL &cell) const;
 	
 	uchar captured[(uchar)PLAYER::MAX][(uchar)CAPTURE_MAX];

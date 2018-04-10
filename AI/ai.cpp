@@ -134,7 +134,7 @@ void Ai::GetJob(std::string &job)
 		job = "jobid:" + jobIdString;
 		job += ",window:" + std::to_string(jobStruct.window);
 		job += ",deep:" + std::to_string(jobStruct.deep);
-		if (debug)
+		if (debug && false)
 		{
 			job += ",debug:true";
 		}
