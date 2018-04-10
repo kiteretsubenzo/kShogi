@@ -9,6 +9,8 @@
 #include "definitions.h"
 #include "board.h"
 
+//#define USE_PRIORITY
+
 Board::Board()
 {
   for( uchar i=0; i<(uchar)PLAYER::MAX; i++ )
@@ -34,6 +36,12 @@ void Board::Init(const std::string str)
 {
 	std::vector<std::string> strs = split(str, '\n');
 	
+	for (int i = 0; i < (int)PLAYER::MAX; i++)
+	{
+		gyokux[i] = -1;
+		gyokuy[i] = -1;
+	}
+
 	for( int i=0; i<(uchar)CAPTURE_MAX; i++ )
 	{
 		char first[3] = { strs[BOARD_HEIGHT+1][i*4+1], strs[BOARD_HEIGHT+1][i*4+2], '\0' };
@@ -109,6 +117,8 @@ void Board::Init(const std::string str)
 						break;
 					case 'o':
 						matrix[j-1][i].pawn = PAWN_GYOKU;
+						gyokux[(int)(matrix[j - 1][i].player)] = i;
+						gyokuy[(int)(matrix[j - 1][i].player)] = j-1;
 						break;
 					default:
 						break;
@@ -489,7 +499,9 @@ std::list<Board::PAWN_MOVE> Board::GetMoveList()
 		}
 	}
 
-	//moveList.sort();
+#ifdef USE_PRIORITY
+	moveList.sort();
+#endif
 	return moveList;
 }
 
@@ -532,7 +544,7 @@ int Board::GetEvaluate(const std::list<Board::PAWN_MOVE> &moveList)
 int Board::GetPriority(const Board::PAWN_MOVE &move)
 {
 	int priority = 0;
-	/*
+#ifdef USE_PRIORITY
 	// 王手がかかってるか？
 	SwitchTurn();
 	if (IsEnd())
@@ -550,7 +562,7 @@ int Board::GetPriority(const Board::PAWN_MOVE &move)
 	{
 		priority += (int)(move.fromPawn);
 	}
-	*/
+#endif
 	return priority;
 }
 
@@ -573,6 +585,7 @@ bool Board::IsEnd()
 	}
 
 	// 玉の位置を求める
+	/*
 	char gyokux = -1;
 	char gyokuy = -1;
 	for (char j = 0; j < BOARD_HEIGHT; j++)
@@ -591,6 +604,13 @@ bool Board::IsEnd()
 			break;
 		}
 	}
+	if (gyokux != this->gyokux[(int)enemy] || gyokuy != this->gyokuy[(int)enemy])
+	{
+		std::cout << "!!!!!!!!!!!!!!" << std::endl;
+	}
+	*/
+	char gyokux = this->gyokux[(int)enemy];
+	char gyokuy = this->gyokuy[(int)enemy];
 	if (gyokux == -1)
 	{
 		return false;
@@ -599,18 +619,14 @@ bool Board::IsEnd()
 	// 玉の周囲
 	if (GetCell(gyokux - 1, gyokuy, cell))
 	{
-		if (cell.pawn == PAWN_KIN ||
-			IsUpgrade(cell.pawn) ||
-			cell.pawn == PAWN_GYOKU)
+		if (IsGyokuKinUpgrade(cell.pawn))
 		{
 			return true;
 		}
 	}
 	if (GetCell(gyokux + 1, gyokuy, cell))
 	{
-		if (cell.pawn == PAWN_KIN ||
-			IsUpgrade(cell.pawn) ||
-			cell.pawn == PAWN_GYOKU)
+		if (IsGyokuKinUpgrade(cell.pawn))
 		{
 			return true;
 		}
@@ -619,20 +635,14 @@ bool Board::IsEnd()
 	{
 		if (turn == PLAYER::FIRST)
 		{
-			if (cell.pawn == PAWN_KIN ||
-				IsUpgrade(cell.pawn) ||
-				cell.pawn == PAWN_GYOKU)
+			if (IsGyokuKinUpgrade(cell.pawn))
 			{
 				return true;
 			}
 		}
 		else
 		{
-			if (cell.pawn == PAWN_HU ||
-				cell.pawn == PAWN_GIN ||
-				cell.pawn == PAWN_KIN ||
-				IsUpgrade(cell.pawn) ||
-				cell.pawn == PAWN_GYOKU)
+			if (IsGyokuKinUpgrade(cell.pawn) || cell.pawn == PAWN_HU || cell.pawn == PAWN_GIN)
 			{
 				return true;
 			}
@@ -642,20 +652,14 @@ bool Board::IsEnd()
 	{
 		if (turn == PLAYER::FIRST)
 		{
-			if (cell.pawn == PAWN_HU ||
-				cell.pawn == PAWN_KIN ||
-				IsUpgrade(cell.pawn) ||
-				cell.pawn == PAWN_GYOKU)
+			if (IsGyokuKinUpgrade(cell.pawn) || cell.pawn == PAWN_HU)
 			{
 				return true;
 			}
 		}
 		else
 		{
-			if (cell.pawn == PAWN_GIN ||
-				cell.pawn == PAWN_KIN ||
-				IsUpgrade(cell.pawn) ||
-				cell.pawn == PAWN_GYOKU)
+			if (IsGyokuKinUpgrade(cell.pawn) || cell.pawn == PAWN_GIN)
 			{
 				return true;
 			}
@@ -665,19 +669,14 @@ bool Board::IsEnd()
 	{
 		if (turn == PLAYER::FIRST)
 		{
-			if (cell.pawn == PAWN_GIN ||
-				cell.pawn == PAWN_RYU ||
-				cell.pawn == PAWN_GYOKU)
+			if (cell.pawn == PAWN_GYOKU || cell.pawn == PAWN_GIN || cell.pawn == PAWN_RYU)
 			{
 				return true;
 			}
 		}
 		else
 		{
-			if (cell.pawn == PAWN_GIN ||
-				cell.pawn == PAWN_KIN ||
-				IsUpgrade(cell.pawn) ||
-				cell.pawn == PAWN_GYOKU)
+			if (IsGyokuKinUpgrade(cell.pawn) || cell.pawn == PAWN_GIN)
 			{
 				return true;
 			}
@@ -687,19 +686,14 @@ bool Board::IsEnd()
 	{
 		if (turn == PLAYER::FIRST)
 		{
-			if (cell.pawn == PAWN_GIN ||
-				cell.pawn == PAWN_RYU ||
-				cell.pawn == PAWN_GYOKU)
+			if (cell.pawn == PAWN_GYOKU || cell.pawn == PAWN_GIN || cell.pawn == PAWN_RYU)
 			{
 				return true;
 			}
 		}
 		else
 		{
-			if (cell.pawn == PAWN_GIN ||
-				cell.pawn == PAWN_KIN ||
-				IsUpgrade(cell.pawn) ||
-				cell.pawn == PAWN_GYOKU)
+			if (IsGyokuKinUpgrade(cell.pawn) || cell.pawn == PAWN_GIN)
 			{
 				return true;
 			}
@@ -709,19 +703,14 @@ bool Board::IsEnd()
 	{
 		if (turn == PLAYER::FIRST)
 		{
-			if (cell.pawn == PAWN_GIN ||
-				cell.pawn == PAWN_KIN ||
-				IsUpgrade(cell.pawn) ||
-				cell.pawn == PAWN_GYOKU)
+			if (IsGyokuKinUpgrade(cell.pawn) || cell.pawn == PAWN_GIN)
 			{
 				return true;
 			}
 		}
 		else
 		{
-			if (cell.pawn == PAWN_GIN ||
-				cell.pawn == PAWN_RYU ||
-				cell.pawn == PAWN_GYOKU)
+			if (cell.pawn == PAWN_GYOKU || cell.pawn == PAWN_GIN || cell.pawn == PAWN_RYU)
 			{
 				return true;
 			}
@@ -731,19 +720,14 @@ bool Board::IsEnd()
 	{
 		if (turn == PLAYER::FIRST)
 		{
-			if (cell.pawn == PAWN_GIN ||
-				cell.pawn == PAWN_KIN ||
-				IsUpgrade(cell.pawn) ||
-				cell.pawn == PAWN_GYOKU)
+			if (IsGyokuKinUpgrade(cell.pawn) || cell.pawn == PAWN_GIN)
 			{
 				return true;
 			}
 		}
 		else
 		{
-			if (cell.pawn == PAWN_GIN ||
-				cell.pawn == PAWN_RYU ||
-				cell.pawn == PAWN_GYOKU)
+			if (cell.pawn == PAWN_GYOKU || cell.pawn == PAWN_GIN || cell.pawn == PAWN_RYU)
 			{
 				return true;
 			}
@@ -1002,12 +986,14 @@ void Board::Move(const PAWN_MOVE &move)
 		return;
 	}
 	
-	PAWN pawn = matrix[move.pos.pos.fromy][move.pos.pos.fromx].pawn;
+	//PAWN pawn = matrix[move.pos.pos.fromy][move.pos.pos.fromx].pawn;
+	PAWN pawn = move.fromPawn;
 	if( move.upgrade )
 	{
 		Upgrade(pawn);
 	}
 	matrix[move.pos.pos.toy][move.pos.pos.tox].player = turn;
+	//matrix[move.pos.pos.toy][move.pos.pos.tox].pawn = pawn;
 	matrix[move.pos.pos.toy][move.pos.pos.tox].pawn = pawn;
 	matrix[move.pos.pos.fromy][move.pos.pos.fromx].player = PLAYER::NONE;
 	matrix[move.pos.pos.fromy][move.pos.pos.fromx].pawn = PAWN_NONE;
@@ -1015,6 +1001,11 @@ void Board::Move(const PAWN_MOVE &move)
 	{
 		PAWN roll = move.toPawn;
 		captured[(int)turn][(int)roll]++;
+	}
+	if (move.fromPawn == PAWN_GYOKU)
+	{
+		gyokux[(int)turn] = move.pos.pos.tox;
+		gyokuy[(int)turn] = move.pos.pos.toy;
 	}
 	turn = nextTurn;
 }
@@ -1040,7 +1031,8 @@ void Board::Back(const PAWN_MOVE &move)
 		return;
 	}
 	
-	PAWN pawn = matrix[move.pos.pos.toy][move.pos.pos.tox].pawn;
+	//PAWN pawn = matrix[move.pos.pos.toy][move.pos.pos.tox].pawn;
+	PAWN pawn = move.fromPawn;
 	if( move.upgrade )
 	{
 		Downgrade(pawn);
@@ -1057,6 +1049,11 @@ void Board::Back(const PAWN_MOVE &move)
 	{
 		matrix[move.pos.pos.toy][move.pos.pos.tox].player = PLAYER::NONE;
 		matrix[move.pos.pos.toy][move.pos.pos.tox].pawn = PAWN_NONE;
+	}
+	if (move.fromPawn == PAWN_GYOKU)
+	{
+		gyokux[(int)prevTurn] = move.pos.pos.fromx;
+		gyokuy[(int)prevTurn] = move.pos.pos.fromy;
 	}
 	turn = prevTurn;
 }

@@ -4,7 +4,7 @@
 std::vector<std::string> testMove
 {
 	// NO.1
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00 \n"
 	"y_e_g_k_o_k_g_e_y_\n"
 	" .r_ . . . . .u_ .\n"
 	"h_h_h_h_h_h_h_h_h_\n"
@@ -14,7 +14,7 @@ std::vector<std::string> testMove
 	"^h^h^h^h^h^h^h^h^h\n"
 	" .^u . . . . .^r .\n"
 	"^y^e^g^k^o^k^g^e^y\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"first"
 	":"
 	"９六 歩(9,7)\n"
@@ -49,7 +49,7 @@ std::vector<std::string> testMove
 	"１八 杏(1,9)\n"
 	,
 	// NO.2
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	" . . . . . . . . .\n"
 	"^h . . . . . . . .\n"
 	" .^h . . . . . . .\n"
@@ -59,7 +59,7 @@ std::vector<std::string> testMove
 	" . . . . . . . . .\n"
 	" . . . . . . . . .\n"
 	" . . . . . . . . .\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"first"
 	":"
 	"９一 歩(9,2) 成り\n"
@@ -69,7 +69,7 @@ std::vector<std::string> testMove
 	"７三 歩(7,4) 成り\n"
 	,
 	// NO.3
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	" . . . . . . . . .\n"
 	" . . . . . . . . .\n"
 	" . . . . . . . . .\n"
@@ -79,7 +79,7 @@ std::vector<std::string> testMove
 	" . . . . . . .h_ .\n"
 	" . . . . . . . .h_\n"
 	" . . . . . . . . .\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"second"
 	":"
 	"３七 歩(3,6)\n"
@@ -89,7 +89,7 @@ std::vector<std::string> testMove
 	"１九 歩(1,8) 成り\n"
 	,
 	// NO.4
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	" . . . . . . . . .\n"
 	"^y . . . . . . . .\n"
 	" .^y . . . . . . .\n"
@@ -99,7 +99,7 @@ std::vector<std::string> testMove
 	"^hh_ . . .^y . . .\n"
 	" . . . . . .^y . .\n"
 	"^y^y . . . . .^y .\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"first"
 	":"
 	"９一 杏(9,2) 成り\n"
@@ -157,7 +157,7 @@ std::vector<std::string> testMove
 	"２一 杏(2,9) 成り\n"
 	,
 	// NO.5
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"y_y_ . . . . . . .\n"
 	" . . . . . . . .y_\n"
 	" . . . . . . .y_ .\n"
@@ -167,7 +167,7 @@ std::vector<std::string> testMove
 	" . . .y_ . . . . .\n"
 	" . .y_ . . . . . .\n"
 	" .y_ . . . . . . .\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"second"
 	":"
 	"９二 杏(9,1)\n"
@@ -217,7 +217,7 @@ std::vector<std::string> testMove
 	"７九 杏(7,8) 成り\n"
 	,
 	// NO.6
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	" . . . . . . . . .\n"
 	" . . .^h .h_ . . .\n"
 	"^e .^e . . . . .^e\n"
@@ -227,7 +227,7 @@ std::vector<std::string> testMove
 	" . . . . . . . . .\n"
 	" . . . . . . . . .\n"
 	" . . . . . . . . .\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"first"
 	":"
 	"６一 歩(6,2) 成り\n"
@@ -237,7 +237,7 @@ std::vector<std::string> testMove
 	"６六 桂(5,4)\n"
 	,
 	// NO.7
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	" . . . . . . . . .\n"
 	" . . . . . . . . .\n"
 	" . . . . . . . . .\n"
@@ -247,7 +247,7 @@ std::vector<std::string> testMove
 	"e_ . . . . .e_ .e_\n"
 	" . . .^h .h_ . . .\n"
 	" . . . . . . . . .\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"second"
 	":"
 	"６四 桂(5,6)\n"
@@ -257,7 +257,7 @@ std::vector<std::string> testMove
 	"４九 歩(4,8) 成り\n"
 	,
 	// NO.8
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"^g . . . . . . .^g\n"
 	" .^g . . . . .^g .\n"
 	" . . . .^g . . . .\n"
@@ -267,7 +267,7 @@ std::vector<std::string> testMove
 	" . . . .^g . . . .\n"
 	" .^g . . . . .^g .\n"
 	"^g . . . . . . .^g\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"first"
 	":"
 	"８一 銀(8,2)\n"
@@ -313,7 +313,7 @@ std::vector<std::string> testMove
 	"１八 銀(1,9)\n"
 	,
 	// NO.9
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"g_ . . . . . . .g_\n"
 	" .g_ . . . . .g_ .\n"
 	" . . . .g_ . . . .\n"
@@ -323,7 +323,7 @@ std::vector<std::string> testMove
 	" . . . .g_ . . . .\n"
 	" .g_ . . . . .g_ .\n"
 	"g_ . . . . . . .g_\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"second"
 	":"
 	"９二 銀(9,1)\n"
@@ -369,7 +369,7 @@ std::vector<std::string> testMove
 	"１七 銀(2,8) 成り\n"
 	,
 	// NO.10
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"^G . . . . . . .^G\n"
 	" .^G . . . . .^G .\n"
 	" . . . .^G . . . .\n"
@@ -379,7 +379,7 @@ std::vector<std::string> testMove
 	" . . . .^G . . . .\n"
 	" .^G . . . . .^G .\n"
 	"^G . . . . . . .^G\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"first"
 	":"
 	"８一 全(9,1)\n"
@@ -426,7 +426,7 @@ std::vector<std::string> testMove
 	"２九 全(1,9)\n"
 	,
 	// NO.11
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"G_ . . . . . . .G_\n"
 	" .G_ . . . . .G_ .\n"
 	" . . . .G_ . . . .\n"
@@ -436,7 +436,7 @@ std::vector<std::string> testMove
 	" . . . .G_ . . . .\n"
 	" .G_ . . . . .G_ .\n"
 	"G_ . . . . . . .G_\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"second"
 	":"
 	"９二 全(9,1)\n"
@@ -483,7 +483,7 @@ std::vector<std::string> testMove
 	"１八 全(1,9)\n"
 	,
 	// NO.12
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"^k . . . . . . .^k\n"
 	" .^k . . . . .^k .\n"
 	" . . . .^k . . . .\n"
@@ -493,7 +493,7 @@ std::vector<std::string> testMove
 	" . . . .^k . . . .\n"
 	" .^k . . . . .^k .\n"
 	"^k . . . . . . .^k\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"first"
 	":"
 	"８一 金(9,1)\n"
@@ -540,7 +540,7 @@ std::vector<std::string> testMove
 	"２九 金(1,9)\n"
 	,
 	// NO.13
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"K_ . . . . . . .K_\n"
 	" .K_ . . . . .K_ .\n"
 	" . . . .K_ . . . .\n"
@@ -550,7 +550,7 @@ std::vector<std::string> testMove
 	" . . . .K_ . . . .\n"
 	" .K_ . . . . .K_ .\n"
 	"K_ . . . . . . .K_\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"second"
 	":"
 	"９二 金(9,1)\n"
@@ -597,7 +597,7 @@ std::vector<std::string> testMove
 	"１八 金(1,9)\n"
 	,
 	// NO.14
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"^u . . .^u . . .^u\n"
 	" . . . . . . . . .\n"
 	" . . . .h_ . . . .\n"
@@ -607,7 +607,7 @@ std::vector<std::string> testMove
 	" . .^u . . . . . .\n"
 	" . . . . . . . . .\n"
 	"^u . . .^u . . .^u\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"first"
 	":"
 	"８二 角(9,1)\n"
@@ -677,7 +677,7 @@ std::vector<std::string> testMove
 	"８二 角(1,9) 成り\n"
 	,
 	// NO.15
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"u_ . . .u_ . . .u_\n"
 	" . . . . . . . . .\n"
 	" . . . .h_ . . . .\n"
@@ -687,7 +687,7 @@ std::vector<std::string> testMove
 	" . .u_ . . . . . .\n"
 	" . . . . . . . . .\n"
 	"u_ . . .u_ . . .u_\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"second"
 	":"
 	"８二 角(9,1)\n"
@@ -754,7 +754,7 @@ std::vector<std::string> testMove
 	"８二 角(1,9)\n"
 	,
 	// NO.16
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"^U . . .^U . . .^U\n"
 	" . . . . . . . . .\n"
 	" . . . .h_ . . . .\n"
@@ -764,7 +764,7 @@ std::vector<std::string> testMove
 	" . .^U . . . . . .\n"
 	" . . . . . . . . .\n"
 	"^U . . .^U . . .^U\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"first"
 	":"
 	"８二 馬(9,1)\n"
@@ -842,7 +842,7 @@ std::vector<std::string> testMove
 	"１八 馬(1,9)\n"
 	,
 	// NO.17
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"U_ . . .U_ . . .U_\n"
 	" . . . . . . . . .\n"
 	" . . . .h_ . . . .\n"
@@ -852,7 +852,7 @@ std::vector<std::string> testMove
 	" . .U_ . . . . . .\n"
 	" . . . . . . . . .\n"
 	"U_ . . .U_ . . .U_\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"second"
 	":"
 	"８二 馬(9,1)\n"
@@ -931,7 +931,7 @@ std::vector<std::string> testMove
 	"１八 馬(1,9)\n"
 	,
 	// NO.18
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"^r . . .^r . . .^r\n"
 	" . . . . . . . . .\n"
 	" . . . .h_ . . . .\n"
@@ -941,7 +941,7 @@ std::vector<std::string> testMove
 	" . .^r . . . . . .\n"
 	" . . . . . . . . .\n"
 	"^r . . .^r . . .^r\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"first"
 	":"
 	"８一 飛(9,1)\n"
@@ -1052,7 +1052,7 @@ std::vector<std::string> testMove
 	"１六 飛(1,9)\n"
 	,
 	// NO.19
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"r_ . . .r_ . . .r_\n"
 	" . . . . . . . . .\n"
 	" . . . .h_ . . . .\n"
@@ -1062,7 +1062,7 @@ std::vector<std::string> testMove
 	" . .r_ . . . . . .\n"
 	" . . . . . . . . .\n"
 	"r_ . . .r_ . . .r_\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"second"
 	":"
 	"８一 飛(9,1)\n"
@@ -1177,7 +1177,7 @@ std::vector<std::string> testMove
 	"１六 飛(1,9)\n"
 	,
 	// NO.20
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"^R . . .^R . . .^R\n"
 	" . . . . . . . . .\n"
 	" . . . .h_ . . . .\n"
@@ -1187,7 +1187,7 @@ std::vector<std::string> testMove
 	" . .^R . . . . . .\n"
 	" . . . . . . . . .\n"
 	"^R . . .^R . . .^R\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"first"
 	":"
 	"８一 龍(9,1)\n"
@@ -1287,7 +1287,7 @@ std::vector<std::string> testMove
 	"２八 龍(1,9)\n"
 	,
 	// NO.21
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"R_ . . .R_ . . .R_\n"
 	" . . . . . . . . .\n"
 	" . . . .h_ . . . .\n"
@@ -1297,7 +1297,7 @@ std::vector<std::string> testMove
 	" . .R_ . . . . . .\n"
 	" . . . . . . . . .\n"
 	"R_ . . .R_ . . .R_\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"second"
 	":"
 	"８一 龍(9,1)\n"
@@ -1396,7 +1396,8 @@ std::vector<std::string> testMove
 	"２八 龍(1,9)\n"
 	,
 	// NO.22
-	"h00 y00 e00 g00 k00 u00 r00\n"
+		/*
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"^o . . . . . . .^o\n"
 	" .^o . . . . .^o .\n"
 	" . . . .^o . . . .\n"
@@ -1406,7 +1407,7 @@ std::vector<std::string> testMove
 	" . . . .^o . . . .\n"
 	" .^o . . . . .^o .\n"
 	"^o . . . . . . .^o\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"first"
 	":"
 	"８一 玉(9,1)\n"
@@ -1463,7 +1464,7 @@ std::vector<std::string> testMove
 	"２九 玉(1,9)\n"
 	,
 	// NO.23
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"o_ . . . . . . .o_\n"
 	" .o_ . . . . .o_ .\n"
 	" . . . .o_ . . . .\n"
@@ -1473,7 +1474,7 @@ std::vector<std::string> testMove
 	" . . . .o_ . . . .\n"
 	" .o_ . . . . .o_ .\n"
 	"o_ . . . . . . .o_\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"second"
 	":"
 	"８一 玉(9,1)\n"
@@ -1528,6 +1529,7 @@ std::vector<std::string> testMove
 	"８九 玉(9,9)\n"
 	"１八 玉(1,9)\n"
 	"２九 玉(1,9)\n"
+	*/
 };
 
 #endif // TEST_MOVE_H

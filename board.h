@@ -144,6 +144,23 @@ public:
 	
 	void PrintBoard() const;
 
+	bool operator==(const Board& rhs) const
+	{
+		return (
+			captured == rhs.captured &&
+			matrix == rhs.matrix &&
+			turn == rhs.turn
+		);
+	}
+	bool operator!=(const Board& rhs) const
+	{
+		return (
+			captured != rhs.captured ||
+			matrix != rhs.matrix ||
+			turn != rhs.turn
+		);
+	}
+
 private:
 	bool AddMove(PAWN roll, uchar fromx, uchar fromy, char tox, char toy, bool upgrade, std::list<Board::PAWN_MOVE> &moveList);
 	bool IsEnd();
@@ -152,6 +169,9 @@ private:
 	uchar captured[(uchar)PLAYER::MAX][(uchar)CAPTURE_MAX];
 	CELL matrix[BOARD_HEIGHT][BOARD_WIDTH];
 	PLAYER turn;
+
+	char gyokux[(uchar)PLAYER::MAX];
+	char gyokuy[(uchar)PLAYER::MAX];
 };
 
 static const Board::PAWN_MOVE PAWN_MOVE_ZERO{ PAWN_NONE, 0, 0, 0, 0, PAWN_NONE, PAWN_NONE, false };

@@ -38,6 +38,7 @@ static const std::string PAWN_KANJI[PAWN_MAX] =
 #define Upgrade(type)	(type |= 0x08)
 #define Downgrade(type)	(type &= 0x07)
 #define IsUpgrade(type)	((type & 0x08) != 0)
+#define IsGyokuKinUpgrade(type) (PAWN_KIN <= type)
 
 static const int SCORE_NONE = std::numeric_limits<int>::max() - 1;
 static const int SCORE_WIN = 99999;
