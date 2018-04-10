@@ -70,7 +70,7 @@ bool Test()
 		}
 	}
 #endif
-#if true
+#if false
 	// 打ちテスト
 	std::cout << "put test" << std::endl;
 	for( unsigned int i=0; i<testPut.size(); i++ )
@@ -116,7 +116,7 @@ bool Test()
 		}
 	}
 #endif
-#if true
+#if false
 	// 大手逃れテスト
 	std::cout << "escape test" << std::endl;
 	for( unsigned int i=0; i<testEscape.size(); i++ )

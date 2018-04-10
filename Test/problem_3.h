@@ -4,7 +4,7 @@
 std::vector<std::string> testProblem3
 {
 	// No.1
-	"h18 y04 e04 g04 k03 u00 r00\n"
+	"h18 y04 e04 g04 u00 r00 k03\n"
 	" . . . . . . . . .\n"
 	" . . . . . .r_ . .\n"
 	" . . . . . .U_ .o_\n"
@@ -14,13 +14,13 @@ std::vector<std::string> testProblem3
 	" . . . . . . . . .\n"
 	" . . . . . . . . .\n"
 	" . . . . . . . . .\n"
-	"h00 y00 e00 g00 k01 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k01\n"
 	"first"
 	":"
 	"ÇQéO îÚ(2,4) ê¨ÇË"
 	,
 	// No.2
-	"h16 y02 e04 g04 k03 u02 r01\n"
+	"h16 y02 e04 g04 u02 r01 k03\n"
 	" . . . . .^R . .y_\n"
 	" . . . . . . .o_h_\n"
 	" . . . . . . . . .\n"
@@ -30,13 +30,13 @@ std::vector<std::string> testProblem3
 	" . . . . . . . . .\n"
 	" . . . . . . . . .\n"
 	" . . . . . . . . .\n"
-	"h00 y00 e00 g00 k01 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k01\n"
 	"first"
 	":"
 	"ÇQàÍ ó¥(4,1)"
 	,
 	// No.3
-	"h18 y04 e04 g04 k04 u00 r00\n"
+	"h18 y04 e04 g04 u00 r00 k04\n"
 	" . . . . . . . . .\n"
 	" . . . . . .^U^R .\n"
 	" . . . . . . . . .\n"
@@ -46,7 +46,7 @@ std::vector<std::string> testProblem3
 	" . . . . . . . . .\n"
 	" . . . . . . . . .\n"
 	" . . . . . . . . .\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"first"
 	":"
 	"ÇPél în(3,2)"

@@ -32,7 +32,7 @@ int main()
   Board board;
   std::string boardInits[] =
   {
-    "h01 y00 e00 g00 k00 u00 r00\n"
+    "h01 y00 e00 g00 u00 r00 k00\n"
     "y_e_g_k_o_k_g_e_y_\n"
     " . . . . . . . . .\n"
     "h_h_h_h_ .h_h_h_h_\n"
@@ -42,10 +42,10 @@ int main()
     "^h^h .^h^h^h^h^h^h\n"
     " .^u . .^o . .^r .\n"
     "^y^e^g^k .^k^g^e^y\n"
-    "h01 y00 e00 g00 k00 u00 r00\n"
+    "h01 y00 e00 g00 u00 r00 k00\n"
     "first"
   ,
-    "h18 y04 e04 g04 k04 u00 r00\n"
+    "h18 y04 e04 g04 u00 r00 k04\n"
     " . . . . . . . . .\n"
     " . . . . . .^U^R .\n"
     " . . . . . . . . .\n"
@@ -55,10 +55,10 @@ int main()
     " . . . . . . . . .\n"
     " . . . . . . . . .\n"
     " . . . . . . . . .\n"
-    "h00 y00 e00 g00 k00 u00 r00\n"
+    "h00 y00 e00 g00 u00 r00 k00\n"
     "first"
   ,
-	"h18 y04 e04 g04 k04 u00 r00\n"
+	"h18 y04 e04 g04 u00 r00 k04\n"
 	" . . . . . . . . .\n"
 	" . . . . . . .^R .\n"
 	" . . . . . . . . .\n"
@@ -68,20 +68,20 @@ int main()
 	" . . . . . . . . .\n"
 	" . . . . . . . . .\n"
 	" . . . . . . . . .\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
 	"second"
 	,
-	"h00 y00 e00 g00 k00 u00 r00\n"
-	" . . . . . . .^Ry_\n"
-	" . . . . . . . .h_\n"
-	" . . . . . . . .o_\n"
-	" . . . . . . .h_ .\n"
-	" . . . . . . .^h .\n"
-	" . . . . . .^y . .\n"
+	"h18 y04 e04 g04 u00 r00 k03\n"
+	" . . . . . . . . .\n"
+	" . . . . . .r_ . .\n"
+	" . . . . . .U_ .o_\n"
+	" . . . . . . .^r .\n"
+	" . . . . . .^U . .\n"
 	" . . . . . . . . .\n"
 	" . . . . . . . . .\n"
 	" . . . . . . . . .\n"
-	"h00 y00 e00 g00 k00 u00 r00\n"
+	" . . . . . . . . .\n"
+	"h00 y00 e00 g00 u00 r00 k01\n"
 	"first"
   };
   board.Init(boardInits[3]);
@@ -164,8 +164,8 @@ int main()
 #endif
 #if false
   Ai ai;
-  ai.SetMode("minimax");
-  //ai.SetSearchScore(0);
+  ai.SetMode("scout");
+  ai.SetSearchScore(0);
   ai.SetDebug(true);
   ai.Start(board);
 

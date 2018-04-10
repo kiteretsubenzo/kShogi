@@ -5,122 +5,43 @@
 #define BOARD_HEIGHT 9
 
 typedef unsigned char uchar;
+typedef unsigned char PAWN;
 
-class PAWN_ROLL;
+#define PAWN_HU		0
+#define PAWN_KYOH	1
+#define PAWN_KEI	2
+#define PAWN_GIN	3
+#define PAWN_KAKU	4
+#define PAWN_HI		5
+#define PAWN_KIN	6
+#define PAWN_GYOKU	7
+#define PAWN_HUN	8
+#define PAWN_KYOHN	9
+#define PAWN_KEIN	10
+#define PAWN_GINN	11
+#define PAWN_UMA	12
+#define PAWN_RYU	13
+#define PAWN_MAX	14
+#define PAWN_NONE	PAWN_MAX
+#define CAPTURE_MAX	PAWN_GYOKU
 
-class PAWN_TYPE
+static const char PAWN_CHAR[PAWN_MAX] =
 {
-public:
-	enum TYPE
-	{
-		HU, HUN, KYOH, KYOHN, KEI, KEIN, GIN, GINN, KIN, KAKU, UMA, HI, RYU, GYOKU,
-		MAX, NONE = MAX
-	};
-	
-	PAWN_TYPE()
-	{
-		type = NONE;
-	}
-	PAWN_TYPE( const TYPE &t )
-	{
-		type = t;
-	}
-	PAWN_TYPE( const PAWN_ROLL &roll );
-	
-	void Upgrade();
-	void Downgrade();
-	
-	bool operator==( const TYPE& rhs ) const
-	{
-		return type == rhs;
-	}
-	bool operator!=( const TYPE& rhs ) const
-	{
-		return type != rhs;
-	}
-	
-	PAWN_TYPE& operator=( const TYPE& rhs )
-	{
-		type = rhs;
-		return *this;
-	}
-	
-	operator int() const
-	{
-		return (int)type;
-	}
-	operator char() const;
-	operator std::string() const;
-	operator TYPE() const
-	{
-		return type;
-	}
-	
-private:
-	TYPE type;
+	'h', 'y', 'e', 'g', 'u', 'r', 'k', 'o', 'H', 'Y', 'E', 'G', 'U', 'R'
 };
 
-class PAWN_ROLL
+static const std::string PAWN_KANJI[PAWN_MAX] =
 {
-public:
-	enum ROLL
-	{
-		HU, KYOH, KEI, GIN, KIN, HI, KAKU, GYOKU, MAX,
-		NONE = MAX, CAPTURE_MAX = GYOKU
-	};
-	
-	PAWN_ROLL()
-	{
-		roll = NONE;
-	}
-	PAWN_ROLL(const ROLL &r)
-	{
-		roll = r;
-	}
-	PAWN_ROLL(const PAWN_TYPE &type);
-	PAWN_ROLL(int i)
-	{
-		//roll = INT_ROLL[i];
-		roll = (ROLL)i;
-	}
-	
-	bool operator==( const ROLL& rhs ) const
-	{
-		return roll == rhs;
-	}
-	bool operator!=( const ROLL& rhs ) const
-	{
-		return roll != rhs;
-	}
-	bool operator==(const PAWN_ROLL& rhs) const
-	{
-		return roll == rhs.roll;
-	}
-	bool operator!=(const PAWN_ROLL& rhs) const
-	{
-		return roll != rhs.roll;
-	}
-	
-	PAWN_ROLL& operator=( const ROLL& rhs )
-	{
-		roll = rhs;
-		return *this;
-	}
-	
-	operator int() const
-	{
-		return (int)roll;
-	}
-	operator char() const;
-	operator std::string () const;
-	
-private:
-	ROLL roll;
+	"歩", "杏", "桂", "銀", "角", "飛", "金", "玉", "と", "令", "介", "全", "馬", "龍",
 };
+
+#define Upgrade(type)	(type |= 0x08)
+#define Downgrade(type)	(type &= 0x07)
+#define IsUpgrade(type)	((type & 0x08) != 0)
 
 static const int SCORE_NONE = std::numeric_limits<int>::max() - 1;
 static const int SCORE_WIN = 99999;
-static const int MOVES_MAX = (BOARD_WIDTH + BOARD_HEIGHT - 2) * BOARD_WIDTH * BOARD_HEIGHT * 2 + (PAWN_ROLL::CAPTURE_MAX - 1) * BOARD_WIDTH * BOARD_HEIGHT;
+static const int MOVES_MAX = (BOARD_WIDTH + BOARD_HEIGHT - 2) * BOARD_WIDTH * BOARD_HEIGHT * 2 + (CAPTURE_MAX - 1) * BOARD_WIDTH * BOARD_HEIGHT;
 
 std::vector<std::string> split(std::string str, char c);
 std::unordered_map<std::string, std::string> fromJson(std::string str);

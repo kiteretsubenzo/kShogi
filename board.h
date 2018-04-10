@@ -10,7 +10,7 @@ enum class PLAYER
 struct CELL
 {
   PLAYER player;
-  PAWN_TYPE pawn;
+  PAWN pawn;
 };
 
 static const std::string PLAYER_STRING[(uchar)PLAYER::MAX] =
@@ -33,7 +33,7 @@ class Board
 public:
 	struct PAWN_MOVE
 	{
-		PAWN_ROLL reserve;
+		PAWN reserve;
 		struct position {
 			uchar fromx;
 			uchar fromy;
@@ -44,14 +44,14 @@ public:
 			struct position pos;
 			uint32_t uint32_pos;
 		} pos;
-		PAWN_TYPE fromPawn;
-		PAWN_TYPE toPawn;
+		PAWN fromPawn;
+		PAWN toPawn;
 		bool upgrade;
 		int priority;
 		
 		std::string DebugString() const
 		{
-			if( reserve == PAWN_ROLL::NONE && pos.uint32_pos == 0 )
+			if( reserve == PAWN_NONE && pos.uint32_pos == 0 )
 			{
 				return "ZERO";
 			}
@@ -59,14 +59,14 @@ public:
 			std::string str;
 			//uchar tox, toy;
 			str += numberToZenkaku[(uchar)pos.pos.tox] + numberToKanji[(uchar)pos.pos.toy];
-			if( reserve != PAWN_ROLL::NONE )
+			if( reserve != PAWN_NONE )
 			{
 				//PAWN_ROLL reserve;
-				str +=  " " + (std::string)reserve + " 打ち";
+				str +=  " " + PAWN_KANJI[reserve] + " 打ち";
 			}
 			else
 			{
-				str += " " + (std::string)fromPawn;
+				str += " " + PAWN_KANJI[fromPawn];
 				str += "(" + std::to_string(BOARD_WIDTH-pos.pos.fromx) + "," + std::to_string(pos.pos.fromy+1) + ")";
 				//bool upgrade;
 				if( upgrade )
@@ -145,16 +145,15 @@ public:
 	void PrintBoard() const;
 
 private:
-	bool AddMove(PAWN_ROLL roll, uchar fromx, uchar fromy, char tox, char toy, bool upgrade, std::list<Board::PAWN_MOVE> &moveList);
+	bool AddMove(PAWN roll, uchar fromx, uchar fromy, char tox, char toy, bool upgrade, std::list<Board::PAWN_MOVE> &moveList);
 	bool IsEnd();
-	bool IsCapture( char tox, char toy, PLAYER enemy, bool &isCapture );
 	bool GetCell(char tox, char toy, CELL &cell) const;
 	
-	uchar captured[(uchar)PLAYER::MAX][(uchar)PAWN_ROLL::CAPTURE_MAX];
+	uchar captured[(uchar)PLAYER::MAX][(uchar)CAPTURE_MAX];
 	CELL matrix[BOARD_HEIGHT][BOARD_WIDTH];
 	PLAYER turn;
 };
 
-static const Board::PAWN_MOVE PAWN_MOVE_ZERO{ PAWN_ROLL::NONE, 0, 0, 0, 0, PAWN_TYPE::NONE, PAWN_TYPE::NONE, false };
+static const Board::PAWN_MOVE PAWN_MOVE_ZERO{ PAWN_NONE, 0, 0, 0, 0, PAWN_NONE, PAWN_NONE, false };
 
 #endif // BOARD_H
