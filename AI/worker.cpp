@@ -166,10 +166,6 @@ void Worker::Search()
 					std::list<Board::PAWN_MOVE>::iterator ite = childItr->moves.begin();
 					++ite;
 					childItr->moves.erase(ite, childItr->moves.end());
-					if (debugPrint)
-					{
-						std::cout << "cut" << std::endl;
-					}
 				}
 			}
 			

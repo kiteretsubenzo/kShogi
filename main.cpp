@@ -163,29 +163,73 @@ int main()
   }
 #endif
 #if false
-  Ai ai;
-  ai.SetMode("scout");
-  //ai.SetSearchScore(0);
-  ai.SetDebug(true);
-  ai.Start(board);
+	Ai ai;
+	ai.SetDebug(true);
+	std::chrono::system_clock::time_point  start, end;
+	/*
+	for (int i = 0; i < 2; i++)
+	{
+		start = std::chrono::system_clock::now();
+		board.Init(boardInits[3]);
 
-  int i = 0;
-  while( ai.Tick() == false ) {
-    //std::cout << "\r" << i++;
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
-  }
-  
-  Board::PAWN_MOVE aiMove;
-  int aiScore;
-  ai.GetResult(aiMove, aiScore);
+		ai.SetMode("scout");
+		ai.SetSearchScore(0);
+		ai.Start(board);
 
-  std::cout << "best move is " << aiMove.DebugString() << std::endl;
-  std::cout << "best score is " << aiScore << std::endl;
-  //board.PrintKihu(aiMove);
+		while (ai.Tick() == false) {
+			//std::cout << "\r" << i++;
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		}
+
+		Board::PAWN_MOVE aiMove;
+		int aiScore;
+		ai.GetResult(aiMove, aiScore);
+
+		std::cout << "best move is " << aiMove.DebugString() << std::endl;
+		std::cout << "best score is " << aiScore << std::endl;
+		//board.PrintKihu(aiMove);
+		
+		end = std::chrono::system_clock::now();
+		long long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+		std::cout << milliseconds << std::endl;
+	}
+	*/
+
+	Board::PAWN_MOVE aiMove;
+	int aiScore;
+
+	board.Init(boardInits[3]);
+
+	std::cout << "move test" << std::endl;
+	ai.SetMode("move");
+	ai.SetSearchScore(-99999);
+	ai.SetDebug(false);
+	ai.Start(board);
+
+	while (ai.Tick() == false) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	}
+
+	board.Init(boardInits[3]);
+
+	std::cout << "scout test" << std::endl;
+	ai.SetMode("scout");
+	ai.SetSearchScore(0);
+	ai.SetDebug(false);
+	ai.Start(board);
+
+	while (ai.Tick() == false) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	}
+
+	ai.GetResult(aiMove, aiScore);
+
+	std::cout << "best move is " << aiMove.DebugString() << std::endl;
+	std::cout << "best score is " << aiScore << std::endl;
   
-  ai.Stop();
+	ai.Stop();
   
-  std::cout << "end" << std::endl;
+	std::cout << "end" << std::endl;
 #endif
   std::string str;
   std::cin >> str;

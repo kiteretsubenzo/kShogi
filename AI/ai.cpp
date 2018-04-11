@@ -108,7 +108,12 @@ void Ai::CallBack(const std::string &str)
 	cv.wait(uniq, [&] {return ready; });
 
 	ready = false;
-	results.push_back(str);
+
+	std::unordered_map<std::string, std::string> strs = fromJson(str);
+	if (waits.find(strs["jobid"]) != waits.end())
+	{
+		results.push_back(str);
+	}
 
 	ready = true;
 	cv.notify_all();
@@ -134,7 +139,7 @@ void Ai::GetJob(std::string &job)
 		job = "jobid:" + jobIdString;
 		job += ",window:" + std::to_string(jobStruct.window);
 		job += ",deep:" + std::to_string(jobStruct.deep);
-		if (debug && false)
+		if (debug)
 		{
 			job += ",debug:true";
 		}
@@ -145,6 +150,11 @@ void Ai::GetJob(std::string &job)
 		job += ",board:" + jobStruct.board.BoardToString();
 		waits[jobIdString] = jobStruct.moves;
 		jobs.pop_front();
+
+		if (mode == "scouttest")
+		{
+			std::cout << job << std::endl;
+		}
 	}
 	else
 	{
@@ -183,8 +193,6 @@ bool Ai::Tick()
 			{
 				std::cout << "score is " << score << " best score is " << bestScore << std::endl;
 			}
-			//std::string str;
-			//std::cin >> str;
 			if (bestScore == score)
 			{
 				bestMove = waits[jobId].front();
@@ -225,7 +233,7 @@ bool Ai::Tick()
 		{
 			if (debug)
 			{
-				//std::cout << waits[jobId].front().DebugString() << " score is " << score << " " << moveScore << std::endl;;
+				std::cout << waits[jobId].front().DebugString() << " score is " << score << " " << " best score is " << bestScore << std::endl;
 			}
 			if (searchScore == -score)
 			{

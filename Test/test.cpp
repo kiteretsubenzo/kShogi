@@ -210,15 +210,16 @@ bool Test()
 
 	ai.SetDebug(false);
 	std::cout << "problem 3 test" << std::endl;
-	for (unsigned int i = 0; i < testProblem3.size(); i++)
+	for (unsigned int i = 0; i < testProblem3.size()-1; i++)
 	{
 		std::cout << "NO." << (i + 1) << std::endl;
 
-		std::vector<std::string> strs = split(testProblem3[i], ':');
+		std::vector<std::string> strs = split(testProblem3[0], ':');
 
 		board.Init(strs[0]);
 
 		ai.SetMode("scout");
+		ai.SetSearchScore(0);
 		ai.Start(board);
 
 		while (ai.Tick() == false) {
