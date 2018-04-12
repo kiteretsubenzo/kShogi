@@ -29,6 +29,7 @@ void Worker::Search()
 {
 	while(true)
 	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		std::string job;
 		ai->GetJob(job);
 		if( job == "empty" )
@@ -71,7 +72,6 @@ void Worker::Search()
 		
 		/*
 		std::cout << "#prepare thread start" << std::endl;
-		std::this_thread::sleep_for(std::chrono::seconds(1));
 		std::cout << "#prepare thread finished" << std::endl;
 		int score = rnd() % 100 + 1;
 		*/
@@ -84,13 +84,25 @@ void Worker::Search()
 		nodeStack.rbegin()->moves.insert(nodeStack.rbegin()->moves.cbegin(), PAWN_MOVE_ZERO);
 		
 		int count = 0;
-		if (debug)
-		{
+		//if (debug)
+		//{
 			//std::cout << std::endl;
-		}
+		//}
 		while( true )
 		{
 			count++;
+
+			if ((count & 0xff) == 0)
+			{
+				// たまにjobが生きているか確認
+				if (ai->IsAlive(jobId) == false)
+				{
+					break;
+				}
+
+				// たまにスリープ入れる
+				std::this_thread::sleep_for(std::chrono::milliseconds(1));
+			}
 
 			std::list<NODE>::iterator top = nodeStack.begin();
 			

@@ -27,6 +27,7 @@ public:
 	Board::PAWN_MOVE GetMove() const { return move; }
 	void CallBack(const std::string &str);
 	void GetJob(std::string &job);
+	bool IsAlive(const std::string &jobId);
 	
 	void GetResult(Board::PAWN_MOVE &moveValue, int &scoreValue);
 

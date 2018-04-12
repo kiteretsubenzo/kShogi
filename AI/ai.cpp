@@ -38,7 +38,7 @@ void Ai::Start(Board boardValue)
 
 	std::unique_lock<std::mutex> uniq(mtx);
 	//std::cout << "Start::lock" << std::endl;
-	cv.wait(uniq, [&] {return ready; });
+	cv.wait(uniq, [&] {return ready;});
 	ready = false;
 	/*
 	for( unsigned int i=0; i<moveList.size(); i++ )
@@ -105,7 +105,7 @@ void Ai::CallBack(const std::string &str)
 {
 	std::unique_lock<std::mutex> uniq(mtx);
 	//std::cout << "CallBack::lock" << std::endl;
-	cv.wait(uniq, [&] {return ready; });
+	cv.wait(uniq, [&] {return ready;});
 
 	ready = false;
 
@@ -129,7 +129,7 @@ void Ai::GetJob(std::string &job)
 	}
 	std::unique_lock<std::mutex> uniq(mtx);
 	//std::cout << "GetJob::lock" << std::endl;
-	cv.wait(uniq, [&] {return ready; });
+	cv.wait(uniq, [&] {return ready;});
 	ready = false;
 
 	if( 0 < jobs.size() )
@@ -166,6 +166,20 @@ void Ai::GetJob(std::string &job)
 	//std::cout << "GetJob::unlock" << std::endl;
 }
 
+bool Ai::IsAlive(const std::string &jobId)
+{
+	std::unique_lock<std::mutex> uniq(mtx);
+	cv.wait(uniq, [&] {return ready;});
+	ready = false;
+
+	bool alive = (waits.find(jobId) != waits.end());
+	
+	ready = true;
+	cv.notify_all();
+
+	return alive;
+}
+
 void Ai::GetResult(Board::PAWN_MOVE &moveValue, int &scoreValue)
 {
 	moveValue = bestMove;
@@ -176,7 +190,7 @@ bool Ai::Tick()
 {
 	std::unique_lock<std::mutex> uniq(mtx);
 	//std::cout << "Tick::lock" << std::endl;
-	cv.wait(uniq, [&] {return ready; });
+	cv.wait(uniq, [&] {return ready;});
 	ready = false;
 
 	// 結果を回収

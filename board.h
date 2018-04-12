@@ -1,8 +1,6 @@
 ﻿#ifndef BOARD_H
 #define BOARD_H
 
-//#define POS_TEST
-
 enum class PLAYER
 {
   FIRST, SECOND,
@@ -33,7 +31,6 @@ static const std::string numberToKanji[9] =
 class Board
 {
 public:
-#ifdef POS_TEST
 	union MOVE_PAWN_MEMORY
 	{
 		struct
@@ -55,15 +52,10 @@ public:
 		bool upgrade = false;
 		int priority = 0;
 
-		PAWN_MOVE()
-			: reserve(PAWN_NONE), upgrade(false), priority(0)
+		PAWN_MOVE() : reserve(PAWN_NONE), upgrade(false), priority(0)
 		{
-			from.x = 0;
-			from.y = 0;
-			from.pawn = PAWN_NONE;
-			to.x = 0;
-			to.y = 0;
-			to.pawn = PAWN_NONE;
+			from.mem = 0;
+			to.mem = 0;
 		}
 
 		PAWN_MOVE(PAWN reserveValue, uchar fromx, uchar fromy, uchar tox, uchar toy, PAWN fromPawn, PAWN toPawn, bool upgradeValue, int priorityValue)
@@ -155,106 +147,6 @@ public:
 			return stream.str();
 		}
 	};
-#else
-	struct PAWN_MOVE
-	{
-		PAWN reserve;
-
-		struct position {
-			uchar fromx;
-			uchar fromy;
-			uchar tox;
-			uchar toy;
-		};
-		union {
-			struct position pos;
-			uint32_t uint32_pos;
-		} pos;
-
-		PAWN fromPawn;
-		PAWN toPawn;
-		bool upgrade;
-		int priority;
-		
-		std::string DebugString() const
-		{
-			if( reserve == PAWN_NONE && pos.uint32_pos == 0 )
-			{
-				return "ZERO";
-			}
-			
-			std::string str;
-			//uchar tox, toy;
-			str += numberToZenkaku[(uchar)pos.pos.tox] + numberToKanji[(uchar)pos.pos.toy];
-
-			if( reserve != PAWN_NONE )
-			{
-				//PAWN_ROLL reserve;
-				str +=  " " + PAWN_KANJI[reserve] + " 打ち";
-			}
-			else
-			{
-				str += " " + PAWN_KANJI[fromPawn];
-				str += "(" + std::to_string(BOARD_WIDTH-pos.pos.fromx) + "," + std::to_string(pos.pos.fromy+1) + ")";
-
-				if( upgrade )
-				{
-					str += " 成り";
-				}
-			}
-			
-			return str;
-		}
-		
-		bool operator==( const PAWN_MOVE& rhs ) const
-		{
-			return (
-				reserve == rhs.reserve &&
-				pos.uint32_pos == rhs.pos.uint32_pos &&
-				toPawn == rhs.toPawn &&
-				upgrade == rhs.upgrade
-			);
-		}
-		bool operator!=( const PAWN_MOVE& rhs ) const
-		{
-			return (
-				reserve != rhs.reserve ||
-				pos.uint32_pos != rhs.pos.uint32_pos ||
-				toPawn != rhs.toPawn ||
-				upgrade != rhs.upgrade
-			);
-		}
-
-		bool operator<(const PAWN_MOVE& rhs) const
-		{
-			return ( priority > rhs.priority );
-		}
-		
-		operator std::string() const
-		{
-			std::stringstream stream;
-
-			stream << std::setfill('0') << std::setw(2) << (int)reserve;
-			stream << std::setfill('0') << std::setw(2) << (int)pos.pos.fromx;
-			stream << std::setfill('0') << std::setw(2) << (int)pos.pos.fromy;
-			stream << std::setfill('0') << std::setw(2) << (int)pos.pos.tox;
-			stream << std::setfill('0') << std::setw(2) << (int)pos.pos.toy;
-			stream << std::setfill('0') << std::setw(2) << (int)fromPawn;
-			stream << std::setfill('0') << std::setw(2) << (int)toPawn;
-
-			if( upgrade )
-			{
-				stream << "t";
-			}
-			else
-			{
-				stream << "f";
-			}
-
-			return stream.str();
-		}
-	};
-#endif
 	
 	Board();
 	
@@ -305,10 +197,6 @@ private:
 	char gyokuy[(uchar)PLAYER::MAX];
 };
 
-#ifdef POS_TEST
 static const Board::PAWN_MOVE PAWN_MOVE_ZERO( PAWN_NONE, 0, 0, 0, 0, PAWN_NONE, PAWN_NONE, false, 0 );
-#else
-static const Board::PAWN_MOVE PAWN_MOVE_ZERO{ PAWN_NONE, 0, 0, 0, 0, PAWN_NONE, PAWN_NONE, false };
-#endif
 
 #endif // BOARD_H
