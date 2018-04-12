@@ -34,6 +34,9 @@ Board::Board()
 
 void Board::Init(const std::string str)
 {
+	
+	//'h', 'H', 'y', 'Y', 'e', 'E', 'g', 'G', 'k', 'u', 'U', 'r', 'R', 'o';
+
 	std::vector<std::string> strs = split(str, '\n');
 	
 	for (int i = 0; i < (int)PLAYER::MAX; i++)
@@ -73,55 +76,12 @@ void Board::Init(const std::string str)
 					matrix[j-1][i].player = PLAYER::SECOND;
 					type = c[0];
 				}
-				//'h', 'H', 'y', 'Y', 'e', 'E', 'g', 'G', 'k', 'u', 'U', 'r', 'R', 'o';
-				switch( type )
+
+				matrix[j - 1][i].pawn = charToPawn[type];
+				if (type == 'o')
 				{
-					case 'h':
-						matrix[j-1][i].pawn = PAWN_HU;
-						break;
-					case 'H':
-						matrix[j-1][i].pawn = PAWN_HUN;
-						break;
-					case 'y':
-						matrix[j-1][i].pawn = PAWN_KYOH;
-						break;
-					case 'Y':
-						matrix[j-1][i].pawn = PAWN_KYOHN;
-						break;
-					case 'e':
-						matrix[j-1][i].pawn = PAWN_KEI;
-						break;
-					case 'E':
-						matrix[j-1][i].pawn = PAWN_KEIN;
-						break;
-					case 'g':
-						matrix[j-1][i].pawn = PAWN_GIN;
-						break;
-					case 'G':
-						matrix[j-1][i].pawn = PAWN_GINN;
-						break;
-					case 'k':
-						matrix[j-1][i].pawn = PAWN_KIN;
-						break;
-					case 'u':
-						matrix[j-1][i].pawn = PAWN_KAKU;
-						break;
-					case 'U':
-						matrix[j-1][i].pawn = PAWN_UMA;
-						break;
-					case 'r':
-						matrix[j-1][i].pawn = PAWN_HI;
-						break;
-					case 'R':
-						matrix[j-1][i].pawn = PAWN_RYU;
-						break;
-					case 'o':
-						matrix[j-1][i].pawn = PAWN_GYOKU;
-						gyokux[(int)(matrix[j - 1][i].player)] = i;
-						gyokuy[(int)(matrix[j - 1][i].player)] = j-1;
-						break;
-					default:
-						break;
+					gyokux[(int)(matrix[j - 1][i].player)] = i;
+					gyokuy[(int)(matrix[j - 1][i].player)] = j - 1;
 				}
 			}
 		}
@@ -522,7 +482,11 @@ bool Board::AddMove(PAWN roll, uchar fromx, uchar fromy, char tox, char toy, boo
 		return false;
 	}
 	PAWN capture = matrix[utoy][utox].pawn;
+#ifdef POS_TEST
+	PAWN_MOVE move( roll, fromx, fromy, utox, utoy, matrix[fromy][fromx].pawn, matrix[utoy][utox].pawn, upgrade, 0 );
+#else
 	PAWN_MOVE move{ roll, {fromx, fromy, utox, utoy}, matrix[fromy][fromx].pawn, matrix[utoy][utox].pawn, upgrade, 0 };
+#endif
 
 	Move(move);
 	// 負ける手は指さない
@@ -945,22 +909,51 @@ void Board::Move(const PAWN_MOVE &move)
 	if( move.reserve != PAWN_NONE )
 	{
 		captured[(int)turn][(int)move.reserve]--;
+#ifdef POS_TEST
+		matrix[move.to.y][move.to.x].player = turn;
+		matrix[move.to.y][move.to.x].pawn = move.reserve;
+#else
 		matrix[move.pos.pos.toy][move.pos.pos.tox].player = turn;
 		matrix[move.pos.pos.toy][move.pos.pos.tox].pawn = move.reserve;
+#endif
 		turn = nextTurn;
 		return;
 	}
 	
-	PAWN pawn = move.fromPawn;
-	if( move.upgrade )
+#ifdef POS_TEST
+	PAWN pawn = move.from.pawn;
+	if (move.upgrade)
 	{
 		Upgrade(pawn);
 	}
+	matrix[move.to.y][move.to.x].player = turn;
+	matrix[move.to.y][move.to.x].pawn = pawn;
+	matrix[move.from.y][move.from.x].player = PLAYER::NONE;
+	matrix[move.from.y][move.from.x].pawn = PAWN_NONE;
+#else
+	PAWN pawn = move.fromPawn;
+	if (move.upgrade)
+	{
+		Upgrade(pawn);
+}
 	matrix[move.pos.pos.toy][move.pos.pos.tox].player = turn;
 	matrix[move.pos.pos.toy][move.pos.pos.tox].pawn = pawn;
 	matrix[move.pos.pos.fromy][move.pos.pos.fromx].player = PLAYER::NONE;
 	matrix[move.pos.pos.fromy][move.pos.pos.fromx].pawn = PAWN_NONE;
-	if( move.toPawn != PAWN_NONE )
+#endif
+#ifdef POS_TEST
+	if( move.to.pawn != PAWN_NONE )
+	{
+		PAWN roll = move.to.pawn;
+		captured[(int)turn][(int)roll]++;
+	}
+	if (move.from.pawn == PAWN_GYOKU)
+	{
+		gyokux[(int)turn] = move.to.x;
+		gyokuy[(int)turn] = move.to.y;
+	}
+#else
+	if (move.toPawn != PAWN_NONE)
 	{
 		PAWN roll = move.toPawn;
 		captured[(int)turn][(int)roll]++;
@@ -970,6 +963,7 @@ void Board::Move(const PAWN_MOVE &move)
 		gyokux[(int)turn] = move.pos.pos.tox;
 		gyokuy[(int)turn] = move.pos.pos.toy;
 	}
+#endif
 	turn = nextTurn;
 }
 
@@ -988,22 +982,51 @@ void Board::Back(const PAWN_MOVE &move)
 	if( move.reserve != PAWN_NONE )
 	{
 		captured[(uchar)prevTurn][(int)move.reserve]++;
+#ifdef POS_TEST
+		matrix[move.to.y][move.to.x].player = PLAYER::NONE;
+		matrix[move.to.y][move.to.x].pawn = PAWN_NONE;
+#else
 		matrix[move.pos.pos.toy][move.pos.pos.tox].player = PLAYER::NONE;
 		matrix[move.pos.pos.toy][move.pos.pos.tox].pawn = PAWN_NONE;
+#endif
 		turn = prevTurn;
 		return;
 	}
 	
+#ifdef POS_TEST
+	PAWN pawn = move.from.pawn;
+	if (move.upgrade)
+	{
+		Downgrade(pawn);
+	}
+	matrix[move.from.y][move.from.x].player = prevTurn;
+	matrix[move.from.y][move.from.x].pawn = pawn;
+
+	if (move.to.pawn != PAWN_NONE)
+	{
+		captured[(uchar)prevTurn][move.to.pawn]--;
+
+		matrix[move.to.y][move.to.x].player = turn;
+		matrix[move.to.y][move.to.x].pawn = move.to.pawn;
+	}
+	else
+	{
+		matrix[move.to.y][move.to.x].player = PLAYER::NONE;
+		matrix[move.to.y][move.to.x].pawn = PAWN_NONE;
+	}
+#else
 	PAWN pawn = move.fromPawn;
-	if( move.upgrade )
+	if (move.upgrade)
 	{
 		Downgrade(pawn);
 	}
 	matrix[move.pos.pos.fromy][move.pos.pos.fromx].player = prevTurn;
 	matrix[move.pos.pos.fromy][move.pos.pos.fromx].pawn = pawn;
+
 	if( move.toPawn != PAWN_NONE )
 	{
 		captured[(uchar)prevTurn][move.toPawn]--;
+
 		matrix[move.pos.pos.toy][move.pos.pos.tox].player = turn;
 		matrix[move.pos.pos.toy][move.pos.pos.tox].pawn = move.toPawn;
 	}
@@ -1012,11 +1035,20 @@ void Board::Back(const PAWN_MOVE &move)
 		matrix[move.pos.pos.toy][move.pos.pos.tox].player = PLAYER::NONE;
 		matrix[move.pos.pos.toy][move.pos.pos.tox].pawn = PAWN_NONE;
 	}
+#endif
+#ifdef POS_TEST
+	if (move.from.pawn == PAWN_GYOKU)
+	{
+		gyokux[(int)prevTurn] = move.from.x;
+		gyokuy[(int)prevTurn] = move.from.y;
+	}
+#else
 	if (move.fromPawn == PAWN_GYOKU)
 	{
 		gyokux[(int)prevTurn] = move.pos.pos.fromx;
 		gyokuy[(int)prevTurn] = move.pos.pos.fromy;
 	}
+#endif
 	turn = prevTurn;
 }
 
