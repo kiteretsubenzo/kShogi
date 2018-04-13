@@ -153,7 +153,7 @@ public:
 	
 	Board();
 	
-	void Init(const std::string str);
+	void Init(const std::string &str);
 	// TODO
 	std::string BoardToString() const;
 	

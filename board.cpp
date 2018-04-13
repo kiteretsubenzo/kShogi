@@ -1,12 +1,11 @@
 ﻿#include <iostream>
 #include <sstream>
 #include <iomanip>
-#include <algorithm>
-#include <iterator>
-#include <vector>
-#include <map>
 #include <unordered_map>
 #include <set>
+#include <vector>
+#include <algorithm>
+#include <cassert>
 #include "definitions.h"
 #include "board.h"
 
@@ -31,7 +30,7 @@ Board::Board()
 	turn = PLAYER::FIRST;
 }
 
-void Board::Init(const std::string str)
+void Board::Init(const std::string &str)
 {
 	
 	//'h', 'H', 'y', 'Y', 'e', 'E', 'g', 'G', 'k', 'u', 'U', 'r', 'R', 'o';
@@ -934,6 +933,8 @@ bool Board::GetCell(char tox, char toy, CELL &cell) const
 
 void Board::Move(const PAWN_MOVE &move)
 {
+	assert(move != PAWN_MOVE_ZERO);
+
 	PLAYER nextTurn;
 	if( turn == PLAYER::FIRST )
 	{
@@ -980,6 +981,8 @@ void Board::Move(const PAWN_MOVE &move)
 
 void Board::Back(const PAWN_MOVE &move)
 {
+	assert(move != PAWN_MOVE_ZERO);
+
 	PLAYER prevTurn;
 	if( turn == PLAYER::FIRST )
 	{

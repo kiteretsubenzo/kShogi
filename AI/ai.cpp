@@ -1,16 +1,15 @@
 ﻿#include <iostream>
+#include <sstream>
+#include <iomanip>
 #include <list>
-#include <vector>
+#include <unordered_map>
+#include <set>
 #include <thread>
 #include <algorithm>
 #include <mutex>
 #include <condition_variable>
-#include <map>
-#include <unordered_map>
-#include <set>
 #include <random>
-#include <iomanip>
-#include <sstream>
+
 #include "../definitions.h"
 #include "../board.h"
 #include "worker.h"

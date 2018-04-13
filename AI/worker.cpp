@@ -1,15 +1,13 @@
 ﻿#include <iostream>
-#include <thread>
-#include <vector>
+#include <sstream>
+#include <iomanip>
 #include <list>
-#include <algorithm>
-#include <mutex>
-#include <map>
 #include <unordered_map>
 #include <set>
+#include <algorithm>
+#include <thread>
+#include <mutex>
 #include <random>
-#include <iomanip>
-#include <sstream>
 #include "../definitions.h"
 #include "../board.h"
 #include "worker.h"
@@ -69,7 +67,7 @@ void Worker::Search()
 		{
 			window = std::stoi(windowStr);
 		}
-		const int deep = std::stoi(deepStr);
+		const unsigned int deep = std::stoi(deepStr);
 		
 		/*
 		std::cout << "#prepare thread start" << std::endl;
@@ -224,24 +222,18 @@ void Worker::Search()
 			}
 			
 			childItr->score = SCORE_NONE;
-
-#ifdef USE_PRIORITY_MULTISET
-			Board::PAWN_MOVE test = *(childItr->moves.begin());
-#else
-			Board::PAWN_MOVE test = childItr->moves.front();
-#endif
-			if (test.reserve == PAWN_NONE && test.from.x == test.to.x && test.from.y == test.to.y)
-			{
-				std::cout << "assert" << std::endl;
-			}
 			
 #ifdef USE_PRIORITY_MULTISET
+			Board::PAWN_MOVE test = *(childItr->moves.begin());
+
 			// 盤面を進める
 			board.Move(*(childItr->moves.begin()));
 
 			// 着手を取得
 			std::multiset<Board::PAWN_MOVE> moveList = board.GetMoveList();
 #else
+			Board::PAWN_MOVE test = childItr->moves.front();
+
 			// 盤面を進める
 			board.Move(childItr->moves.front());
 
