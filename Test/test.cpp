@@ -225,7 +225,7 @@ bool Test()
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 
-		Board::PAWN_MOVE scoutMove;
+		PAWN_MOVE scoutMove;
 		int scoutScore;
 		ai.GetResult(scoutMove, scoutScore);
 		

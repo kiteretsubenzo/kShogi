@@ -2,6 +2,7 @@
 #include <sstream>
 #include <vector>
 #include <list>
+#include <set>
 #include <unordered_map>
 #include "definitions.h"
 

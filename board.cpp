@@ -148,17 +148,10 @@ std::string Board::BoardToString() const
 	return sout.str();
 }
 
-#if USE_PRIORITY == PRIORITY_MULTISET
-std::multiset<Board::PAWN_MOVE> Board::GetMoveList()
-#else
-std::list<Board::PAWN_MOVE> Board::GetMoveList()
-#endif
+MoveList Board::GetMoveList()
 {
-#if USE_PRIORITY == PRIORITY_MULTISET
-	std::multiset<Board::PAWN_MOVE> moveList;
-#else
-	std::list<Board::PAWN_MOVE> moveList;
-#endif
+	MoveList moveList;
+
 	uchar lineMax, lineMin, lineTop, lineMid;
 
 	if (turn == PLAYER::FIRST)
@@ -471,11 +464,7 @@ std::list<Board::PAWN_MOVE> Board::GetMoveList()
 	return moveList;
 }
 
-#if USE_PRIORITY == PRIORITY_MULTISET
-bool Board::AddMove(PAWN roll, uchar fromx, uchar fromy, char tox, char toy, bool upgrade, std::multiset<Board::PAWN_MOVE> &moveList)
-#else
-bool Board::AddMove(PAWN roll, uchar fromx, uchar fromy, char tox, char toy, bool upgrade, std::list<Board::PAWN_MOVE> &moveList)
-#endif
+bool Board::AddMove(PAWN roll, uchar fromx, uchar fromy, char tox, char toy, bool upgrade, MoveList &moveList)
 {
 	if (tox < 0 || BOARD_WIDTH <= tox)
 	{
@@ -511,19 +500,12 @@ bool Board::AddMove(PAWN roll, uchar fromx, uchar fromy, char tox, char toy, boo
 	return capture == PAWN_NONE;
 }
 
-#if USE_PRIORITY == PRIORITY_MULTISET
-int Board::GetEvaluate(const std::multiset<Board::PAWN_MOVE> &moveList)
+int Board::GetEvaluate(const MoveList &moveList)
 {
 	return moveList.size();
 }
-#else
-int Board::GetEvaluate(const std::list<Board::PAWN_MOVE> &moveList)
-{
-	return moveList.size();
-}
-#endif
 
-int Board::GetPriority(const Board::PAWN_MOVE &move)
+int Board::GetPriority(const PAWN_MOVE &move)
 {
 	int priority = 0;
 #if USE_PRIORITY == PRIORITY_LIST || USE_PRIORITY == PRIORITY_MULTISET

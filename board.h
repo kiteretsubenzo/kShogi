@@ -28,7 +28,7 @@ static const std::string numberToKanji[9] =
 	"一", "二", "三", "四", "五", "六", "七", "八", "九"
 };
 
-class Board
+struct PAWN_MOVE
 {
 public:
 	union MOVE_PAWN_MEMORY
@@ -43,110 +43,111 @@ public:
 		unsigned short mem;
 	};
 
-	struct PAWN_MOVE
+	PAWN reserve;
+	MOVE_PAWN_MEMORY from;
+	MOVE_PAWN_MEMORY to;
+	bool upgrade = false;
+	int priority = 0;
+
+	PAWN_MOVE() : reserve(PAWN_NONE), upgrade(false), priority(0)
 	{
-	public:
-		PAWN reserve;
-		MOVE_PAWN_MEMORY from;
-		MOVE_PAWN_MEMORY to;
-		bool upgrade = false;
-		int priority = 0;
+		from.mem = 0;
+		to.mem = 0;
+	}
 
-		PAWN_MOVE() : reserve(PAWN_NONE), upgrade(false), priority(0)
+	PAWN_MOVE(PAWN reserveValue, uchar fromx, uchar fromy, uchar tox, uchar toy, PAWN fromPawn, PAWN toPawn, bool upgradeValue, int priorityValue)
+		: reserve(reserveValue), upgrade(upgradeValue), priority(priorityValue)
+	{
+		from.x = fromx;
+		from.y = fromy;
+		from.pawn = fromPawn;
+		to.x = tox;
+		to.y = toy;
+		to.pawn = toPawn;
+	}
+
+	std::string DebugString() const
+	{
+		if (reserve == PAWN_NONE && from.x == to.x && from.y == to.y)
 		{
-			from.mem = 0;
-			to.mem = 0;
+			return "ZERO";
 		}
 
-		PAWN_MOVE(PAWN reserveValue, uchar fromx, uchar fromy, uchar tox, uchar toy, PAWN fromPawn, PAWN toPawn, bool upgradeValue, int priorityValue)
-			: reserve(reserveValue), upgrade(upgradeValue), priority(priorityValue)
+		std::string str;
+		//uchar tox, toy;
+		str += numberToZenkaku[(uchar)to.x] + numberToKanji[(uchar)to.y];
+
+		if (reserve != PAWN_NONE)
 		{
-			from.x = fromx;
-			from.y = fromy;
-			from.pawn = fromPawn;
-			to.x = tox;
-			to.y = toy;
-			to.pawn = toPawn;
+			//PAWN_ROLL reserve;
+			str += " " + PAWN_KANJI[reserve] + " 打ち";
 		}
-
-		std::string DebugString() const
+		else
 		{
-			if (reserve == PAWN_NONE && from.x == to.x && from.y == to.y)
-			{
-				return "ZERO";
-			}
+			str += " " + PAWN_KANJI[from.pawn];
+			str += "(" + std::to_string(BOARD_WIDTH - from.x) + "," + std::to_string(from.y + 1) + ")";
 
-			std::string str;
-			//uchar tox, toy;
-			str += numberToZenkaku[(uchar)to.x] + numberToKanji[(uchar)to.y];
-
-			if (reserve != PAWN_NONE)
-			{
-				//PAWN_ROLL reserve;
-				str += " " + PAWN_KANJI[reserve] + " 打ち";
-			}
-			else
-			{
-				str += " " + PAWN_KANJI[from.pawn];
-				str += "(" + std::to_string(BOARD_WIDTH - from.x) + "," + std::to_string(from.y + 1) + ")";
-
-				//bool upgrade;
-				if (upgrade)
-				{
-					str += " 成り";
-				}
-			}
-
-			return str;
-		}
-
-		bool operator==(const PAWN_MOVE& rhs) const
-		{
-			return (
-				reserve == rhs.reserve &&
-				from.mem == rhs.from.mem &&
-				to.mem == rhs.to.mem &&
-				upgrade == rhs.upgrade
-				);
-		}
-		bool operator!=(const PAWN_MOVE& rhs) const
-		{
-			return (
-				reserve != rhs.reserve ||
-				from.mem != rhs.from.mem ||
-				to.mem != rhs.to.mem ||
-				upgrade != rhs.upgrade
-				);
-		}
-
-		bool operator<(const PAWN_MOVE& rhs) const
-		{
-			return (priority > rhs.priority);
-		}
-
-		operator std::string() const
-		{
-			std::stringstream stream;
-
-			stream << std::setfill('0') << std::setw(2) << (int)reserve;
-			stream << std::setfill('0') << std::setw(2) << (int)from.x;
-			stream << std::setfill('0') << std::setw(2) << (int)from.y;
-			stream << std::setfill('0') << std::setw(2) << (int)to.x;
-			stream << std::setfill('0') << std::setw(2) << (int)to.y;
-			stream << std::setfill('0') << std::setw(2) << (int)from.pawn;
-			stream << std::setfill('0') << std::setw(2) << (int)to.pawn;
+			//bool upgrade;
 			if (upgrade)
 			{
-				stream << "t";
+				str += " 成り";
 			}
-			else
-			{
-				stream << "f";
-			}
-
-			return stream.str();
 		}
-	};
+
+		return str;
+	}
+
+	bool operator==(const PAWN_MOVE& rhs) const
+	{
+		return (
+			reserve == rhs.reserve &&
+			from.mem == rhs.from.mem &&
+			to.mem == rhs.to.mem &&
+			upgrade == rhs.upgrade
+			);
+	}
+	bool operator!=(const PAWN_MOVE& rhs) const
+	{
+		return (
+			reserve != rhs.reserve ||
+			from.mem != rhs.from.mem ||
+			to.mem != rhs.to.mem ||
+			upgrade != rhs.upgrade
+			);
+	}
+
+	bool operator<(const PAWN_MOVE& rhs) const
+	{
+		return (priority > rhs.priority);
+	}
+
+	operator std::string() const
+	{
+		std::stringstream stream;
+
+		stream << std::setfill('0') << std::setw(2) << (int)reserve;
+		stream << std::setfill('0') << std::setw(2) << (int)from.x;
+		stream << std::setfill('0') << std::setw(2) << (int)from.y;
+		stream << std::setfill('0') << std::setw(2) << (int)to.x;
+		stream << std::setfill('0') << std::setw(2) << (int)to.y;
+		stream << std::setfill('0') << std::setw(2) << (int)from.pawn;
+		stream << std::setfill('0') << std::setw(2) << (int)to.pawn;
+		if (upgrade)
+		{
+			stream << "t";
+		}
+		else
+		{
+			stream << "f";
+		}
+
+		return stream.str();
+	}
+};
+
+class Board
+{
+public:
 	
 	Board();
 	
@@ -154,22 +155,14 @@ public:
 	// TODO
 	std::string BoardToString() const;
 	
-#if USE_PRIORITY == PRIORITY_MULTISET
-	std::multiset<Board::PAWN_MOVE> GetMoveList();
-#else
-	std::list<Board::PAWN_MOVE> GetMoveList();
-#endif
+	MoveList GetMoveList();
 
 	void Move(const PAWN_MOVE &move);
 	void Back(const PAWN_MOVE &move);
 	void SwitchTurn();
 
-#if USE_PRIORITY == PRIORITY_MULTISET
-	virtual int GetEvaluate(const std::multiset<Board::PAWN_MOVE> &moveList);
-#else
-	virtual int GetEvaluate(const std::list<Board::PAWN_MOVE> &moveList);
-#endif
-	virtual int GetPriority(const Board::PAWN_MOVE &move);
+	virtual int GetEvaluate(const MoveList &moveList);
+	virtual int GetPriority(const PAWN_MOVE &move);
 	
 	CELL GetCell(uchar x, uchar y) { return matrix[y][x]; }
 	
@@ -193,11 +186,7 @@ public:
 	}
 
 private:
-#if USE_PRIORITY == PRIORITY_MULTISET
-	bool AddMove(PAWN roll, uchar fromx, uchar fromy, char tox, char toy, bool upgrade, std::multiset<Board::PAWN_MOVE> &moveList);
-#else
-	bool AddMove(PAWN roll, uchar fromx, uchar fromy, char tox, char toy, bool upgrade, std::list<Board::PAWN_MOVE> &moveList);
-#endif
+	bool AddMove(PAWN roll, uchar fromx, uchar fromy, char tox, char toy, bool upgrade, MoveList &moveList);
 	bool IsEnd() const;
 	bool GetCell(char tox, char toy, CELL &cell) const;
 	
@@ -210,9 +199,9 @@ private:
 };
 
 #if USE_PRIORITY == PRIORITY_MULTISET
-static const Board::PAWN_MOVE PAWN_MOVE_ZERO(PAWN_NONE, 0, 0, 0, 0, PAWN_NONE, PAWN_NONE, false, 99999);
+static const PAWN_MOVE PAWN_MOVE_ZERO(PAWN_NONE, 0, 0, 0, 0, PAWN_NONE, PAWN_NONE, false, 99999);
 #else
-static const Board::PAWN_MOVE PAWN_MOVE_ZERO( PAWN_NONE, 0, 0, 0, 0, PAWN_NONE, PAWN_NONE, false, 0 );
+static const PAWN_MOVE PAWN_MOVE_ZERO( PAWN_NONE, 0, 0, 0, 0, PAWN_NONE, PAWN_NONE, false, 0 );
 #endif
 
 #endif // BOARD_H

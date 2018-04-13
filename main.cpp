@@ -97,7 +97,7 @@ int main()
 	"first"
   };
   board.Init(boardInits[3]);
-  std::list<Board::PAWN_MOVE> history;
+  std::list<PAWN_MOVE> history;
   /*
   board.PrintBoard();
   if( board.IsEnd() )
@@ -167,21 +167,12 @@ int main()
   std::cout << board.BoardToString() << std::endl;
   */
 #if false
-#if USE_PRIORITY == PRIORITY_MULTISET
   board.PrintBoard();
-  std::multiset<Board::PAWN_MOVE> moveList = board.GetMoveList();
-  for (std::multiset<Board::PAWN_MOVE>::iterator ite = moveList.begin(); ite != moveList.end(); ++ite)
+  MoveList moveList = board.GetMoveList();
+  for (MoveList::iterator ite = moveList.begin(); ite != moveList.end(); ++ite)
   {
 	  std::cout << ite->DebugString() << " " << ite->priority << std::endl;
   }
-#else
-  board.PrintBoard();
-  std::list<Board::PAWN_MOVE> moveList = board.GetMoveList();
-  for (std::list<Board::PAWN_MOVE>::iterator ite = moveList.begin(); ite != moveList.end(); ++ite)
-  {
-	  std::cout << ite->DebugString() << " " << ite->priority << std::endl;
-  }
-#endif
 #endif
 #if false
 	Ai ai;

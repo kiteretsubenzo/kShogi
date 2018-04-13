@@ -9,7 +9,6 @@
 #include <mutex>
 #include <condition_variable>
 #include <random>
-
 #include "../definitions.h"
 #include "../board.h"
 #include "worker.h"
@@ -43,10 +42,10 @@ void Ai::Start(Board boardValue)
 	/*
 	for( unsigned int i=0; i<moveList.size(); i++ )
 	{
-		Board::PAWN_MOVE &move = moveList[i];
+		PAWN_MOVE &move = moveList[i];
 		//board.PrintKihu(move);
 		board.Move(move);
-		std::list<Board::PAWN_MOVE> moves;
+		std::list<PAWN_MOVE> moves;
 		moves.push_back(move);
 		JOB job = { GetJobId(), moves, board };
 		if( i < 4 )
@@ -59,7 +58,7 @@ void Ai::Start(Board boardValue)
 	
 	if (mode == "scout")
 	{
-		std::list<Board::PAWN_MOVE> moves;
+		std::list<PAWN_MOVE> moves;
 		moves.push_back(PAWN_MOVE_ZERO);
 		bestScore = 0;
 		JOB job = { GetJobId(), { PAWN_MOVE_ZERO }, -searchScore, 4, board };
@@ -67,7 +66,7 @@ void Ai::Start(Board boardValue)
 	}
 	if (mode == "scouttest")
 	{
-		std::list<Board::PAWN_MOVE> moves;
+		std::list<PAWN_MOVE> moves;
 		moves.push_back(PAWN_MOVE_ZERO);
 		bestScore = 0;
 		JOB job = { GetJobId(),{ PAWN_MOVE_ZERO }, -searchScore, 4, board };
@@ -75,40 +74,25 @@ void Ai::Start(Board boardValue)
 	}
 	else if(mode == "minimax")
 	{
-		std::list<Board::PAWN_MOVE> moves;
+		std::list<PAWN_MOVE> moves;
 		moves.push_back(PAWN_MOVE_ZERO);
 		JOB job = { GetJobId(), moves, SCORE_NONE, 4, board };
 		jobs.push_back(job);
 	}
 	else if (mode == "move")
 	{
-#if USE_PRIORITY == PRIORITY_MULTISET
-		std::multiset<Board::PAWN_MOVE> moveList = board.GetMoveList();
-		for (std::multiset<Board::PAWN_MOVE>::iterator ite = moveList.begin(); ite != moveList.end(); ++ite)
+		MoveList moveList = board.GetMoveList();
+		for (MoveList::iterator ite = moveList.begin(); ite != moveList.end(); ++ite)
 		{
-			Board::PAWN_MOVE move = *ite;
+			const PAWN_MOVE &move = *ite;
 			//board.PrintKihu(move);
 			board.Move(move);
-			std::list<Board::PAWN_MOVE> moves;
+			std::list<PAWN_MOVE> moves;
 			moves.push_back(move);
 			JOB job = { GetJobId(), moves, searchScore, 4, board };
 			jobs.push_back(job);
 			board.Back(move);
 		}
-#else
-		std::list<Board::PAWN_MOVE> moveList = board.GetMoveList();
-		for (std::list<Board::PAWN_MOVE>::iterator ite = moveList.begin(); ite != moveList.end(); ++ite)
-		{
-			Board::PAWN_MOVE &move = *ite;
-			//board.PrintKihu(move);
-			board.Move(move);
-			std::list<Board::PAWN_MOVE> moves;
-			moves.push_back(move);
-			JOB job = { GetJobId(), moves, searchScore, 4, board };
-			jobs.push_back(job);
-			board.Back(move);
-		}
-#endif
 	}
 
 	ready = true;
@@ -195,7 +179,7 @@ bool Ai::IsAlive(const std::string &jobId)
 	return alive;
 }
 
-void Ai::GetResult(Board::PAWN_MOVE &moveValue, int &scoreValue)
+void Ai::GetResult(PAWN_MOVE &moveValue, int &scoreValue)
 {
 	moveValue = bestMove;
 	scoreValue = bestScore;

@@ -149,22 +149,18 @@ void Worker::SearchImplementation(const std::string &job)
 			std::list<NODE>::reverse_iterator childItr = nodeStack.rbegin();
 
 #if USE_PRIORITY == PRIORITY_MULTISET
-			Board::PAWN_MOVE test = *(childItr->moves.begin());
+			PAWN_MOVE test = *(childItr->moves.begin());
 
 			// 盤面を進める
 			board.Move(*(childItr->moves.begin()));
-
-			// 着手を取得
-			std::multiset<Board::PAWN_MOVE> moveList = board.GetMoveList();
 #else
-			Board::PAWN_MOVE test = childItr->moves.front();
+			PAWN_MOVE test = childItr->moves.front();
 
 			// 盤面を進める
 			board.Move(childItr->moves.front());
-
-			// 着手を取得
-			std::list<Board::PAWN_MOVE> moveList = board.GetMoveList();
 #endif
+			// 着手を取得
+			MoveList moveList = board.GetMoveList();
 
 			// 新しい盤面に着手が無かったら勝負あり
 			if (moveList.empty())
@@ -238,11 +234,7 @@ void Worker::SearchImplementation(const std::string &job)
 
 				if (windowTmp < childItr->score)
 				{
-#if USE_PRIORITY == PRIORITY_MULTISET
-					std::multiset<Board::PAWN_MOVE>::iterator ite = childItr->moves.begin();
-#else
-					std::list<Board::PAWN_MOVE>::iterator ite = childItr->moves.begin();
-#endif
+					MoveList::iterator ite = childItr->moves.begin();
 					++ite;
 					childItr->moves.erase(ite, childItr->moves.end());
 				}

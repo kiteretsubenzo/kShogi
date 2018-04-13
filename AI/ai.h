@@ -9,7 +9,7 @@ public:
 	struct JOB
 	{
 		unsigned int jobId;
-		std::list<Board::PAWN_MOVE> moves;
+		std::list<PAWN_MOVE> moves;
 		int window;
 		int deep;
 		Board board;
@@ -24,24 +24,24 @@ public:
 	void SetDebug(const bool &debugValue) { debug = debugValue; }
 	void Start(Board board);
 	bool Tick();
-	Board::PAWN_MOVE GetMove() const { return move; }
+	PAWN_MOVE GetMove() const { return move; }
 	void CallBack(const std::string &str);
 	void GetJob(std::string &job);
 	bool IsAlive(const std::string &jobId);
 	
-	void GetResult(Board::PAWN_MOVE &moveValue, int &scoreValue);
+	void GetResult(PAWN_MOVE &moveValue, int &scoreValue);
 
 	void Stop();
 	
 private:
 	Board board;
-	Board::PAWN_MOVE move;
+	PAWN_MOVE move;
 	
 	std::string mode = "minimax";
 	int searchScore = std::numeric_limits<int>::min();
 	bool debug = true;
 
-	Board::PAWN_MOVE bestMove;
+	PAWN_MOVE bestMove;
 	int bestScore;
 	
 	Worker *worker;
@@ -50,7 +50,7 @@ private:
 	bool ready = true;
 
 	std::list<JOB> jobs;
-	std::unordered_map<std::string, std::list<Board::PAWN_MOVE>> waits;
+	std::unordered_map<std::string, std::list<PAWN_MOVE>> waits;
 	std::list<std::string> results;
 
 	unsigned int jobId = 0;
