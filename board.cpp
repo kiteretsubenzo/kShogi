@@ -148,13 +148,13 @@ std::string Board::BoardToString() const
 	return sout.str();
 }
 
-#ifdef USE_PRIORITY_MULTISET
+#if USE_PRIORITY == PRIORITY_MULTISET
 std::multiset<Board::PAWN_MOVE> Board::GetMoveList()
 #else
 std::list<Board::PAWN_MOVE> Board::GetMoveList()
 #endif
 {
-#ifdef USE_PRIORITY_MULTISET
+#if USE_PRIORITY == PRIORITY_MULTISET
 	std::multiset<Board::PAWN_MOVE> moveList;
 #else
 	std::list<Board::PAWN_MOVE> moveList;
@@ -465,13 +465,13 @@ std::list<Board::PAWN_MOVE> Board::GetMoveList()
 		}
 	}
 
-#ifdef USE_PRIORITY_LIST
+#if USE_PRIORITY == PRIORITY_LIST
 	moveList.sort();
 #endif
 	return moveList;
 }
 
-#ifdef USE_PRIORITY_MULTISET
+#if USE_PRIORITY == PRIORITY_MULTISET
 bool Board::AddMove(PAWN roll, uchar fromx, uchar fromy, char tox, char toy, bool upgrade, std::multiset<Board::PAWN_MOVE> &moveList)
 #else
 bool Board::AddMove(PAWN roll, uchar fromx, uchar fromy, char tox, char toy, bool upgrade, std::list<Board::PAWN_MOVE> &moveList)
@@ -500,7 +500,7 @@ bool Board::AddMove(PAWN roll, uchar fromx, uchar fromy, char tox, char toy, boo
 	if (IsEnd() == false)
 	{
 		move.priority = GetPriority(move);
-#ifdef USE_PRIORITY_MULTISET
+#if USE_PRIORITY == PRIORITY_MULTISET
 		moveList.insert(move);
 #else
 		moveList.push_back(move);
@@ -511,7 +511,7 @@ bool Board::AddMove(PAWN roll, uchar fromx, uchar fromy, char tox, char toy, boo
 	return capture == PAWN_NONE;
 }
 
-#ifdef USE_PRIORITY_MULTISET
+#if USE_PRIORITY == PRIORITY_MULTISET
 int Board::GetEvaluate(const std::multiset<Board::PAWN_MOVE> &moveList)
 {
 	return moveList.size();
@@ -526,26 +526,7 @@ int Board::GetEvaluate(const std::list<Board::PAWN_MOVE> &moveList)
 int Board::GetPriority(const Board::PAWN_MOVE &move)
 {
 	int priority = 0;
-#ifdef USE_PRIORITY_MULTISET
-	// 王手がかかってるか？
-	SwitchTurn();
-	if (IsEnd())
-	{
-		priority += 1000;
-	}
-	SwitchTurn();
-	// 駒を取るか？
-	if (move.to.pawn != PAWN_NONE)
-	{
-		priority += (int)(move.to.pawn) + (int)PAWN_MAX;
-	}
-	// 成るか？
-	if (move.upgrade)
-	{
-		priority += (int)(move.from.pawn);
-	}
-#endif
-#ifdef USE_PRIORITY_LIST
+#if USE_PRIORITY == PRIORITY_LIST || USE_PRIORITY == PRIORITY_MULTISET
 	// 王手がかかってるか？
 	SwitchTurn();
 	if (IsEnd())

@@ -1,9 +1,6 @@
 ﻿#ifndef BOARD_H
 #define BOARD_H
 
-//#define USE_PRIORITY_MULTISET
-//#define USE_PRIORITY_LIST
-
 enum class PLAYER
 {
   FIRST, SECOND,
@@ -157,7 +154,7 @@ public:
 	// TODO
 	std::string BoardToString() const;
 	
-#ifdef USE_PRIORITY_MULTISET
+#if USE_PRIORITY == PRIORITY_MULTISET
 	std::multiset<Board::PAWN_MOVE> GetMoveList();
 #else
 	std::list<Board::PAWN_MOVE> GetMoveList();
@@ -167,7 +164,7 @@ public:
 	void Back(const PAWN_MOVE &move);
 	void SwitchTurn();
 
-#ifdef USE_PRIORITY_MULTISET
+#if USE_PRIORITY == PRIORITY_MULTISET
 	virtual int GetEvaluate(const std::multiset<Board::PAWN_MOVE> &moveList);
 #else
 	virtual int GetEvaluate(const std::list<Board::PAWN_MOVE> &moveList);
@@ -196,7 +193,7 @@ public:
 	}
 
 private:
-#ifdef USE_PRIORITY_MULTISET
+#if USE_PRIORITY == PRIORITY_MULTISET
 	bool AddMove(PAWN roll, uchar fromx, uchar fromy, char tox, char toy, bool upgrade, std::multiset<Board::PAWN_MOVE> &moveList);
 #else
 	bool AddMove(PAWN roll, uchar fromx, uchar fromy, char tox, char toy, bool upgrade, std::list<Board::PAWN_MOVE> &moveList);
@@ -212,7 +209,7 @@ private:
 	char gyokuy[(uchar)PLAYER::MAX];
 };
 
-#ifdef USE_PRIORITY_MULTISET
+#if USE_PRIORITY == PRIORITY_MULTISET
 static const Board::PAWN_MOVE PAWN_MOVE_ZERO(PAWN_NONE, 0, 0, 0, 0, PAWN_NONE, PAWN_NONE, false, 99999);
 #else
 static const Board::PAWN_MOVE PAWN_MOVE_ZERO( PAWN_NONE, 0, 0, 0, 0, PAWN_NONE, PAWN_NONE, false, 0 );

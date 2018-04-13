@@ -167,7 +167,7 @@ int main()
   std::cout << board.BoardToString() << std::endl;
   */
 #if false
-#ifdef USE_PRIORITY_MULTISET
+#if USE_PRIORITY == PRIORITY_MULTISET
   board.PrintBoard();
   std::multiset<Board::PAWN_MOVE> moveList = board.GetMoveList();
   for (std::multiset<Board::PAWN_MOVE>::iterator ite = moveList.begin(); ite != moveList.end(); ++ite)

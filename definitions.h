@@ -4,6 +4,12 @@
 #define BOARD_WIDTH 9
 #define BOARD_HEIGHT 9
 
+#define PRIORITY_NONE		0
+#define PRIORITY_LIST		1
+#define PRIORITY_MULTISET	2
+
+#define USE_PRIORITY PRIORITY_MULTISET
+
 typedef unsigned char uchar;
 typedef unsigned char PAWN;
 

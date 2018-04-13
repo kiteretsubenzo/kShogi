@@ -12,7 +12,7 @@ public:
 	void Join();
 		
 private:
-#ifdef USE_PRIORITY_MULTISET
+#if USE_PRIORITY == PRIORITY_MULTISET
 	struct NODE
 	{
 		std::multiset<Board::PAWN_MOVE> moves;
@@ -34,6 +34,7 @@ private:
 	bool debug = true;
 
 	void Search();
+	void SearchImplementation(const std::string &job);
 };
 
 #endif // WORKER_H

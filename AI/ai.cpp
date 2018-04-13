@@ -82,7 +82,7 @@ void Ai::Start(Board boardValue)
 	}
 	else if (mode == "move")
 	{
-#ifdef USE_PRIORITY_MULTISET
+#if USE_PRIORITY == PRIORITY_MULTISET
 		std::multiset<Board::PAWN_MOVE> moveList = board.GetMoveList();
 		for (std::multiset<Board::PAWN_MOVE>::iterator ite = moveList.begin(); ite != moveList.end(); ++ite)
 		{
