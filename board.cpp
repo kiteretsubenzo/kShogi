@@ -6,10 +6,9 @@
 #include <vector>
 #include <map>
 #include <unordered_map>
+#include <set>
 #include "definitions.h"
 #include "board.h"
-
-//#define USE_PRIORITY
 
 Board::Board()
 {
@@ -150,9 +149,17 @@ std::string Board::BoardToString() const
 	return sout.str();
 }
 
+#ifdef USE_PRIORITY_MULTISET
+std::multiset<Board::PAWN_MOVE> Board::GetMoveList()
+#else
 std::list<Board::PAWN_MOVE> Board::GetMoveList()
+#endif
 {
+#ifdef USE_PRIORITY_MULTISET
+	std::multiset<Board::PAWN_MOVE> moveList;
+#else
 	std::list<Board::PAWN_MOVE> moveList;
+#endif
 	uchar lineMax, lineMin, lineTop, lineMid;
 
 	if (turn == PLAYER::FIRST)
@@ -459,13 +466,17 @@ std::list<Board::PAWN_MOVE> Board::GetMoveList()
 		}
 	}
 
-#ifdef USE_PRIORITY
+#ifdef USE_PRIORITY_LIST
 	moveList.sort();
 #endif
 	return moveList;
 }
 
+#ifdef USE_PRIORITY_MULTISET
+bool Board::AddMove(PAWN roll, uchar fromx, uchar fromy, char tox, char toy, bool upgrade, std::multiset<Board::PAWN_MOVE> &moveList)
+#else
 bool Board::AddMove(PAWN roll, uchar fromx, uchar fromy, char tox, char toy, bool upgrade, std::list<Board::PAWN_MOVE> &moveList)
+#endif
 {
 	if (tox < 0 || BOARD_WIDTH <= tox)
 	{
@@ -490,22 +501,33 @@ bool Board::AddMove(PAWN roll, uchar fromx, uchar fromy, char tox, char toy, boo
 	if (IsEnd() == false)
 	{
 		move.priority = GetPriority(move);
+#ifdef USE_PRIORITY_MULTISET
+		moveList.insert(move);
+#else
 		moveList.push_back(move);
+#endif
 	}
 	Back(move);
 
 	return capture == PAWN_NONE;
 }
 
+#ifdef USE_PRIORITY_MULTISET
+int Board::GetEvaluate(const std::multiset<Board::PAWN_MOVE> &moveList)
+{
+	return moveList.size();
+}
+#else
 int Board::GetEvaluate(const std::list<Board::PAWN_MOVE> &moveList)
 {
 	return moveList.size();
 }
+#endif
 
 int Board::GetPriority(const Board::PAWN_MOVE &move)
 {
 	int priority = 0;
-#ifdef USE_PRIORITY
+#ifdef USE_PRIORITY_MULTISET
 	// 王手がかかってるか？
 	SwitchTurn();
 	if (IsEnd())
@@ -514,14 +536,33 @@ int Board::GetPriority(const Board::PAWN_MOVE &move)
 	}
 	SwitchTurn();
 	// 駒を取るか？
-	if (move.toPawn != PAWN_NONE)
+	if (move.to.pawn != PAWN_NONE)
 	{
-		priority += (int)(move.toPawn) + (int)PAWN_MAX;
+		priority += (int)(move.to.pawn) + (int)PAWN_MAX;
 	}
 	// 成るか？
 	if (move.upgrade)
 	{
-		priority += (int)(move.fromPawn);
+		priority += (int)(move.from.pawn);
+	}
+#endif
+#ifdef USE_PRIORITY_LIST
+	// 王手がかかってるか？
+	SwitchTurn();
+	if (IsEnd())
+	{
+		priority += 1000;
+	}
+	SwitchTurn();
+	// 駒を取るか？
+	if (move.to.pawn != PAWN_NONE)
+	{
+		priority += (int)(move.to.pawn) + (int)PAWN_MAX;
+	}
+	// 成るか？
+	if (move.upgrade)
+	{
+		priority += (int)(move.from.pawn);
 	}
 #endif
 	return priority;

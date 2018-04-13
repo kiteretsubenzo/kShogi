@@ -6,6 +6,7 @@
 #include <mutex>
 #include <map>
 #include <unordered_map>
+#include <set>
 #include <random>
 #include <sstream>
 #include "definitions.h"
@@ -74,6 +75,19 @@ int main()
 	"h16 y02 e04 g04 u02 r01 k03\n"
 	" . . . . .^R . .y_\n"
 	" . . . . . . .o_h_\n"
+	" . . . . . . . . .\n"
+	" . . . . . . .h_ .\n"
+	" . . . . . . .^h .\n"
+	" . . . . . .^y . .\n"
+	" . . . . . . . . .\n"
+	" . . . . . . . . .\n"
+	" . . . . . . . . .\n"
+	"h00 y00 e00 g00 u00 r00 k01\n"
+	"first"
+	,
+	"h16 y02 e04 g04 u02 r01 k03\n"
+	" . . . . . . .o_y_\n"
+	" . . . . . . . .h_\n"
 	" . . . . . . . . .\n"
 	" . . . . . . .h_ .\n"
 	" . . . . . . .^h .\n"
@@ -155,12 +169,21 @@ int main()
   std::cout << board.BoardToString() << std::endl;
   */
 #if false
+#ifdef USE_PRIORITY_MULTISET
+  board.PrintBoard();
+  std::multiset<Board::PAWN_MOVE> moveList = board.GetMoveList();
+  for (std::multiset<Board::PAWN_MOVE>::iterator ite = moveList.begin(); ite != moveList.end(); ++ite)
+  {
+	  std::cout << ite->DebugString() << " " << ite->priority << std::endl;
+  }
+#else
   board.PrintBoard();
   std::list<Board::PAWN_MOVE> moveList = board.GetMoveList();
   for (std::list<Board::PAWN_MOVE>::iterator ite = moveList.begin(); ite != moveList.end(); ++ite)
   {
-	  std::cout << ite->DebugString() << std::endl;
+	  std::cout << ite->DebugString() << " " << ite->priority << std::endl;
   }
+#endif
 #endif
 #if false
 	Ai ai;
@@ -198,24 +221,9 @@ int main()
 	Board::PAWN_MOVE aiMove;
 	int aiScore;
 
-	board.Init(boardInits[3]);
-
-	std::cout << "move test" << std::endl;
-	ai.SetMode("move");
-	ai.SetSearchScore(-99999);
-	ai.SetDebug(false);
-	ai.Start(board);
-
-	while (ai.Tick() == false) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
-	}
-
-	board.Init(boardInits[3]);
-
-	std::cout << "scout test" << std::endl;
-	ai.SetMode("scout");
-	ai.SetSearchScore(0);
-	ai.SetDebug(false);
+	ai.SetMode("scouttest");
+	ai.SetSearchScore(1);
+	ai.SetDebug(true);
 	ai.Start(board);
 
 	while (ai.Tick() == false) {

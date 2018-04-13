@@ -7,6 +7,7 @@
 #include <condition_variable>
 #include <map>
 #include <unordered_map>
+#include <set>
 #include <random>
 #include <iomanip>
 #include <sstream>
@@ -82,6 +83,20 @@ void Ai::Start(Board boardValue)
 	}
 	else if (mode == "move")
 	{
+#ifdef USE_PRIORITY_MULTISET
+		std::multiset<Board::PAWN_MOVE> moveList = board.GetMoveList();
+		for (std::multiset<Board::PAWN_MOVE>::iterator ite = moveList.begin(); ite != moveList.end(); ++ite)
+		{
+			Board::PAWN_MOVE move = *ite;
+			//board.PrintKihu(move);
+			board.Move(move);
+			std::list<Board::PAWN_MOVE> moves;
+			moves.push_back(move);
+			JOB job = { GetJobId(), moves, searchScore, 4, board };
+			jobs.push_back(job);
+			board.Back(move);
+		}
+#else
 		std::list<Board::PAWN_MOVE> moveList = board.GetMoveList();
 		for (std::list<Board::PAWN_MOVE>::iterator ite = moveList.begin(); ite != moveList.end(); ++ite)
 		{
@@ -94,6 +109,7 @@ void Ai::Start(Board boardValue)
 			jobs.push_back(job);
 			board.Back(move);
 		}
+#endif
 	}
 
 	ready = true;
@@ -207,6 +223,7 @@ bool Ai::Tick()
 			{
 				std::cout << "score is " << score << " best score is " << bestScore << std::endl;
 			}
+			std::cout << "score is " << score << " best score is " << bestScore << std::endl;
 			if (bestScore == score)
 			{
 				bestMove = waits[jobId].front();
@@ -225,6 +242,7 @@ bool Ai::Tick()
 			{
 				std::cout << "score is " << score << " best score is " << bestScore << std::endl;
 			}
+			std::cout << "score is " << score << " best score is " << bestScore << std::endl;
 			if (bestScore < -score)
 			{
 				bestMove = waits[jobId].front();

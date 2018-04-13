@@ -12,11 +12,19 @@ public:
 	void Join();
 		
 private:
+#ifdef USE_PRIORITY_MULTISET
+	struct NODE
+	{
+		std::multiset<Board::PAWN_MOVE> moves;
+		int score;
+	};
+#else
 	struct NODE
 	{
 		std::list<Board::PAWN_MOVE> moves;
 		int score;
 	};
+#endif
 
 	Ai *ai;
 	Board board;

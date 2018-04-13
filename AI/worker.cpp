@@ -6,6 +6,7 @@
 #include <mutex>
 #include <map>
 #include <unordered_map>
+#include <set>
 #include <random>
 #include <iomanip>
 #include <sstream>
@@ -81,7 +82,11 @@ void Worker::Search()
 		nodeStack.push_back({{}, SCORE_NONE});
 		// 自分
 		nodeStack.push_back({ board.GetMoveList(), SCORE_NONE});
+#ifdef USE_PRIORITY_MULTISET
+		nodeStack.rbegin()->moves.insert(PAWN_MOVE_ZERO);
+#else
 		nodeStack.rbegin()->moves.insert(nodeStack.rbegin()->moves.cbegin(), PAWN_MOVE_ZERO);
+#endif
 		
 		int count = 0;
 		//if (debug)
@@ -108,16 +113,19 @@ void Worker::Search()
 			
 			bool debugPrint = true && debug;
 			/*
-			if ( !top->moves.empty() )
+			if ( 1 < nodeStack.size() )
 			{
-				Board::PAWN_MOVE moveTop = *(top->moves.begin());
-				if (moveTop.tox == 8 && moveTop.toy == 3 && moveTop.fromPawn == PAWN_TYPE::UMA)
+				std::list<NODE>::iterator next = ++top;
+				if (next != nodeStack.end())
 				{
-					debugPrint = true;
+					Board::PAWN_MOVE moveTop = *(top->moves.begin());
+					if (moveTop.to.x == 7 && moveTop.to.y == 0 && moveTop.from.pawn == PAWN_RYU)
+					{
+						debugPrint = true;
+					}
 				}
 			}
 			*/
-
 			if( debugPrint )
 			{
 				//std::cout << '\r' << std::flush;
@@ -125,7 +133,11 @@ void Worker::Search()
 				{
 					if( 0 < ite->moves.size() )
 					{
+#ifdef USE_PRIORITY_MULTISET
+						std::cout << ":" << ite->moves.begin()->DebugString() << "(" << (int)(ite->score) << ")";
+#else
 						std::cout << ":" << ite->moves.front().DebugString() << "(" << (int)(ite->score) << ")";
+#endif
 					}
 					else
 					{
@@ -158,10 +170,17 @@ void Worker::Search()
 			}
 
 			// とりあえず子ノードの着手を戻す
+#ifdef USE_PRIORITY_MULTISET
+			if (*(childItr->moves.begin()) != PAWN_MOVE_ZERO)
+			{
+				board.Back(*(childItr->moves.begin()));
+			}
+#else
 			if (childItr->moves.front() != PAWN_MOVE_ZERO)
 			{
 				board.Back(childItr->moves.front());
 			}
+#endif
 			
 			// スコアがwindowの外側だったら終わり
 			if ( childItr->score != SCORE_NONE && window != SCORE_NONE)
@@ -175,9 +194,15 @@ void Worker::Search()
 
 				if (windowTmp < childItr->score)
 				{
+#ifdef USE_PRIORITY_MULTISET
+					std::multiset<Board::PAWN_MOVE>::iterator ite = childItr->moves.begin();
+					++ite;
+					childItr->moves.erase(ite, childItr->moves.end());
+#else
 					std::list<Board::PAWN_MOVE>::iterator ite = childItr->moves.begin();
 					++ite;
 					childItr->moves.erase(ite, childItr->moves.end());
+#endif
 				}
 			}
 			
@@ -199,12 +224,30 @@ void Worker::Search()
 			}
 			
 			childItr->score = SCORE_NONE;
+
+#ifdef USE_PRIORITY_MULTISET
+			Board::PAWN_MOVE test = *(childItr->moves.begin());
+#else
+			Board::PAWN_MOVE test = childItr->moves.front();
+#endif
+			if (test.reserve == PAWN_NONE && test.from.x == test.to.x && test.from.y == test.to.y)
+			{
+				std::cout << "assert" << std::endl;
+			}
 			
+#ifdef USE_PRIORITY_MULTISET
+			// 盤面を進める
+			board.Move(*(childItr->moves.begin()));
+
+			// 着手を取得
+			std::multiset<Board::PAWN_MOVE> moveList = board.GetMoveList();
+#else
 			// 盤面を進める
 			board.Move(childItr->moves.front());
-			
+
 			// 着手を取得
 			std::list<Board::PAWN_MOVE> moveList = board.GetMoveList();
+#endif
 			
 			// 新しい盤面に着手が無かったら勝負あり
 			if( moveList.empty() )
@@ -232,7 +275,11 @@ void Worker::Search()
 
 			// 子供を追加
 			nodeStack.push_back({std::move(moveList), SCORE_NONE});
+#ifdef USE_PRIORITY_MULTISET
+			nodeStack.rbegin()->moves.insert(PAWN_MOVE_ZERO);
+#else
 			nodeStack.rbegin()->moves.insert(nodeStack.rbegin()->moves.cbegin(), PAWN_MOVE_ZERO);
+#endif
 		}
 	}
 }

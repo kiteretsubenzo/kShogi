@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 #include <unordered_map>
+#include <set>
 #include <algorithm>
 #include <thread>
 #include <mutex>
@@ -214,7 +215,7 @@ bool Test()
 	{
 		std::cout << "NO." << (i + 1) << std::endl;
 
-		std::vector<std::string> strs = split(testProblem3[0], ':');
+		std::vector<std::string> strs = split(testProblem3[i], ':');
 
 		board.Init(strs[0]);
 
