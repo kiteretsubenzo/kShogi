@@ -92,7 +92,7 @@ void Worker::SearchImplementation(const std::string &job)
 	{
 		count++;
 
-		if ((count & 0xff) == 0)
+		if ((count & 0xffff) == 0)
 		{
 			// たまにjobが生きているか確認
 			if (ai->IsAlive(jobId) == false)
@@ -148,15 +148,10 @@ void Worker::SearchImplementation(const std::string &job)
 			// 子ノードを取得
 			std::list<NODE>::reverse_iterator childItr = nodeStack.rbegin();
 
-#if USE_PRIORITY == PRIORITY_MULTISET
-			PAWN_MOVE test = *(childItr->moves.begin());
-
 			// 盤面を進める
+#if USE_PRIORITY == PRIORITY_MULTISET
 			board.Move(*(childItr->moves.begin()));
 #else
-			PAWN_MOVE test = childItr->moves.front();
-
-			// 盤面を進める
 			board.Move(childItr->moves.front());
 #endif
 			// 着手を取得
@@ -234,9 +229,7 @@ void Worker::SearchImplementation(const std::string &job)
 
 				if (windowTmp < childItr->score)
 				{
-					MoveList::iterator ite = childItr->moves.begin();
-					++ite;
-					childItr->moves.erase(ite, childItr->moves.end());
+					childItr->moves.clear();
 				}
 			}
 
