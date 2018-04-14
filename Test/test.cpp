@@ -218,8 +218,8 @@ bool Test()
 		board.Init(strs[0]);
 
 		// 点数を求める
-		ai.SetMode("scout");
-		ai.SetSearchScore(0);
+		ai.SetMode("scouttest");
+		ai.SetSearchScore(-SCORE_WIN - 1000);
 		ai.Start(board);
 
 		while (ai.Tick() == false) {

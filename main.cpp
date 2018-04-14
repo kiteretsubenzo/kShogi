@@ -13,6 +13,57 @@
 #include "AI/ai.h"
 #include "Test/test.h"
 
+std::vector<std::string> testProblem3test
+{
+	// No.1
+	"h18 y04 e04 g04 u00 r00 k03\n"
+	" . . . . . . . . .\n"
+	" . . . . . .r_ . .\n"
+	" . . . . . .U_ .o_\n"
+	" . . . . . . .^r .\n"
+	" . . . . . .^U . .\n"
+	" . . . . . . . . .\n"
+	" . . . . . . . . .\n"
+	" . . . . . . . . .\n"
+	" . . . . . . . . .\n"
+	"h00 y00 e00 g00 u00 r00 k01\n"
+	"first"
+	":"
+	"２三 飛(2,4) 成り"
+	,
+	// No.2
+	"h16 y02 e04 g04 u02 r01 k03\n"
+	" . . . . .^R . .y_\n"
+	" . . . . . . .o_h_\n"
+	" . . . . . . . . .\n"
+	" . . . . . . .h_ .\n"
+	" . . . . . . .^h .\n"
+	" . . . . . .^y . .\n"
+	" . . . . . . . . .\n"
+	" . . . . . . . . .\n"
+	" . . . . . . . . .\n"
+	"h00 y00 e00 g00 u00 r00 k01\n"
+	"first"
+	":"
+	"２一 龍(4,1)"
+	,
+	// No.3
+	"h18 y04 e04 g04 u00 r00 k04\n"
+	" . . . . . . . . .\n"
+	" . . . . . .^U^R .\n"
+	" . . . . . . . . .\n"
+	" . . . . . . . . .\n"
+	" . . . . . .^uR_o_\n"
+	" . . . . . . . . .\n"
+	" . . . . . . . . .\n"
+	" . . . . . . . . .\n"
+	" . . . . . . . . .\n"
+	"h00 y00 e00 g00 u00 r00 k00\n"
+	"first"
+	":"
+	"１四 馬(3,2)"
+};
+
 int main()
 { 
 	if (Test())
@@ -228,8 +279,70 @@ int main()
   
 	std::cout << "end" << std::endl;
 #endif
-  std::string str;
-  std::cin >> str;
+	Ai ai;
+	//ai.Start(board);
+	//ai.Stop();
+#if false
+	
+	ai.SetDebug(false);
+
+	std::chrono::system_clock::time_point  start, end;
+	start = std::chrono::system_clock::now();
+	
+	std::cout << "problem 3 test" << std::endl;
+	for (unsigned int i = 0; i < testProblem3test.size(); i++)
+	{
+		std::cout << "NO." << (i + 1) << std::endl;
+
+		std::vector<std::string> strs = split(testProblem3test[i], ':');
+
+		board.Init(strs[0]);
+
+		// 点数を求める
+		ai.SetMode("scout");
+		ai.SetSearchScore(0);
+		ai.Start(board);
+
+		while (ai.Tick() == false) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		}
+
+		PAWN_MOVE scoutMove;
+		int scoutScore;
+		ai.GetResult(scoutMove, scoutScore);
+
+		std::cout << scoutScore << std::endl;
+
+		// 着手を求める
+		ai.SetMode("move");
+		// 一手進めて探索するので最短手順も一手短くなる
+		// そのため検索するスコアも一つ小さくなる
+		ai.SetSearchScore(-scoutScore - 1);
+		ai.Start(board);
+
+		while (ai.Tick() == false) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		}
+
+		ai.GetResult(scoutMove, scoutScore);
+		std::cout << scoutMove.DebugString() << " " << strs[1] << std::endl;
+		if (scoutMove.DebugString() != strs[1])
+		{
+			std::cout << "NO." << (i + 1) << std::endl;
+			board.PrintBoard();
+			std::cout << strs[1] << " -> " << scoutMove.DebugString() << " -> false" << std::endl;
+			ai.Stop();
+			return false;
+		}
+	}
+
+	end = std::chrono::system_clock::now();
+	long long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+	std::cout << milliseconds << std::endl;
+#endif
+
+	std::string str;
+	std::cin >> str;
   
-  return 0;
+	return 0;
 }

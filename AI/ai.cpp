@@ -56,20 +56,12 @@ void Ai::Start(Board boardValue)
 	}
 	*/
 	
-	if (mode == "scout")
+	if (mode == "scout" || mode == "scouttest")
 	{
 		std::list<PAWN_MOVE> moves;
 		moves.push_back(PAWN_MOVE_ZERO);
 		bestScore = 0;
 		JOB job = { GetJobId(), { PAWN_MOVE_ZERO }, -searchScore, 4, board };
-		jobs.push_back(job);
-	}
-	if (mode == "scouttest")
-	{
-		std::list<PAWN_MOVE> moves;
-		moves.push_back(PAWN_MOVE_ZERO);
-		bestScore = 0;
-		JOB job = { GetJobId(),{ PAWN_MOVE_ZERO }, -searchScore, 4, board };
 		jobs.push_back(job);
 	}
 	else if(mode == "minimax")
@@ -149,11 +141,6 @@ void Ai::GetJob(std::string &job)
 		job += ",board:" + jobStruct.board.BoardToString();
 		waits[jobIdString] = jobStruct.moves;
 		jobs.pop_front();
-
-		if (mode == "scouttest")
-		{
-			std::cout << job << std::endl;
-		}
 	}
 	else
 	{

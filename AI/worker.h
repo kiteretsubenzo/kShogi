@@ -7,6 +7,7 @@ class Worker
 {
 public:
 	Worker(Ai &aiValue);
+	~Worker();
 	
 	void Start();
 	void Join();
@@ -22,6 +23,7 @@ private:
 	Board board;
 	bool state;
 	std::thread th;
+	bool threadCreated = false;
 
 	bool debug = true;
 

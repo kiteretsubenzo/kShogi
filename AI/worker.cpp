@@ -18,10 +18,19 @@ Worker::Worker(Ai &aiValue)
 	ai = &aiValue;
 }
 
+Worker::~Worker()
+{
+	if (threadCreated)
+	{
+		th.detach();
+	}
+}
+
 void Worker::Start()
 {
 	state = false;
 	th = std::thread(&Worker::Search, this);
+	threadCreated = true;
 }
 
 void Worker::Search()
@@ -257,5 +266,6 @@ void Worker::SearchImplementation(const std::string &job)
 
 void Worker::Join()
 {
+	threadCreated = false;
 	th.join();
 }
