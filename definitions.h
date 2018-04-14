@@ -158,7 +158,7 @@ DEL	127	0x7f
 #define IsGyokuKinUpgrade(type) (PAWN_KIN <= type)
 
 static const int SCORE_NONE = std::numeric_limits<int>::max() - 1;
-static const int SCORE_WIN = 99999;
+static const int SCORE_WIN = 99999 * 1000;
 static const int MOVES_MAX = (BOARD_WIDTH + BOARD_HEIGHT - 2) * BOARD_WIDTH * BOARD_HEIGHT * 2 + (CAPTURE_MAX - 1) * BOARD_WIDTH * BOARD_HEIGHT;
 
 std::vector<std::string> split(std::string str, char c);

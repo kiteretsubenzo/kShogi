@@ -217,6 +217,7 @@ bool Test()
 
 		board.Init(strs[0]);
 
+		// 点数を求める
 		ai.SetMode("scout");
 		ai.SetSearchScore(0);
 		ai.Start(board);
@@ -231,8 +232,11 @@ bool Test()
 		
 		std::cout << scoutScore << std::endl;
 		
+		// 着手を求める
 		ai.SetMode("move");
-		ai.SetSearchScore(-scoutScore);
+		// 一手進めて探索するので最短手順も一手短くなる
+		// そのため検索するスコアも一つ小さくなる
+		ai.SetSearchScore(-scoutScore - 1);
 		ai.Start(board);
 
 		while (ai.Tick() == false) {

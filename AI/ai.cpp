@@ -248,7 +248,7 @@ bool Ai::Tick()
 		{
 			if (debug)
 			{
-				std::cout << waits[jobId].front().DebugString() << " score is " << score << " " << " best score is " << bestScore << std::endl;
+				std::cout << waits[jobId].front().DebugString() << " score is " << score << " " << " search score is " << searchScore << std::endl;
 			}
 			if (searchScore == -score)
 			{

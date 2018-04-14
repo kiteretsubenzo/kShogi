@@ -160,7 +160,7 @@ void Worker::SearchImplementation(const std::string &job)
 			// 新しい盤面に着手が無かったら勝負あり
 			if (moveList.empty())
 			{
-				childItr->score = SCORE_WIN;
+				childItr->score = SCORE_WIN + 1000 - nodeStack.size();
 				break;
 			}
 
@@ -170,7 +170,7 @@ void Worker::SearchImplementation(const std::string &job)
 				int score = SCORE_NONE;
 
 				// 評価
-				score = board.GetEvaluate(moveList);
+				score = board.GetEvaluate(moveList) + 1000 - nodeStack.size();
 
 				// 親ノードに得点をマージ
 				if (score != SCORE_NONE)
