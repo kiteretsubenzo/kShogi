@@ -13,24 +13,24 @@
 #include "worker.h"
 #include "ai.h"
 
-Worker::Worker(Ai &aiValue)
+Worker::Worker(Ai *aiValue)
 {
-	ai = &aiValue;
-}
-
-Worker::~Worker()
-{
-	if (threadCreated)
-	{
-		th.detach();
-	}
+	ai = aiValue;
 }
 
 void Worker::Start()
 {
-	state = false;
 	th = std::thread(&Worker::Search, this);
-	threadCreated = true;
+	isStart = true;
+}
+
+void Worker::Stop()
+{
+	if (isStart)
+	{
+		th.join();
+		isStart = false;
+	}
 }
 
 void Worker::Search()
@@ -262,10 +262,4 @@ void Worker::SearchImplementation(const std::string &job)
 			}
 		}
 	}
-}
-
-void Worker::Join()
-{
-	threadCreated = false;
-	th.join();
 }

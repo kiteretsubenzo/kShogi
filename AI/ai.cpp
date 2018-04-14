@@ -16,13 +16,21 @@
 
 Ai::Ai()
 {
-	worker = new Worker(*this);
-	worker->Start();
 }
 
 Ai::~Ai()
 {
-	delete worker;
+	Stop();
+	for (std::list<Worker>::iterator ite = workers.begin(); ite != workers.end(); ++ite)
+	{
+		ite->Stop();
+	}
+}
+
+void Ai::AddWorker()
+{
+	workers.push_back(Worker(this));
+	workers.rbegin()->Start();
 }
 
 void Ai::Start(Board boardValue)
@@ -272,5 +280,4 @@ bool Ai::Tick()
 void Ai::Stop()
 {
 	isStop = true;
-	worker->Join();
 }

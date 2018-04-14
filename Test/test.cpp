@@ -164,6 +164,7 @@ bool Test()
 
 	// スカウトテスト
 	Ai ai;
+	ai.AddWorker();
 	/*
 	ai.SetDebug(false);
 	std::cout << "scout test" << std::endl;
@@ -250,7 +251,6 @@ bool Test()
 			std::cout << "NO." << (i + 1) << std::endl;
 			board.PrintBoard();
 			std::cout << strs[1] << " -> " << scoutMove.DebugString() << " -> false" << std::endl;
-			ai.Stop();
 			return false;
 		}
 	}
@@ -259,7 +259,6 @@ bool Test()
 	long long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 	std::cout << milliseconds << std::endl;
 #endif
-	ai.Stop();
 	
 	return true;
 }

@@ -280,6 +280,7 @@ int main()
 	std::cout << "end" << std::endl;
 #endif
 	Ai ai;
+	ai.AddWorker();
 	//ai.Start(board);
 	//ai.Stop();
 #if false

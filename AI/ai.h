@@ -17,6 +17,8 @@ public:
 
 	Ai();
 	~Ai();
+
+	void AddWorker();
 	
 	void SetBoard(const Board &boardValue) { board = boardValue; }
 	void SetMode(const std::string &modeValue) { mode = modeValue; }
@@ -44,7 +46,8 @@ private:
 	PAWN_MOVE bestMove;
 	int bestScore;
 	
-	Worker *worker;
+	//Worker *worker;
+	std::list<Worker> workers;
 	std::mutex mtx;
 	std::condition_variable cv;
 	bool ready = true;
@@ -56,7 +59,7 @@ private:
 	unsigned int jobId = 0;
 	unsigned int GetJobId() { return jobId++; }
   
-	bool isStop;
+	bool isStop = false;
 };
 
 #endif // AI_H

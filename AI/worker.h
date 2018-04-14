@@ -6,11 +6,10 @@ class Ai;
 class Worker
 {
 public:
-	Worker(Ai &aiValue);
-	~Worker();
-	
+	Worker(Ai *aiValue);
+
 	void Start();
-	void Join();
+	void Stop();
 		
 private:
 	struct NODE
@@ -19,11 +18,11 @@ private:
 		int score;
 	};
 
-	Ai *ai;
+	Ai *ai = nullptr;
 	Board board;
-	bool state;
+
 	std::thread th;
-	bool threadCreated = false;
+	bool isStart = false;
 
 	bool debug = true;
 
