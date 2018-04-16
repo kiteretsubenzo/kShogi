@@ -220,7 +220,7 @@ bool Test()
 
 		// 点数を求める
 		ai.SetMode("scouttest");
-		ai.SetSearchScore(-SCORE_WIN - 1000);
+		ai.SetSearchScore(Score{ -SCORE_WIN - 1000, 0 });
 		ai.Start(board);
 
 		while (ai.Tick() == false) {
@@ -228,16 +228,18 @@ bool Test()
 		}
 
 		PAWN_MOVE scoutMove;
-		int scoutScore;
+		Score scoutScore = SCORE_NONE;
 		ai.GetResult(scoutMove, scoutScore);
 		
-		std::cout << scoutScore << std::endl;
+		std::cout << (std::string)scoutScore << std::endl;
 		
 		// 着手を求める
 		ai.SetMode("move");
 		// 一手進めて探索するので最短手順も一手短くなる
 		// そのため検索するスコアも一つ小さくなる
-		ai.SetSearchScore(-scoutScore - 1);
+		scoutScore.deep -= 1;
+		//scoutScore.score += 1;
+		ai.SetSearchScore(scoutScore.Negate());
 		ai.Start(board);
 
 		while (ai.Tick() == false) {

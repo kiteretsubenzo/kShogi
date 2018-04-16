@@ -10,7 +10,7 @@ public:
 	{
 		unsigned int jobId;
 		std::list<PAWN_MOVE> moves;
-		int window;
+		Score window;
 		int deep;
 		Board board;
 	};
@@ -22,7 +22,7 @@ public:
 	
 	void SetBoard(const Board &boardValue) { board = boardValue; }
 	void SetMode(const std::string &modeValue) { mode = modeValue; }
-	void SetSearchScore(const int &score) { searchScore = score; }
+	void SetSearchScore(const Score &score) { searchScore = score; }
 	void SetDebug(const bool &debugValue) { debug = debugValue; }
 	void Start(Board board);
 	bool Tick();
@@ -31,7 +31,7 @@ public:
 	void GetJob(std::string &job);
 	bool IsAlive(const std::string &jobId);
 	
-	void GetResult(PAWN_MOVE &moveValue, int &scoreValue);
+	void GetResult(PAWN_MOVE &moveValue, Score &scoreValue);
 
 	void Stop();
 	
@@ -40,11 +40,11 @@ private:
 	PAWN_MOVE move;
 	
 	std::string mode = "minimax";
-	int searchScore = std::numeric_limits<int>::min();
+	Score searchScore{ std::numeric_limits<int>::min(), 0 };
 	bool debug = true;
 
 	PAWN_MOVE bestMove;
-	int bestScore;
+	Score bestScore = SCORE_NONE;
 	
 	//Worker *worker;
 	std::list<Worker> workers;

@@ -83,10 +83,10 @@ void Worker::SearchImplementation(const std::string &job)
 		//board.PrintBoard();
 	}
 
-	int window = SCORE_NONE;
+	Score window = SCORE_NONE;
 	if (windowStr != "none")
 	{
-		window = std::stoi(windowStr);
+		window = Score(windowStr);
 	}
 	const unsigned int deep = std::stoi(deepStr);
 
@@ -140,12 +140,12 @@ void Worker::SearchImplementation(const std::string &job)
 #if USE_PRIORITY == PRIORITY_MULTISET
 					std::cout << ":" << ite->moves.begin()->DebugString() << "(" << (int)(ite->score) << ")";
 #else
-					std::cout << ":" << ite->moves.front().DebugString() << "(" << (int)(ite->score) << ")";
+					std::cout << ":" << ite->moves.front().DebugString() << "(" << (std::string)(ite->score) << ")";
 #endif
 				}
 				else
 				{
-					std::cout << ":EMPTY(" << (int)(ite->score) << ")";
+					std::cout << ":EMPTY(" << (std::string)(ite->score) << ")";
 				}
 			}
 			std::cout << std::endl;
@@ -169,22 +169,24 @@ void Worker::SearchImplementation(const std::string &job)
 			// 新しい盤面に着手が無かったら勝負あり
 			if (moveList.empty())
 			{
-				childItr->score = SCORE_WIN + 1000 - nodeStack.size();
+				childItr->score.score = SCORE_WIN + 1000;
+				childItr->score.deep = nodeStack.size();
 				break;
 			}
 
 			if (deep <= nodeStack.size())
 			{
 				// 新しい子が末端だったら追加せずに評価
-				int score = SCORE_NONE;
+				Score score = SCORE_NONE;
 
 				// 評価
-				score = board.GetEvaluate(moveList) + 1000 - nodeStack.size();
+				score.score = board.GetEvaluate(moveList) + 1000;
+				childItr->score.deep = nodeStack.size();
 
 				// 親ノードに得点をマージ
 				if (score != SCORE_NONE)
 				{
-					childItr->score = std::min<int>(childItr->score, -score);
+					childItr->score = std::min<Score>(childItr->score, score.Negate());
 				}
 
 				break;
@@ -211,11 +213,11 @@ void Worker::SearchImplementation(const std::string &job)
 
 				if (parentItr->score == SCORE_NONE)
 				{
-					parentItr->score = -childItr->score;
+					parentItr->score = childItr->score.Negate();
 				}
 				else
 				{
-					parentItr->score = std::min<int>(parentItr->score, -childItr->score);
+					parentItr->score = std::min<Score>(parentItr->score, childItr->score.Negate());
 				}
 			}
 
@@ -229,11 +231,11 @@ void Worker::SearchImplementation(const std::string &job)
 			// スコアがwindowの外側だったら終わり
 			if (childItr->score != SCORE_NONE && window != SCORE_NONE)
 			{
-				int windowTmp = window;
+				Score windowTmp = window;
 
 				if ((nodeStack.size() & 01) == 1)
 				{
-					windowTmp = -window;
+					windowTmp = window.Negate();
 				}
 
 				if (windowTmp < childItr->score)
@@ -257,7 +259,7 @@ void Worker::SearchImplementation(const std::string &job)
 			// ルートノードなので終わり
 			if (nodeStack.size() <= 1)
 			{
-				ai->CallBack("jobid:" + jobId + ",score:" + std::to_string(childItr->score) + ",count:" + std::to_string(count));
+				ai->CallBack("jobid:" + jobId + ",score:" + childItr->score.toJson() + ",count:" + std::to_string(count));
 				return;
 			}
 		}
