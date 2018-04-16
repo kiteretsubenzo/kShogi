@@ -135,8 +135,8 @@ int main()
 	"first"
 	,
 	"h16 y02 e04 g04 u02 r01 k03\n"
-	" . . . . . . .o_y_\n"
-	" . . . . . . . .h_\n"
+	" . . . . . . .^Ry_\n"
+	" . . . . . . .o_h_\n"
 	" . . . . . . . . .\n"
 	" . . . . . . .h_ .\n"
 	" . . . . . . .^h .\n"
@@ -145,9 +145,9 @@ int main()
 	" . . . . . . . . .\n"
 	" . . . . . . . . .\n"
 	"h00 y00 e00 g00 u00 r00 k01\n"
-	"first"
+	"second"
   };
-  board.Init(boardInits[3]);
+  board.Init(boardInits[4]);
   std::list<PAWN_MOVE> history;
   /*
   board.PrintBoard();
@@ -225,44 +225,18 @@ int main()
 	  std::cout << ite->DebugString() << " " << ite->priority << std::endl;
   }
 #endif
-#if false
 	Ai ai;
-	ai.SetDebug(true);
+	ai.AddWorker();
+#if true
 	std::chrono::system_clock::time_point  start, end;
-	/*
-	for (int i = 0; i < 2; i++)
-	{
-		start = std::chrono::system_clock::now();
-		board.Init(boardInits[3]);
 
-		ai.SetMode("scout");
-		ai.SetSearchScore(0);
-		ai.Start(board);
-
-		while (ai.Tick() == false) {
-			//std::cout << "\r" << i++;
-			std::this_thread::sleep_for(std::chrono::milliseconds(1));
-		}
-
-		Board::PAWN_MOVE aiMove;
-		int aiScore;
-		ai.GetResult(aiMove, aiScore);
-
-		std::cout << "best move is " << aiMove.DebugString() << std::endl;
-		std::cout << "best score is " << aiScore << std::endl;
-		//board.PrintKihu(aiMove);
-		
-		end = std::chrono::system_clock::now();
-		long long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-		std::cout << milliseconds << std::endl;
-	}
-	*/
-
-	Board::PAWN_MOVE aiMove;
-	int aiScore;
+	PAWN_MOVE aiMove;
+	Score aiScore = SCORE_NONE;
 
 	ai.SetMode("scouttest");
-	ai.SetSearchScore(1);
+	//ai.SetSearchScore(Score(99999, 0, 0));
+	ai.SetSearchScore( Score(99999, 3, 21 ) );
+	ai.SetLimit( true );
 	ai.SetDebug(true);
 	ai.Start(board);
 
@@ -273,16 +247,13 @@ int main()
 	ai.GetResult(aiMove, aiScore);
 
 	std::cout << "best move is " << aiMove.DebugString() << std::endl;
-	std::cout << "best score is " << aiScore << std::endl;
+	std::cout << "best score is " << (std::string)aiScore << std::endl;
+
   
 	ai.Stop();
   
 	std::cout << "end" << std::endl;
 #endif
-	Ai ai;
-	ai.AddWorker();
-	//ai.Start(board);
-	//ai.Stop();
 #if false
 	
 	ai.SetDebug(false);

@@ -204,7 +204,7 @@ bool Test()
 	}
 	*/
 	// 3手詰めテスト
-#if true
+#if false
 	std::chrono::system_clock::time_point  start, end;
 	start = std::chrono::system_clock::now();
 
@@ -220,7 +220,7 @@ bool Test()
 
 		// 点数を求める
 		ai.SetMode("scouttest");
-		ai.SetSearchScore(Score{ -SCORE_WIN - 1000, 0 });
+		ai.SetSearchScore(Score{ Score::SCORE_WIN, 0 }.Negate());
 		ai.Start(board);
 
 		while (ai.Tick() == false) {
