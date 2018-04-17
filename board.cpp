@@ -404,6 +404,7 @@ MoveList Board::GetMoveList()
 			continue;
 		}
 		move.reserve = roll;
+		move.from.pawn = PAWN_NONE;
 		for (uchar j = 0; j<BOARD_HEIGHT; j++)
 		{
 			for (uchar i = 0; i<BOARD_WIDTH; i++)
@@ -483,6 +484,10 @@ bool Board::AddMove(PAWN roll, uchar fromx, uchar fromy, char tox, char toy, boo
 	PAWN capture = matrix[utoy][utox].pawn;
 
 	PAWN_MOVE move( roll, fromx, fromy, utox, utoy, matrix[fromy][fromx].pawn, matrix[utoy][utox].pawn, upgrade, 0 );
+	if (roll != PAWN_NONE)
+	{
+		move.from.pawn = PAWN_NONE;
+	}
 
 	Move(move);
 	// 負ける手は指さない
@@ -931,6 +936,7 @@ void Board::Move(const PAWN_MOVE &move)
 	if( move.to.pawn != PAWN_NONE )
 	{
 		PAWN roll = move.to.pawn;
+		Downgrade(roll);
 		captured[(int)turn][(int)roll]++;
 	}
 	if (move.from.pawn == PAWN_GYOKU)
