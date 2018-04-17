@@ -11,7 +11,6 @@ public:
 		unsigned int jobId;
 		std::list<PAWN_MOVE> moves;
 		Score window;
-		bool limit;
 		int deep;
 		Board board;
 	};
@@ -24,7 +23,6 @@ public:
 	void SetBoard(const Board &boardValue) { board = boardValue; }
 	void SetMode(const std::string &modeValue) { mode = modeValue; }
 	void SetSearchScore(const Score &score) { searchScore = score; }
-	void SetLimit(const bool &limitValue) { limit = limitValue; }
 	void SetDebug(const bool &debugValue) { debug = debugValue; }
 	void Start(Board board);
 	bool Tick();
@@ -43,7 +41,6 @@ private:
 	
 	std::string mode = "minimax";
 	Score searchScore{ std::numeric_limits<int>::min(), 0 };
-	bool limit = false;
 	bool debug = true;
 
 	PAWN_MOVE bestMove;

@@ -64,7 +64,6 @@ void Worker::SearchImplementation(const std::string &job)
 	std::unordered_map<std::string, std::string> params = fromJson(job);
 	std::string jobId = params["jobid"];
 	std::string windowStr = params["window"];
-	std::string limitStr = params["limit"];
 	std::string deepStr = params["deep"];
 	std::string debugStr = params["debug"];
 	std::string boardStr = params["board"];
@@ -79,20 +78,15 @@ void Worker::SearchImplementation(const std::string &job)
 	}
 
 	board.Init(boardStr);
-	//if (debug)
-	//{
+	if (debug)
+	{
 		//board.PrintBoard();
-	//}
+	}
 
 	Score window = SCORE_NONE;
-	if (windowStr != "")
+	if (windowStr != "none")
 	{
 		window = Score(windowStr);
-	}
-	bool limit = false;
-	if (limitStr == "true")
-	{
-		limit = true;
 	}
 	const unsigned int deep = std::stoi(deepStr);
 
@@ -102,7 +96,6 @@ void Worker::SearchImplementation(const std::string &job)
 	// 自分
 	nodeStack.push_back({ board.GetMoveList(), SCORE_NONE });
 
-	int nodeid = 0;
 	int count = 0;
 	while (true)
 	{
@@ -137,32 +130,30 @@ void Worker::SearchImplementation(const std::string &job)
 			}
 		}
 		*/
-
+		if (debugPrint)
+		{
+			//std::cout << '\r' << std::flush;
+			for (std::list<NODE>::iterator ite = nodeStack.begin(); ite != nodeStack.end(); ++ite)
+			{
+				if (0 < ite->moves.size())
+				{
+#if USE_PRIORITY == PRIORITY_MULTISET
+					std::cout << ":" << ite->moves.begin()->DebugString() << "(" << (int)(ite->score) << ")";
+#else
+					std::cout << ":" << ite->moves.front().DebugString() << "(" << (std::string)(ite->score) << ")";
+#endif
+				}
+				else
+				{
+					std::cout << ":EMPTY(" << (std::string)(ite->score) << ")";
+				}
+			}
+			std::cout << std::endl;
+		}
 
 		// forward
 		while (true)
 		{
-			if (debugPrint)
-			{
-				//std::cout << '\r' << std::flush;
-				for (std::list<NODE>::iterator ite = nodeStack.begin(); ite != nodeStack.end(); ++ite)
-				{
-					if (0 < ite->moves.size())
-					{
-#if USE_PRIORITY == PRIORITY_MULTISET
-						std::cout << ":" << ite->moves.begin()->DebugString() << "(" << (int)(ite->score) << ")";
-#else
-						std::cout << ":" << ite->moves.front().DebugString() << "(" << (std::string)(ite->score) << ")";
-#endif
-					}
-					else
-					{
-						std::cout << ":EMPTY(" << (std::string)(ite->score) << ")";
-					}
-				}
-				std::cout << std::endl;
-			}
-
 			// 子ノードを取得
 			std::list<NODE>::reverse_iterator childItr = nodeStack.rbegin();
 
@@ -178,9 +169,8 @@ void Worker::SearchImplementation(const std::string &job)
 			// 新しい盤面に着手が無かったら勝負あり
 			if (moveList.empty())
 			{
-				childItr->score.score = Score::SCORE_WIN;
+				childItr->score.score = SCORE_WIN + 1000;
 				childItr->score.deep = nodeStack.size();
-				childItr->score.nodeid = nodeid;
 				break;
 			}
 
@@ -190,9 +180,8 @@ void Worker::SearchImplementation(const std::string &job)
 				Score score = SCORE_NONE;
 
 				// 評価
-				score.score = board.GetEvaluate(moveList);
+				score.score = board.GetEvaluate(moveList) + 1000;
 				childItr->score.deep = nodeStack.size();
-				childItr->score.nodeid = nodeid;
 
 				// 親ノードに得点をマージ
 				if (score != SCORE_NONE)
@@ -205,33 +194,11 @@ void Worker::SearchImplementation(const std::string &job)
 
 			// 子供を追加してもう一回
 			nodeStack.push_back({ std::move(moveList), SCORE_NONE });
-			nodeid++;
 		}
 
 		// back
 		while (true)
 		{
-			if (debugPrint)
-			{
-				//std::cout << '\r' << std::flush;
-				for (std::list<NODE>::iterator ite = nodeStack.begin(); ite != nodeStack.end(); ++ite)
-				{
-					if (0 < ite->moves.size())
-					{
-#if USE_PRIORITY == PRIORITY_MULTISET
-						std::cout << ":" << ite->moves.begin()->DebugString() << "(" << (int)(ite->score) << ")";
-#else
-						std::cout << ":" << ite->moves.front().DebugString() << "(" << (std::string)(ite->score) << ")";
-#endif
-					}
-					else
-					{
-						std::cout << ":EMPTY(" << (std::string)(ite->score) << ")";
-					}
-				}
-				std::cout << std::endl;
-			}
-
 			// 子ノードを取得
 			std::list<NODE>::reverse_iterator childItr = nodeStack.rbegin();
 
@@ -262,7 +229,7 @@ void Worker::SearchImplementation(const std::string &job)
 #endif
 
 			// スコアがwindowの外側だったら終わり
-			if (childItr->score != SCORE_NONE && window != SCORE_NONE && (limit == false || childItr->score < window.Negate()))
+			if (childItr->score != SCORE_NONE && window != SCORE_NONE)
 			{
 				Score windowTmp = window;
 

@@ -70,14 +70,14 @@ void Ai::Start(Board boardValue)
 		moves.push_back(PAWN_MOVE_ZERO);
 		bestScore.score = 0;
 		bestScore.deep = 0;
-		JOB job = { GetJobId(), { PAWN_MOVE_ZERO }, searchScore.Negate(), limit, 4, board };
+		JOB job = { GetJobId(), { PAWN_MOVE_ZERO }, searchScore.Negate(), 4, board };
 		jobs.push_back(job);
 	}
 	else if(mode == "minimax")
 	{
 		std::list<PAWN_MOVE> moves;
 		moves.push_back(PAWN_MOVE_ZERO);
-		JOB job = { GetJobId(), moves, SCORE_NONE, limit, 4, board };
+		JOB job = { GetJobId(), moves, SCORE_NONE, 4, board };
 		jobs.push_back(job);
 	}
 	else if (mode == "move")
@@ -90,7 +90,7 @@ void Ai::Start(Board boardValue)
 			board.Move(move);
 			std::list<PAWN_MOVE> moves;
 			moves.push_back(move);
-			JOB job = { GetJobId(), moves, searchScore, limit, 4, board };
+			JOB job = { GetJobId(), moves, searchScore, 4, board };
 			jobs.push_back(job);
 			board.Back(move);
 		}
@@ -138,14 +138,6 @@ void Ai::GetJob(std::string &job)
 		std::string jobIdString = std::to_string(jobStruct.jobId);
 		job = "jobid:" + jobIdString;
 		job += ",window:" + jobStruct.window.toJson();
-		if (jobStruct.limit)
-		{
-			job += ",limit:true";
-		}
-		else
-		{
-			job += ",limit:false";
-		}
 		job += ",deep:" + std::to_string(jobStruct.deep);
 		if (debug)
 		{
@@ -219,7 +211,7 @@ bool Ai::Tick()
 			else
 			{
 				bestScore = score;
-				JOB job = { GetJobId(), { PAWN_MOVE_ZERO }, bestScore.Negate(), limit, 4, board };
+				JOB job = { GetJobId(), { PAWN_MOVE_ZERO }, bestScore.Negate(), 4, board };
 				jobs.push_back(job);
 			}
 		}

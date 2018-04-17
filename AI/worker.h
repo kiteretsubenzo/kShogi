@@ -5,22 +5,18 @@ class Ai;
 
 struct Score
 {
-	static const int SCORE_WIN = 99999;
-
 	int score;
 	int deep;
-	int nodeid;
 
 	Score Negate() const
 	{
-		return Score(-score, -deep, -nodeid);
+		return Score(-score, -deep);
 	}
 
-	Score(const int &scoreValue, const int &deepValue, const int &nodeidValue = 0)
+	Score(const int &scoreValue, const int &deepValue)
 	{
 		score = scoreValue;
 		deep = deepValue;
-		nodeid = nodeidValue;
 	}
 
 	Score(const std::string &json)
@@ -28,7 +24,6 @@ struct Score
 		std::unordered_map<std::string, std::string> strs = fromJson(json);
 		score = std::stoi(strs["score"]);
 		deep = std::stoi(strs["deep"]);
-		nodeid = std::stoi(strs["nodeid"]);
 	}
 
 	std::string toJson() const
@@ -36,7 +31,6 @@ struct Score
 		std::string str = "{";
 		str += "score:" + std::to_string(score);
 		str += ",deep:" + std::to_string(deep);
-		str += ",nodeid:" + std::to_string(nodeid);
 		return str + "}";
 	}
 
@@ -44,8 +38,7 @@ struct Score
 	{
 		return (
 			score == rhs.score &&
-			deep == rhs.deep &&
-			nodeid == rhs.nodeid
+			deep == rhs.deep
 			);
 	}
 
@@ -53,8 +46,7 @@ struct Score
 	{
 		return (
 			score != rhs.score ||
-			deep != rhs.deep ||
-			nodeid != rhs.nodeid
+			deep != rhs.deep
 			);
 	}
 
@@ -68,26 +60,19 @@ struct Score
 		{
 			return false;
 		}
-		if (deep > rhs.deep)
-		{
-			return true;
-		}
-		if (deep < rhs.deep)
-		{
-			return false;
-		}
-		return (nodeid < rhs.nodeid);
+		return (deep > rhs.deep);
 	}
 
 	operator std::string() const
 	{
 		std::string str;
-		str = std::to_string(score) + ":" + std::to_string(deep) + ":" + std::to_string(nodeid);
+		str = std::to_string(score) + ":" + std::to_string(deep);
 		return str;
 	}
 };
 
 static const Score SCORE_NONE(std::numeric_limits<int>::max() - 1, 0);
+static const int SCORE_WIN = 99999 * 1000;
 
 class Worker
 {
