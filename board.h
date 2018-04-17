@@ -70,7 +70,7 @@ public:
 	{
 		reserve = charToPawn[str[0]];
 		from.x = std::stoi(str.substr(1, 2));
-		from.y = std::stoi(str.substr(3, 2));
+		from.x = std::stoi(str.substr(3, 2));
 		from.pawn = charToPawn[str[5]];
 		to.x = std::stoi(str.substr(6, 2));
 		to.y = std::stoi(str.substr(8, 2));

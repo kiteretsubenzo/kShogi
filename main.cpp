@@ -147,7 +147,7 @@ int main()
 	"h00 y00 e00 g00 u00 r00 k01\n"
 	"second"
   };
-  board.Init(testProblem3test[0]);
+  board.Init(boardInits[4]);
   std::list<PAWN_MOVE> history;
   /*
   board.PrintBoard();
@@ -235,9 +235,8 @@ int main()
 
 	ai.SetMode("scouttest");
 	ai.SetSearchScore(Score(99999));
-	//ai.SetSearchScore( Score("{score:99999,moves:[n0701o0700Rf,k0000n0601nf]}") );
-	//ai.SetSearchScore( Score("{score:99999,moves:[n0701o0802nf,n0700R0703hf]}") );
-	ai.SetLimit( false );
+	//ai.SetSearchScore( Score(99999, 3, 21 ) );
+	ai.SetLimit( true );
 	ai.SetDebug(true);
 	ai.Start(board);
 
@@ -253,7 +252,7 @@ int main()
   
 	ai.Stop();
   
-	std::cout << "end" << std::endl;	
+	std::cout << "end" << std::endl;
 #endif
 #if false
 	
