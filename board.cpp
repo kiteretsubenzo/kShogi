@@ -404,6 +404,7 @@ MoveList Board::GetMoveList()
 			continue;
 		}
 		move.reserve = roll;
+		move.from.pawn = PAWN_NONE;
 		for (uchar j = 0; j<BOARD_HEIGHT; j++)
 		{
 			for (uchar i = 0; i<BOARD_WIDTH; i++)

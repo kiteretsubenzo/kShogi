@@ -39,9 +39,9 @@ typedef unsigned char PAWN;
 #define PAWN_NONE	PAWN_MAX
 #define CAPTURE_MAX	PAWN_GYOKU
 
-static const char PAWN_CHAR[PAWN_MAX] =
+static const char PAWN_CHAR[PAWN_MAX+1] =
 {
-	'h', 'y', 'e', 'g', 'u', 'r', 'k', 'o', 'H', 'Y', 'E', 'G', 'U', 'R'
+	'h', 'y', 'e', 'g', 'u', 'r', 'k', 'o', 'H', 'Y', 'E', 'G', 'U', 'R', 'n'
 };
 
 static const std::string PAWN_KANJI[PAWN_MAX] =
@@ -157,11 +157,11 @@ DEL	127	0x7f
 #define IsUpgrade(type)	((type & 0x08) != 0)
 #define IsGyokuKinUpgrade(type) (PAWN_KIN <= type)
 
-static const int SCORE_NONE = std::numeric_limits<int>::max() - 1;
-static const int SCORE_WIN = 99999 * 1000;
+static const int SCORE_WIN = 99999;
 static const int MOVES_MAX = (BOARD_WIDTH + BOARD_HEIGHT - 2) * BOARD_WIDTH * BOARD_HEIGHT * 2 + (CAPTURE_MAX - 1) * BOARD_WIDTH * BOARD_HEIGHT;
 
 std::vector<std::string> split(std::string str, char c);
 std::unordered_map<std::string, std::string> fromJson(std::string str);
+std::list<std::string> fromJsonArray(std::string str);
 
 #endif // DEFINITIONS_H

@@ -204,7 +204,7 @@ bool Test()
 	}
 	*/
 	// 3手詰めテスト
-#if true
+#if false
 	std::chrono::system_clock::time_point  start, end;
 	start = std::chrono::system_clock::now();
 
@@ -228,16 +228,19 @@ bool Test()
 		}
 
 		PAWN_MOVE scoutMove;
-		int scoutScore;
+		Score scoutScore = SCORE_NONE;
 		ai.GetResult(scoutMove, scoutScore);
 		
-		std::cout << scoutScore << std::endl;
+		std::cout << (std::string)scoutScore << std::endl;
 		
 		// 着手を求める
 		ai.SetMode("move");
 		// 一手進めて探索するので最短手順も一手短くなる
 		// そのため検索するスコアも一つ小さくなる
-		ai.SetSearchScore(-scoutScore - 1);
+		Score scoreTmp = scoutScore.Negate();
+		scoreTmp.score -= 1;
+		scoreTmp.moveList.pop_front();
+		ai.SetSearchScore(scoreTmp);
 		ai.Start(board);
 
 		while (ai.Tick() == false) {

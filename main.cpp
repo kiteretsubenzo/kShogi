@@ -147,7 +147,7 @@ int main()
 	"h00 y00 e00 g00 u00 r00 k01\n"
 	"first"
   };
-  board.Init(boardInits[3]);
+  board.Init(testProblem3test[0]);
   std::list<PAWN_MOVE> history;
   /*
   board.PrintBoard();
@@ -225,44 +225,18 @@ int main()
 	  std::cout << ite->DebugString() << " " << ite->priority << std::endl;
   }
 #endif
-#if false
 	Ai ai;
-	ai.SetDebug(true);
-	std::chrono::system_clock::time_point  start, end;
-	/*
-	for (int i = 0; i < 2; i++)
-	{
-		start = std::chrono::system_clock::now();
-		board.Init(boardInits[3]);
+	ai.AddWorker();
+#if true
+	std::chrono::system_clock::time_point start, end;
 
-		ai.SetMode("scout");
-		ai.SetSearchScore(0);
-		ai.Start(board);
-
-		while (ai.Tick() == false) {
-			//std::cout << "\r" << i++;
-			std::this_thread::sleep_for(std::chrono::milliseconds(1));
-		}
-
-		Board::PAWN_MOVE aiMove;
-		int aiScore;
-		ai.GetResult(aiMove, aiScore);
-
-		std::cout << "best move is " << aiMove.DebugString() << std::endl;
-		std::cout << "best score is " << aiScore << std::endl;
-		//board.PrintKihu(aiMove);
-		
-		end = std::chrono::system_clock::now();
-		long long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-		std::cout << milliseconds << std::endl;
-	}
-	*/
-
-	Board::PAWN_MOVE aiMove;
-	int aiScore;
+	PAWN_MOVE aiMove;
+	Score aiScore = SCORE_NONE;
 
 	ai.SetMode("scouttest");
-	ai.SetSearchScore(1);
+	//ai.SetSearchScore(-SCORE_WIN);
+	//ai.SetSearchScore(-99999996);
+	ai.SetSearchScore(Score("{score:-99999,moves:[n0312r0702nt,n0212o0702Rf,k0012n0802nf]}"));
 	ai.SetDebug(true);
 	ai.Start(board);
 
@@ -273,21 +247,17 @@ int main()
 	ai.GetResult(aiMove, aiScore);
 
 	std::cout << "best move is " << aiMove.DebugString() << std::endl;
-	std::cout << "best score is " << aiScore << std::endl;
+	std::cout << "best score is " << aiScore.toJson() << std::endl;
   
 	ai.Stop();
   
 	std::cout << "end" << std::endl;
 #endif
-	Ai ai;
-	ai.AddWorker();
-	//ai.Start(board);
-	//ai.Stop();
 #if false
 	
 	ai.SetDebug(false);
 
-	std::chrono::system_clock::time_point  start, end;
+	std::chrono::system_clock::time_point start, end;
 	start = std::chrono::system_clock::now();
 	
 	std::cout << "problem 3 test" << std::endl;
