@@ -48,6 +48,11 @@ std::unordered_map<std::string, std::string> fromJson(std::string str)
 			index = str.find('}', startIndex);
 			index = str.find(',', index);
 		}
+		else if (str[startIndex] == '[')
+		{
+			index = str.find(']', startIndex);
+			index = str.find(',', index);
+		}
 		else
 		{
 			index = str.find(',', startIndex);
@@ -64,7 +69,22 @@ std::unordered_map<std::string, std::string> fromJson(std::string str)
 		startIndex = index + 1;
 	}
 
-	/*
+	return hash;
+}
+
+std::list<std::string> fromJsonArray(std::string str)
+{
+	std::unordered_map<std::string, std::string> hash;
+
+	if (str[0] == '[')
+	{
+		str = str.substr(1);
+	}
+	if (str[str.length() - 1] == ']')
+	{
+		str.pop_back();
+	}
+
 	std::list<std::string> splited;
 	std::stringstream ss{ str };
 	std::string buf;
@@ -72,13 +92,5 @@ std::unordered_map<std::string, std::string> fromJson(std::string str)
 		splited.push_back(buf);
 	}
 
-	for (std::list<std::string>::const_iterator ite = splited.begin(); ite != splited.end(); ++ite)
-	{
-		size_t index = ite->find(":");
-		std::string key = ite->substr(0, index);
-		std::string value = ite->substr(index + 1);
-		hash[key] = value;
-	}
-	*/
-	return hash;
+	return splited;
 }

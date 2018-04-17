@@ -66,6 +66,18 @@ public:
 		to.pawn = toPawn;
 	}
 
+	PAWN_MOVE(std::string str)
+	{
+		reserve = charToPawn[str[0]];
+		from.x = std::stoi(str.substr(1, 2));
+		from.x = std::stoi(str.substr(3, 2));
+		from.pawn = charToPawn[str[5]];
+		to.x = std::stoi(str.substr(6, 2));
+		to.y = std::stoi(str.substr(8, 2));
+		to.pawn = charToPawn[str[10]];
+		upgrade = (str[11] == 't');
+	}
+
 	std::string DebugString() const
 	{
 		if (reserve == PAWN_NONE && from.x == to.x && from.y == to.y)
@@ -118,20 +130,68 @@ public:
 
 	bool operator<(const PAWN_MOVE& rhs) const
 	{
-		return (priority > rhs.priority);
+		if (priority > rhs.priority)
+		{
+			return true;
+		}
+		if (priority < rhs.priority)
+		{
+			return false;
+		}
+
+		if (reserve == PAWN_NONE && rhs.reserve != PAWN_NONE)
+		{
+			return true;
+		}
+		if (reserve != PAWN_NONE && rhs.reserve == PAWN_NONE)
+		{
+			return false;
+		}
+		if (reserve < rhs.reserve)
+		{
+			return true;
+		}
+		if (reserve > rhs.reserve)
+		{
+			return false;
+		}
+
+		if (from.mem < rhs.from.mem)
+		{
+			return true;
+		}
+		if (from.mem > rhs.from.mem)
+		{
+			return false;
+		}
+		if (to.mem < rhs.to.mem)
+		{
+			return true;
+		}
+		if (to.mem > rhs.to.mem)
+		{
+			return false;
+		}
+
+		if (upgrade == false && rhs.upgrade == true)
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 	operator std::string() const
 	{
 		std::stringstream stream;
 
-		stream << std::setfill('0') << std::setw(2) << (int)reserve;
+		stream << PAWN_CHAR[reserve];
 		stream << std::setfill('0') << std::setw(2) << (int)from.x;
 		stream << std::setfill('0') << std::setw(2) << (int)from.y;
+		stream << PAWN_CHAR[from.pawn];
 		stream << std::setfill('0') << std::setw(2) << (int)to.x;
 		stream << std::setfill('0') << std::setw(2) << (int)to.y;
-		stream << std::setfill('0') << std::setw(2) << (int)from.pawn;
-		stream << std::setfill('0') << std::setw(2) << (int)to.pawn;
+		stream << PAWN_CHAR[to.pawn];
 		if (upgrade)
 		{
 			stream << "t";
