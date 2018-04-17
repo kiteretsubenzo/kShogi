@@ -41,7 +41,7 @@ void Ai::Start(Board boardValue)
 	isStop = false;
 	board = boardValue;
 	bestMove = PAWN_MOVE_ZERO;
-	bestScore = SCORE_NONE;
+	bestScore = std::numeric_limits<int>::min();
 
 	std::unique_lock<std::mutex> uniq(mtx);
 	//std::cout << "Start::lock" << std::endl;
@@ -68,9 +68,8 @@ void Ai::Start(Board boardValue)
 	{
 		std::list<PAWN_MOVE> moves;
 		moves.push_back(PAWN_MOVE_ZERO);
-		bestScore.score = 0;
-		bestScore.deep = 0;
-		JOB job = { GetJobId(), { PAWN_MOVE_ZERO }, searchScore.Negate(), 4, board };
+		bestScore = 0;
+		JOB job = { GetJobId(), { PAWN_MOVE_ZERO }, -searchScore, 4, board };
 		jobs.push_back(job);
 	}
 	else if(mode == "minimax")
@@ -137,7 +136,7 @@ void Ai::GetJob(std::string &job)
 		JOB jobStruct = jobs.front();
 		std::string jobIdString = std::to_string(jobStruct.jobId);
 		job = "jobid:" + jobIdString;
-		job += ",window:" + jobStruct.window.toJson();
+		job += ",window:" + std::to_string(jobStruct.window);
 		job += ",deep:" + std::to_string(jobStruct.deep);
 		if (debug)
 		{
@@ -175,7 +174,7 @@ bool Ai::IsAlive(const std::string &jobId)
 	return alive;
 }
 
-void Ai::GetResult(PAWN_MOVE &moveValue, Score &scoreValue)
+void Ai::GetResult(PAWN_MOVE &moveValue, int &scoreValue)
 {
 	moveValue = bestMove;
 	scoreValue = bestScore;
@@ -195,23 +194,23 @@ bool Ai::Tick()
 		std::string jobId = strs["jobid"];
 		std::string scoreString = strs["score"];
 		std::string countString = strs["count"];
-		Score score(scoreString);
+		int score = stoi(scoreString);
 		if (mode == "scout")
 		{
 			if (debug)
 			{
-				std::cout << "score is " << (std::string)score << " best score is " << (std::string)bestScore << std::endl;
+				std::cout << "score is " << score << " best score is " << bestScore << std::endl;
 			}
-			std::cout << "score is " << (std::string)score << " best score is " << (std::string)bestScore << std::endl;
+			std::cout << "score is " << score << " best score is " << bestScore << std::endl;
 			if (bestScore == score)
 			{
 				bestMove = waits[jobId].front();
-				bestScore = score.Negate();
+				bestScore = -score;
 			}
 			else
 			{
 				bestScore = score;
-				JOB job = { GetJobId(), { PAWN_MOVE_ZERO }, bestScore.Negate(), 4, board };
+				JOB job = { GetJobId(), { PAWN_MOVE_ZERO }, -bestScore, 4, board };
 				jobs.push_back(job);
 			}
 		}
@@ -219,37 +218,37 @@ bool Ai::Tick()
 		{
 			if (debug)
 			{
-				std::cout << "score is " << (std::string)score << " best score is " << (std::string)bestScore << std::endl;
+				std::cout << "score is " << score << " best score is " << bestScore << std::endl;
 			}
-			std::cout << "score is " << (std::string)score << " best score is " << (std::string)bestScore << std::endl;
-			if (bestScore < score.Negate())
+			std::cout << "score is " << score << " best score is " << bestScore << std::endl;
+			if (bestScore < -score)
 			{
 				bestMove = waits[jobId].front();
-				bestScore = score.Negate();
+				bestScore = -score;
 			}
 		}
 		else if(mode == "minimax")
 		{
 			if (debug)
 			{
-				std::cout << "score is " << (std::string)score << " best score is " << (std::string)bestScore << std::endl;
+				std::cout << "score is " << score << " best score is " << bestScore << std::endl;
 			}
-			if (bestScore < score.Negate())
+			if (bestScore < -score)
 			{
 				bestMove = waits[jobId].front();
-				bestScore = score.Negate();
+				bestScore = -score;
 			}
 		}
 		else if (mode == "move")
 		{
 			if (debug)
 			{
-				std::cout << waits[jobId].front().DebugString() << " score is " << (std::string)score << " " << " search score is " << (std::string)searchScore << std::endl;
+				std::cout << waits[jobId].front().DebugString() << " score is " << score << " " << " search score is " << searchScore << std::endl;
 			}
-			if (searchScore == score.Negate())
+			if (searchScore == -score)
 			{
 				bestMove = waits[jobId].front();
-				bestScore = score.Negate();
+				bestScore = -score;
 				jobs.clear();
 				waits.clear();
 				results.clear();
@@ -272,7 +271,7 @@ bool Ai::Tick()
 	
 	if (debug)
 	{
-		std::cout << "-> best score is " << (std::string)bestScore << std::endl;
+		std::cout << "-> best score is " << bestScore << std::endl;
 	}
 	
 	return true;
