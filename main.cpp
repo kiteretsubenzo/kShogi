@@ -234,8 +234,8 @@ int main()
 	Score aiScore = SCORE_NONE;
 
 	ai.SetMode("scouttest");
-	ai.SetSearchScore(Score(99999));
-	//ai.SetSearchScore( Score(99999, 3, 21 ) );
+	//ai.SetSearchScore(Score(99999, 0, 0));
+	ai.SetSearchScore( Score(99999, 3, 21 ) );
 	ai.SetLimit( true );
 	ai.SetDebug(true);
 	ai.Start(board);

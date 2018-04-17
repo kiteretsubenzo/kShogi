@@ -69,7 +69,7 @@ void Ai::Start(Board boardValue)
 		std::list<PAWN_MOVE> moves;
 		moves.push_back(PAWN_MOVE_ZERO);
 		bestScore.score = 0;
-		bestScore.moveList.clear();
+		bestScore.deep = 0;
 		JOB job = { GetJobId(), { PAWN_MOVE_ZERO }, searchScore.Negate(), limit, 4, board };
 		jobs.push_back(job);
 	}
@@ -208,9 +208,9 @@ bool Ai::Tick()
 		{
 			if (debug)
 			{
-				std::cout << "score is " << score.toJson() << " best score is " << bestScore.toJson() << std::endl;
+				std::cout << "score is " << (std::string)score << " best score is " << (std::string)bestScore << std::endl;
 			}
-			std::cout << "score is " << score.toJson() << " best score is " << bestScore.toJson() << std::endl;
+			std::cout << "score is " << (std::string)score << " best score is " << (std::string)bestScore << std::endl;
 			if (bestScore == score)
 			{
 				bestMove = waits[jobId].front();
@@ -227,9 +227,9 @@ bool Ai::Tick()
 		{
 			if (debug)
 			{
-				std::cout << "score is " << score.toJson() << " best score is " << bestScore.toJson() << std::endl;
+				std::cout << "score is " << (std::string)score << " best score is " << (std::string)bestScore << std::endl;
 			}
-			std::cout << "score is " << score.toJson() << " best score is " << bestScore.toJson() << std::endl;
+			std::cout << "score is " << (std::string)score << " best score is " << (std::string)bestScore << std::endl;
 			if (bestScore < score.Negate())
 			{
 				bestMove = waits[jobId].front();

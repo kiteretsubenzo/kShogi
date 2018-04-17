@@ -179,14 +179,8 @@ void Worker::SearchImplementation(const std::string &job)
 			if (moveList.empty())
 			{
 				childItr->score.score = Score::SCORE_WIN;
-				childItr->score.moveList.clear();
-				for (std::list<NODE>::const_iterator ite = nodeStack.cbegin(); ite != nodeStack.cend(); ++ite)
-				{
-					if (0 < ite->moves.size())
-					{
-						childItr->score.moveList.push_back(ite->moves.front());
-					}
-				}
+				childItr->score.deep = nodeStack.size();
+				childItr->score.nodeid = nodeid;
 				break;
 			}
 
@@ -197,13 +191,8 @@ void Worker::SearchImplementation(const std::string &job)
 
 				// 評価
 				score.score = board.GetEvaluate(moveList);
-				for (std::list<NODE>::const_iterator ite = nodeStack.cbegin(); ite != nodeStack.cend(); ++ite)
-				{
-					if (0 < ite->moves.size())
-					{
-						childItr->score.moveList.push_back(ite->moves.front());
-					}
-				}
+				childItr->score.deep = nodeStack.size();
+				childItr->score.nodeid = nodeid;
 
 				// 親ノードに得点をマージ
 				if (score != SCORE_NONE)

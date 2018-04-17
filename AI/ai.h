@@ -42,7 +42,7 @@ private:
 	PAWN_MOVE move;
 	
 	std::string mode = "minimax";
-	Score searchScore{ std::numeric_limits<int>::min() };
+	Score searchScore{ std::numeric_limits<int>::min(), 0 };
 	bool limit = false;
 	bool debug = true;
 
