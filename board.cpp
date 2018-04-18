@@ -484,6 +484,12 @@ bool Board::AddMove(PAWN roll, uchar fromx, uchar fromy, char tox, char toy, boo
 	PAWN capture = matrix[utoy][utox].pawn;
 
 	PAWN_MOVE move( roll, fromx, fromy, utox, utoy, matrix[fromy][fromx].pawn, matrix[utoy][utox].pawn, upgrade, 0 );
+	if (roll != PAWN_NONE)
+	{
+		move.from.x = 0;
+		move.from.y = 0;
+		move.from.pawn = PAWN_NONE;
+	}
 
 	Move(move);
 	// 負ける手は指さない
