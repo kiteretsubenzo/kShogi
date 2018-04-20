@@ -181,7 +181,7 @@ MoveList Board::GetMoveList()
 		for (char i = 0; i<BOARD_WIDTH; i++)
 		{
 			CELL cell = matrix[(uchar)j][(uchar)i];
-			if (cell.player != turn)
+			if (cell.player == enemy)
 			{
 				continue;
 			}
@@ -393,71 +393,57 @@ MoveList Board::GetMoveList()
 				AddMove(PAWN_NONE, i, j, i + 1, j + 1, false, moveList);
 				break;
 			default:
-				break;
-			}
-		}
-	}
-
-	PAWN_MOVE move = PAWN_MOVE_ZERO;
-
-	for (uchar roll = 0; roll<(uchar)CAPTURE_MAX; roll++)
-	{
-		if (captured[(uchar)turn][roll] == 0)
-		{
-			continue;
-		}
-		move.reserve = roll;
-		move.from.pawn = PAWN_NONE;
-		for (uchar j = 0; j<BOARD_HEIGHT; j++)
-		{
-			for (uchar i = 0; i<BOARD_WIDTH; i++)
-			{
-				if (matrix[j][i].player != PLAYER::NONE || matrix[j][i].pawn != PAWN_NONE)
+				for (uchar roll = 0; roll < CAPTURE_MAX; roll++)
 				{
-					continue;
-				}
-
-				switch (roll)
-				{
-				case PAWN_HU:
-					if (j != lineTop)
+					if (captured[(uchar)turn][roll] == 0)
 					{
-						uchar k;
-						for (k = 0; k<BOARD_HEIGHT; k++)
+						continue;
+					}
+					switch (roll)
+					{
+					case PAWN_HU:
+						if (j != lineTop)
 						{
-							if (matrix[k][i].player == turn && matrix[k][i].pawn == PAWN_HU)
+							uchar k;
+							for (k = 0; k < BOARD_HEIGHT; k++)
 							{
-								break;
+								if (matrix[k][i].player == turn && matrix[k][i].pawn == PAWN_HU)
+								{
+									break;
+								}
+							}
+							if (BOARD_HEIGHT <= k)
+							{
+								AddMove(roll, 0, 0, i, j, false, moveList);
 							}
 						}
-						if (BOARD_HEIGHT <= k)
+						break;
+					case PAWN_KYOH:
+						if (j != lineTop)
 						{
 							AddMove(roll, 0, 0, i, j, false, moveList);
 						}
-					}
-					break;
-				case PAWN_KYOH:
-					if (j != lineTop)
-					{
+						break;
+					case PAWN_KEI:
+						if (j != lineTop && j != lineMid)
+						{
+							AddMove(roll, 0, 0, i, j, false, moveList);
+						}
+						break;
+						break;
+					case PAWN_GIN:
+					case PAWN_KIN:
+					case PAWN_KAKU:
+					case PAWN_HI:
 						AddMove(roll, 0, 0, i, j, false, moveList);
+						break;
+					default:
+						break;
 					}
-					break;
-				case PAWN_KEI:
-					if (j != lineTop && j != lineMid)
-					{
-						AddMove(roll, 0, 0, i, j, false, moveList);
-					}
-					break;
-					break;
-				case PAWN_GIN:
-				case PAWN_KIN:
-				case PAWN_KAKU:
-				case PAWN_HI:
-					AddMove(roll, 0, 0, i, j, false, moveList);
-					break;
-				default:
 					break;
 				}
+
+				break;
 			}
 		}
 	}
