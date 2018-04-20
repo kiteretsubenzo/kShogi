@@ -219,7 +219,19 @@ public:
 
 	void Move(const PAWN_MOVE &move);
 	void Back(const PAWN_MOVE &move);
-	void SwitchTurn();
+	void SwitchTurn()
+	{
+		if (turn == PLAYER::FIRST)
+		{
+			turn = PLAYER::SECOND;
+			enemy = PLAYER::FIRST;
+		}
+		else
+		{
+			turn = PLAYER::FIRST;
+			enemy = PLAYER::SECOND;
+		}
+	}
 
 	virtual int GetEvaluate(const MoveList &moveList);
 	virtual int GetPriority(const PAWN_MOVE &move);
@@ -253,6 +265,7 @@ private:
 	uchar captured[(uchar)PLAYER::MAX][(uchar)CAPTURE_MAX];
 	CELL matrix[BOARD_HEIGHT][BOARD_WIDTH];
 	PLAYER turn;
+	PLAYER enemy;
 
 	char gyokux[(uchar)PLAYER::MAX];
 	char gyokuy[(uchar)PLAYER::MAX];

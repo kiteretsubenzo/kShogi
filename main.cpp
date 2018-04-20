@@ -227,7 +227,7 @@ int main()
 #endif
 	Ai ai;
 	ai.AddWorker();
-#if true
+#if false
 	std::chrono::system_clock::time_point start, end;
 
 	Score aiScore = SCORE_NONE;

@@ -11,23 +11,24 @@
 
 Board::Board()
 {
-  for( uchar i=0; i<(uchar)PLAYER::MAX; i++ )
-  {
-    for( uchar j=0; j<(uchar)CAPTURE_MAX; j++ )
-    {
-      captured[i][j] = 0;
-    }
-  }
+	for( uchar i=0; i<(uchar)PLAYER::MAX; i++ )
+	{
+		for( uchar j=0; j<(uchar)CAPTURE_MAX; j++ )
+		{
+			captured[i][j] = 0;
+		}
+	}
   
-  for( uchar j=0; j<BOARD_HEIGHT; j++ )
-  {
-    for( uchar i=0; i<BOARD_WIDTH; i++ )
-    {
-      matrix[j][i] = { PLAYER::NONE, PAWN_NONE };
-    }
-  }
+	for( uchar j=0; j<BOARD_HEIGHT; j++ )
+	{
+		for( uchar i=0; i<BOARD_WIDTH; i++ )
+		{
+			matrix[j][i] = { PLAYER::NONE, PAWN_NONE };
+		}
+	}
 	
 	turn = PLAYER::FIRST;
+	enemy = PLAYER::SECOND;
 }
 
 void Board::Init(const std::string &str)
@@ -88,10 +89,12 @@ void Board::Init(const std::string &str)
 	if( strs[BOARD_HEIGHT+2] == "first" )
 	{
 		turn = PLAYER::FIRST;
+		enemy = PLAYER::SECOND;
 	}
 	else if( strs[BOARD_HEIGHT+2] == "second" )
 	{
 		turn = PLAYER::SECOND;
+		enemy = PLAYER::SECOND;
 	}
 }
 
@@ -539,16 +542,6 @@ int Board::GetPriority(const PAWN_MOVE &move)
 
 bool Board::IsEnd() const
 {
-	PLAYER enemy;
-	if( turn == PLAYER::FIRST )
-	{
-		enemy = PLAYER::SECOND;
-	}
-	else
-	{
-		enemy = PLAYER::FIRST;
-	}
-
 	// 玉の位置を求める
 	char gyokux = this->gyokux[(int)enemy];
 	char gyokuy = this->gyokuy[(int)enemy];
@@ -905,23 +898,13 @@ void Board::Move(const PAWN_MOVE &move)
 {
 	assert(move != PAWN_MOVE_ZERO);
 
-	PLAYER nextTurn;
-	if( turn == PLAYER::FIRST )
-	{
-		nextTurn = PLAYER::SECOND;
-	}
-	else
-	{
-		nextTurn = PLAYER::FIRST;
-	}
-	
 	if( move.reserve != PAWN_NONE )
 	{
 		captured[(int)turn][(int)move.reserve]--;
 		matrix[move.to.y][move.to.x].player = turn;
 		matrix[move.to.y][move.to.x].pawn = move.reserve;
 
-		turn = nextTurn;
+		SwitchTurn();
 		return;
 	}
 	
@@ -946,22 +929,14 @@ void Board::Move(const PAWN_MOVE &move)
 		gyokuy[(int)turn] = move.to.y;
 	}
 
-	turn = nextTurn;
+	SwitchTurn();
 }
 
 void Board::Back(const PAWN_MOVE &move)
 {
 	assert(move != PAWN_MOVE_ZERO);
 
-	PLAYER prevTurn;
-	if( turn == PLAYER::FIRST )
-	{
-		prevTurn = PLAYER::SECOND;
-	}
-	else
-	{
-		prevTurn = PLAYER::FIRST;
-	}
+	PLAYER prevTurn = enemy;
 	
 	if( move.reserve != PAWN_NONE )
 	{
@@ -970,7 +945,7 @@ void Board::Back(const PAWN_MOVE &move)
 		matrix[move.to.y][move.to.x].player = PLAYER::NONE;
 		matrix[move.to.y][move.to.x].pawn = PAWN_NONE;
 
-		turn = prevTurn;
+		SwitchTurn();
 		return;
 	}
 	
@@ -1001,19 +976,7 @@ void Board::Back(const PAWN_MOVE &move)
 		gyokuy[(int)prevTurn] = move.from.y;
 	}
 
-	turn = prevTurn;
-}
-
-void Board::SwitchTurn()
-{
-	if (turn == PLAYER::FIRST)
-	{
-		turn = PLAYER::SECOND;
-	}
-	else
-	{
-		turn = PLAYER::FIRST;
-	}
+	SwitchTurn();
 }
 
 void Board::PrintBoard() const
