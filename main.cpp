@@ -135,8 +135,8 @@ int main()
 	"first"
 	,
 	"h16 y02 e04 g04 u02 r01 k03\n"
-	" . . . . . . .o_y_\n"
-	" . . . . . . . .h_\n"
+	" . . . . . . .^Ry_\n"
+	" . . . . . . .o_h_\n"
 	" . . . . . . . . .\n"
 	" . . . . . . .h_ .\n"
 	" . . . . . . .^h .\n"
@@ -145,9 +145,9 @@ int main()
 	" . . . . . . . . .\n"
 	" . . . . . . . . .\n"
 	"h00 y00 e00 g00 u00 r00 k01\n"
-	"first"
+	"second"
   };
-  board.Init(testProblem3test[0]);
+  board.Init(boardInits[4]);
   std::list<PAWN_MOVE> history;
   /*
   board.PrintBoard();
@@ -234,9 +234,9 @@ int main()
 	Score aiScore = SCORE_NONE;
 
 	ai.SetMode("scouttest");
-	//ai.SetSearchScore(-SCORE_WIN);
-	//ai.SetSearchScore(-99999996);
-	ai.SetSearchScore(Score("{score:-99999,moves:[n0312r0702nt,n0212o0702Rf,k0012n0802nf]}"));
+	ai.SetSearchScore(SCORE_WIN);
+	//ai.SetSearchScore(Score("{score:99999,moves:[n0701o0700Rf,k0000n0601nf]}"));
+	//ai.SetLimit(true);
 	ai.SetDebug(true);
 	ai.Start(board);
 
@@ -248,6 +248,12 @@ int main()
 
 	std::cout << "best move is " << aiMove.DebugString() << std::endl;
 	std::cout << "best score is " << aiScore.toJson() << std::endl;
+	board.PrintBoard();
+	for (std::list<PAWN_MOVE>::const_iterator ite = aiScore.moveList.cbegin(); ite != aiScore.moveList.cend(); ++ite)
+	{
+		std::cout << ite->DebugString() << " : ";
+	}
+	std::cout << std::endl;
   
 	ai.Stop();
   

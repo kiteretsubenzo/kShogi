@@ -64,18 +64,12 @@ void Worker::SearchImplementation(const std::string &job)
 	std::unordered_map<std::string, std::string> params = fromJson(job);
 	std::string jobId = params["jobid"];
 	std::string windowStr = params["window"];
+	std::string limitStr = params["limit"];
 	std::string deepStr = params["deep"];
 	std::string debugStr = params["debug"];
 	std::string boardStr = params["board"];
 
-	if (debugStr == "true")
-	{
-		debug = true;
-	}
-	else
-	{
-		debug = false;
-	}
+	debug = (debugStr == "true");
 
 	board.Init(boardStr);
 	if (debug)
@@ -89,6 +83,7 @@ void Worker::SearchImplementation(const std::string &job)
 		window = Score(windowStr);
 	}
 	const unsigned int deep = std::stoi(deepStr);
+	bool limit = (limitStr == "true");
 
 	std::list<NODE> nodeStack;
 	// ルート
@@ -198,7 +193,7 @@ void Worker::SearchImplementation(const std::string &job)
 				}
 
 				// 親ノードに得点をマージ
-				if (score != SCORE_NONE)
+				if (score != SCORE_NONE || (limit == true && (window.Negate() == childItr->score || window.Negate() < childItr->score)))
 				{
 					childItr->score = std::min<Score>(childItr->score, score.Negate());
 				}
@@ -225,7 +220,7 @@ void Worker::SearchImplementation(const std::string &job)
 				//std::cout << parentItr->score << " " << -childItr->score << std::endl;
 				//}
 
-				if (parentItr->score == SCORE_NONE)
+				if (parentItr->score == SCORE_NONE || (limit == true && (window.Negate() == parentItr->score || window.Negate() < parentItr->score)))
 				{
 					parentItr->score = childItr->score.Negate();
 				}
@@ -243,7 +238,7 @@ void Worker::SearchImplementation(const std::string &job)
 #endif
 
 			// スコアがwindowの外側だったら終わり
-			if (childItr->score != SCORE_NONE && window != SCORE_NONE)
+			if (childItr->score != SCORE_NONE && window != SCORE_NONE && (limit == false || childItr->score < window.Negate()))
 			{
 				Score windowTmp = window;
 

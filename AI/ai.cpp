@@ -138,6 +138,14 @@ void Ai::GetJob(std::string &job)
 		job = "jobid:" + jobIdString;
 		job += ",window:" + jobStruct.window.toJson();
 		job += ",deep:" + std::to_string(jobStruct.deep);
+		if (limit)
+		{
+			job += ",limit:true";
+		}
+		else
+		{
+			job += ",limit:false";
+		}
 		if (debug)
 		{
 			job += ",debug:true";
@@ -220,12 +228,8 @@ bool Ai::Tick()
 			{
 				std::cout << "score is " << (std::string)score << " best score is " << (std::string)bestScore << std::endl;
 			}
-			std::cout << "score is " << (std::string)score << " best score is " << (std::string)bestScore << std::endl;
-			if (bestScore < score.Negate())
-			{
-				bestMove = waits[jobId].front();
-				bestScore = score.Negate();
-			}
+			bestMove = waits[jobId].front();
+			bestScore = score.Negate();
 		}
 		else if(mode == "minimax")
 		{
