@@ -40,7 +40,6 @@ void Ai::Start(Board boardValue)
 	results.clear();
 	isStop = false;
 	board = boardValue;
-	bestMove = PAWN_MOVE_ZERO;
 	bestScore = std::numeric_limits<int>::min();
 
 	std::unique_lock<std::mutex> uniq(mtx);
@@ -78,21 +77,6 @@ void Ai::Start(Board boardValue)
 		moves.push_back(PAWN_MOVE_ZERO);
 		JOB job = { GetJobId(), moves, SCORE_NONE, 4, board };
 		jobs.push_back(job);
-	}
-	else if (mode == "move")
-	{
-		MoveList moveList = board.GetMoveList();
-		for (MoveList::iterator ite = moveList.begin(); ite != moveList.end(); ++ite)
-		{
-			const PAWN_MOVE &move = *ite;
-			//board.PrintKihu(move);
-			board.Move(move);
-			std::list<PAWN_MOVE> moves;
-			moves.push_back(move);
-			JOB job = { GetJobId(), moves, searchScore, 4, board };
-			jobs.push_back(job);
-			board.Back(move);
-		}
 	}
 
 	ready = true;
@@ -182,9 +166,8 @@ bool Ai::IsAlive(const std::string &jobId)
 	return alive;
 }
 
-void Ai::GetResult(PAWN_MOVE &moveValue, Score &scoreValue)
+void Ai::GetResult(Score &scoreValue)
 {
-	moveValue = bestMove;
 	scoreValue = bestScore;
 }
 
@@ -212,7 +195,6 @@ bool Ai::Tick()
 			std::cout << "score is " << (std::string)score << " best score is " << (std::string)bestScore << std::endl;
 			if (bestScore == score)
 			{
-				bestMove = waits[jobId].front();
 				bestScore = score.Negate();
 			}
 			else
@@ -228,7 +210,6 @@ bool Ai::Tick()
 			{
 				std::cout << "score is " << (std::string)score << " best score is " << (std::string)bestScore << std::endl;
 			}
-			bestMove = waits[jobId].front();
 			bestScore = score.Negate();
 		}
 		else if(mode == "minimax")
@@ -239,26 +220,10 @@ bool Ai::Tick()
 			}
 			if (bestScore < score.Negate())
 			{
-				bestMove = waits[jobId].front();
 				bestScore = score.Negate();
 			}
 		}
-		else if (mode == "move")
-		{
-			if (debug)
-			{
-				std::cout << waits[jobId].front().DebugString() << " score is " << (std::string)score << " " << " search score is " << (std::string)searchScore << std::endl;
-			}
-			if (searchScore == score.Negate())
-			{
-				bestMove = waits[jobId].front();
-				bestScore = score.Negate();
-				jobs.clear();
-				waits.clear();
-				results.clear();
-				break;
-			}
-		}
+
 		waits.erase(jobId);
 		results.pop_front();
 	}

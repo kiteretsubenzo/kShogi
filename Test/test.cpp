@@ -179,9 +179,8 @@ bool Test()
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 
-		Board::PAWN_MOVE minimaxMove;
 		int minimaxScore;
-		ai.GetResult(minimaxMove, minimaxScore);
+		ai.GetResult(minimaxScore);
 		
 		ai.SetMode("scout");
 		ai.Start(board);
@@ -190,9 +189,8 @@ bool Test()
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 
-		Board::PAWN_MOVE scoutMove;
 		int scoutScore;
-		ai.GetResult(scoutMove, scoutScore);
+		ai.GetResult(scoutScore);
 
 		if (minimaxScore != scoutScore)
 		{
@@ -204,7 +202,7 @@ bool Test()
 	}
 	*/
 	// 3手詰めテスト
-#if false
+#if true
 	std::chrono::system_clock::time_point  start, end;
 	start = std::chrono::system_clock::now();
 
@@ -220,34 +218,17 @@ bool Test()
 
 		// 点数を求める
 		ai.SetMode("scouttest");
-		ai.SetSearchScore(-SCORE_WIN - 1000);
+		ai.SetSearchScore(-SCORE_WIN);
 		ai.Start(board);
 
 		while (ai.Tick() == false) {
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 
-		PAWN_MOVE scoutMove;
 		Score scoutScore = SCORE_NONE;
-		ai.GetResult(scoutMove, scoutScore);
-		
-		std::cout << (std::string)scoutScore << std::endl;
-		
-		// 着手を求める
-		ai.SetMode("move");
-		// 一手進めて探索するので最短手順も一手短くなる
-		// そのため検索するスコアも一つ小さくなる
-		Score scoreTmp = scoutScore.Negate();
-		scoreTmp.score -= 1;
-		scoreTmp.moveList.pop_front();
-		ai.SetSearchScore(scoreTmp);
-		ai.Start(board);
+		ai.GetResult(scoutScore);
 
-		while (ai.Tick() == false) {
-			std::this_thread::sleep_for(std::chrono::milliseconds(1));
-		}
-
-		ai.GetResult(scoutMove, scoutScore);
+		PAWN_MOVE scoutMove = scoutScore.moveList.front();
 		std::cout << scoutMove.DebugString() << " " << strs[1] << std::endl;
 		if (scoutMove.DebugString() != strs[1])
 		{

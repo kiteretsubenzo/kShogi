@@ -230,13 +230,12 @@ int main()
 #if true
 	std::chrono::system_clock::time_point start, end;
 
-	PAWN_MOVE aiMove;
 	Score aiScore = SCORE_NONE;
 
 	ai.SetMode("scouttest");
 	ai.SetSearchScore(SCORE_WIN);
-	//ai.SetSearchScore(Score("{score:99999,moves:[n0701o0700Rf,k0000n0601nf]}"));
-	//ai.SetLimit(true);
+	ai.SetSearchScore(Score("{score:99999,moves:[n0701o0700Rf,k0000n0601nf]}"));
+	ai.SetLimit(true);
 	ai.SetDebug(true);
 	ai.Start(board);
 
@@ -244,7 +243,9 @@ int main()
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 
-	ai.GetResult(aiMove, aiScore);
+	ai.GetResult(aiScore);
+
+	PAWN_MOVE aiMove = aiScore.moveList.front();
 
 	std::cout << "best move is " << aiMove.DebugString() << std::endl;
 	std::cout << "best score is " << aiScore.toJson() << std::endl;
@@ -284,24 +285,12 @@ int main()
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 
-		PAWN_MOVE scoutMove;
 		int scoutScore;
-		ai.GetResult(scoutMove, scoutScore);
+		ai.GetResult(scoutScore);
 
 		std::cout << scoutScore << std::endl;
 
-		// 着手を求める
-		ai.SetMode("move");
-		// 一手進めて探索するので最短手順も一手短くなる
-		// そのため検索するスコアも一つ小さくなる
-		ai.SetSearchScore(-scoutScore - 1);
-		ai.Start(board);
-
-		while (ai.Tick() == false) {
-			std::this_thread::sleep_for(std::chrono::milliseconds(1));
-		}
-
-		ai.GetResult(scoutMove, scoutScore);
+		PAWN_MOVE scoutMove = scoutScore.moveList.front();
 		std::cout << scoutMove.DebugString() << " " << strs[1] << std::endl;
 		if (scoutMove.DebugString() != strs[1])
 		{

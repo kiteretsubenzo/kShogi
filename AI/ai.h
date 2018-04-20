@@ -32,7 +32,7 @@ public:
 	void GetJob(std::string &job);
 	bool IsAlive(const std::string &jobId);
 	
-	void GetResult(PAWN_MOVE &moveValue, Score &scoreValue);
+	void GetResult(Score &scoreValue);
 
 	void Stop();
 	
@@ -45,7 +45,6 @@ private:
 	bool limit = false;
 	bool debug = true;
 
-	PAWN_MOVE bestMove;
 	Score bestScore = SCORE_NONE;
 	
 	//Worker *worker;
