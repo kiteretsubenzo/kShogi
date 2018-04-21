@@ -125,30 +125,31 @@ void Worker::SearchImplementation(const std::string &job)
 			}
 		}
 		*/
-		if (debugPrint)
-		{
-			//std::cout << '\r' << std::flush;
-			for (std::list<NODE>::iterator ite = nodeStack.begin(); ite != nodeStack.end(); ++ite)
-			{
-				if (0 < ite->moves.size())
-				{
-#if USE_PRIORITY == PRIORITY_MULTISET
-					std::cout << ":" << ite->moves.begin()->DebugString() << "(" << (std::string)(ite->score) << ")";
-#else
-					std::cout << ":" << ite->moves.front().DebugString() << "(" << (std::string)(ite->score) << ")";
-#endif
-				}
-				else
-				{
-					std::cout << ":EMPTY(" << (std::string)(ite->score) << ")";
-				}
-			}
-			std::cout << std::endl;
-		}
 
 		// forward
 		while (true)
 		{
+			if (debugPrint)
+			{
+				//std::cout << '\r' << std::flush;
+				for (std::list<NODE>::iterator ite = nodeStack.begin(); ite != nodeStack.end(); ++ite)
+				{
+					if (0 < ite->moves.size())
+					{
+#if USE_PRIORITY == PRIORITY_MULTISET
+						std::cout << ":" << ite->moves.begin()->DebugString() << "(" << (std::string)(ite->score) << ")";
+#else
+						std::cout << ":" << ite->moves.front().DebugString() << "(" << (std::string)(ite->score) << ")";
+#endif
+					}
+					else
+					{
+						std::cout << ":EMPTY(" << (std::string)(ite->score) << ")";
+					}
+				}
+				std::cout << std::endl;
+			}
+
 			// 子ノードを取得
 			std::list<NODE>::reverse_iterator childItr = nodeStack.rbegin();
 
@@ -208,6 +209,27 @@ void Worker::SearchImplementation(const std::string &job)
 		// back
 		while (true)
 		{
+			if (debugPrint)
+			{
+				//std::cout << '\r' << std::flush;
+				for (std::list<NODE>::iterator ite = nodeStack.begin(); ite != nodeStack.end(); ++ite)
+				{
+					if (0 < ite->moves.size())
+					{
+#if USE_PRIORITY == PRIORITY_MULTISET
+						std::cout << ":" << ite->moves.begin()->DebugString() << "(" << (std::string)(ite->score) << ")";
+#else
+						std::cout << ":" << ite->moves.front().DebugString() << "(" << (std::string)(ite->score) << ")";
+#endif
+					}
+					else
+					{
+						std::cout << ":EMPTY(" << (std::string)(ite->score) << ")";
+					}
+				}
+				std::cout << std::endl;
+			}
+
 			// 子ノードを取得
 			std::list<NODE>::reverse_iterator childItr = nodeStack.rbegin();
 
