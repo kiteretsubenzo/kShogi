@@ -147,7 +147,7 @@ int main()
 	"h00 y00 e00 g00 u00 r00 k01\n"
 	"second"
   };
-  board.Init(boardInits[4]);
+  board.Init(testProblem3test[2]);
   std::list<PAWN_MOVE> history;
   /*
   board.PrintBoard();
@@ -227,15 +227,15 @@ int main()
 #endif
 	Ai ai;
 	ai.AddWorker();
-#if false
+#if true
 	std::chrono::system_clock::time_point start, end;
 
 	Score aiScore = SCORE_NONE;
 
 	ai.SetMode("scouttest");
-	ai.SetSearchScore(SCORE_WIN);
-	ai.SetSearchScore(Score("{score:99999,moves:[n0701o0700Rf,k0000n0601nf]}"));
-	ai.SetLimit(true);
+	ai.SetSearchScore(-SCORE_WIN);
+	//ai.SetSearchScore(Score("{score:99999,moves:[n0701o0700Rf,k0000n0601nf]}"));
+	//ai.SetLimit(true);
 	ai.SetDebug(true);
 	ai.Start(board);
 
