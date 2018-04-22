@@ -568,7 +568,6 @@ bool Board::AddMove(PAWN roll, uchar fromx, uchar fromy, uchar tox, uchar toy, b
 	{
 		return false;
 	}
-	PAWN capture = matrix[toy][tox].pawn;
 
 	PAWN_MOVE move( roll, fromx, fromy, tox, toy, matrix[fromy][fromx].pawn, matrix[toy][tox].pawn, upgrade, 0 );
 	if (roll != PAWN_NONE)
@@ -591,7 +590,7 @@ bool Board::AddMove(PAWN roll, uchar fromx, uchar fromy, uchar tox, uchar toy, b
 	}
 	Back(move);
 
-	return capture == PAWN_NONE;
+	return matrix[toy][tox].pawn == PAWN_NONE;
 }
 
 int Board::GetEvaluate(const MoveList &moveList)
@@ -834,74 +833,54 @@ bool Board::IsEnd() const
 	i = gyokux + 1;
 	while (true)
 	{
-		if (matrix[gyokuy][i].player == PLAYER::NONE)
-		{
-			i++;
-			continue;
-		}
-		if (matrix[gyokuy][i].player == enemy || matrix[gyokuy][i].player == PLAYER::WALL)
-		{
-			break;
-		}
-		if (matrix[gyokuy][i].pawn == PAWN_HI || matrix[gyokuy][i].pawn == PAWN_RYU)
+		if (matrix[gyokuy][i].player == turn && (matrix[gyokuy][i].pawn == PAWN_HI || matrix[gyokuy][i].pawn == PAWN_RYU))
 		{
 			return true;
 		}
-		break;
+		if (matrix[gyokuy][i].player != PLAYER::NONE)
+		{
+			break;
+		}
+		i++;
 	}
 	i = gyokux - 1;
 	while (true)
 	{
-		if (matrix[gyokuy][i].player == PLAYER::NONE)
-		{
-			i--;
-			continue;
-		}
-		if (matrix[gyokuy][i].player == enemy || matrix[gyokuy][i].player == PLAYER::WALL)
-		{
-			break;
-		}
-		if (matrix[gyokuy][i].pawn == PAWN_HI || matrix[gyokuy][i].pawn == PAWN_RYU)
+		if (matrix[gyokuy][i].player == turn && (matrix[gyokuy][i].pawn == PAWN_HI || matrix[gyokuy][i].pawn == PAWN_RYU))
 		{
 			return true;
 		}
-		break;
+		if (matrix[gyokuy][i].player != PLAYER::NONE)
+		{
+			break;
+		}
+		i--;
 	}
 	j = gyokuy + 1;
 	while (true)
 	{
-		if (matrix[j][gyokux].player == PLAYER::NONE)
-		{
-			j++;
-			continue;
-		}
-		if (matrix[j][gyokux].player == enemy || matrix[j][gyokux].player == PLAYER::WALL)
-		{
-			break;
-		}
-		if (matrix[j][gyokux].pawn == PAWN_HI || matrix[j][gyokux].pawn == PAWN_RYU)
+		if (matrix[j][gyokux].player == turn && (matrix[j][gyokux].pawn == PAWN_HI || matrix[j][gyokux].pawn == PAWN_RYU))
 		{
 			return true;
 		}
-		break;
+		if (matrix[j][gyokux].player != PLAYER::NONE)
+		{
+			break;
+		}
+		j++;
 	}
 	j = gyokuy - 1;
 	while (true)
 	{
-		if (matrix[j][gyokux].player == PLAYER::NONE)
-		{
-			j--;
-			continue;
-		}
-		if (matrix[j][gyokux].player == enemy || matrix[j][gyokux].player == PLAYER::WALL)
-		{
-			break;
-		}
-		if (matrix[j][gyokux].pawn == PAWN_HI || matrix[j][gyokux].pawn == PAWN_RYU)
+		if (matrix[j][gyokux].player == turn && (matrix[j][gyokux].pawn == PAWN_HI || matrix[j][gyokux].pawn == PAWN_RYU))
 		{
 			return true;
 		}
-		break;
+		if (matrix[j][gyokux].player != PLAYER::NONE)
+		{
+			break;
+		}
+		j--;
 	}
 
 	// 角馬
@@ -909,96 +888,64 @@ bool Board::IsEnd() const
 	j = gyokuy + 1;
 	while(true)
 	{
-		if (matrix[j][i].player == PLAYER::NONE)
-		{
-			i++;
-			j++;
-			continue;
-		}
-		if (matrix[j][i].player == enemy || matrix[j][i].player == PLAYER::WALL)
-		{
-			break;
-		}
-		if (matrix[j][i].pawn == PAWN_KAKU || matrix[j][i].pawn == PAWN_UMA)
+		if (matrix[j][i].player == turn && (matrix[j][i].pawn == PAWN_KAKU || matrix[j][i].pawn == PAWN_UMA))
 		{
 			return true;
 		}
-		break;
+		if (matrix[j][i].player != PLAYER::NONE)
+		{
+			break;
+		}
+		i++;
+		j++;
 	}
 	i = gyokux - 1;
 	j = gyokuy + 1;
 	while (true)
 	{
-		if (matrix[j][i].player == PLAYER::NONE)
-		{
-			i--;
-			j++;
-			continue;
-		}
-		if (matrix[j][i].player == enemy || matrix[j][i].player == PLAYER::WALL)
-		{
-			break;
-		}
-		if (matrix[j][i].pawn == PAWN_KAKU || matrix[j][i].pawn == PAWN_UMA)
+		if (matrix[j][i].player == turn && (matrix[j][i].pawn == PAWN_KAKU || matrix[j][i].pawn == PAWN_UMA))
 		{
 			return true;
 		}
-		break;
+		if (matrix[j][i].player != PLAYER::NONE)
+		{
+			break;
+		}
+		i--;
+		j++;
 	}
 	i = gyokux - 1;
 	j = gyokuy - 1;
 	while (true)
 	{
-		if (matrix[j][i].player == PLAYER::NONE)
-		{
-			i--;
-			j--;
-			continue;
-		}
-		if (matrix[j][i].player == enemy || matrix[j][i].player == PLAYER::WALL)
-		{
-			break;
-		}
-		if (matrix[j][i].pawn == PAWN_KAKU || matrix[j][i].pawn == PAWN_UMA)
+		if (matrix[j][i].player == turn && (matrix[j][i].pawn == PAWN_KAKU || matrix[j][i].pawn == PAWN_UMA))
 		{
 			return true;
 		}
-		break;
+		if (matrix[j][i].player != PLAYER::NONE)
+		{
+			break;
+		}
+		i--;
+		j--;
 	}
 	i = gyokux + 1;
 	j = gyokuy - 1;
 	while (true)
 	{
-		if (matrix[j][i].player == PLAYER::NONE)
-		{
-			i++;
-			j--;
-			continue;
-		}
-		if (matrix[j][i].player == enemy || matrix[j][i].player == PLAYER::WALL)
-		{
-			break;
-		}
-		if (matrix[j][i].pawn == PAWN_KAKU || matrix[j][i].pawn == PAWN_UMA)
+		if (matrix[j][i].player == turn && (matrix[j][i].pawn == PAWN_KAKU || matrix[j][i].pawn == PAWN_UMA))
 		{
 			return true;
 		}
-		break;
+		if (matrix[j][i].player != PLAYER::NONE)
+		{
+			break;
+		}
+		i++;
+		j--;
 	}
 
 	return false;
-}
-
-bool Board::GetCell(uchar tox, uchar toy, CELL &cell) const
-{
-	if (matrix[toy][tox].player != turn)
-	{
-		return false;
-	}
-
-	cell = matrix[toy][tox];
-
-	return true;
 }
 
 void Board::Move(const PAWN_MOVE &move)

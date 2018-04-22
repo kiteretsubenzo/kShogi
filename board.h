@@ -261,7 +261,17 @@ public:
 private:
 	bool AddMove(PAWN roll, uchar fromx, uchar fromy, uchar tox, uchar toy, bool upgrade, MoveList &moveList);
 	bool IsEnd() const;
-	bool GetCell(uchar tox, uchar toy, CELL &cell) const;
+	bool GetCell(uchar tox, uchar toy, CELL &cell) const
+	{
+		if (matrix[toy][tox].player != turn)
+		{
+			return false;
+		}
+
+		cell = matrix[toy][tox];
+
+		return true;
+	}
 	
 	uchar captured[(uchar)PLAYER::MAX][(uchar)CAPTURE_MAX];
 	CELL matrix[BOARD_HEIGHT+2][BOARD_WIDTH+2];
