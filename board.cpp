@@ -595,7 +595,7 @@ bool Board::AddMove(PAWN roll, uchar fromx, uchar fromy, uchar tox, uchar toy, b
 
 int Board::GetEvaluate(const MoveList &moveList)
 {
-	return moveList.size();
+	return (int)(moveList.size());
 }
 
 int Board::GetPriority(const PAWN_MOVE &move)

@@ -69,14 +69,22 @@ public:
 
 	PAWN_MOVE(std::string str)
 	{
-		reserve = charToPawn[str[0]];
-		from.x = std::stoi(str.substr(1, 2));
-		from.y = std::stoi(str.substr(3, 2));
-		from.pawn = charToPawn[str[5]];
-		to.x = std::stoi(str.substr(6, 2));
-		to.y = std::stoi(str.substr(8, 2));
-		to.pawn = charToPawn[str[10]];
-		upgrade = (str[11] == 't');
+		from.x = std::stoi(str.substr(0, 1), 0, 16);
+		from.y = std::stoi(str.substr(1, 1), 0, 16);
+		if (from.x == 0 && from.y == 0)
+		{
+			reserve = charToPawn[str[2]];
+			from.pawn = PAWN_NONE;
+		}
+		else
+		{
+			reserve = PAWN_NONE;
+			from.pawn = charToPawn[str[2]];
+		}
+		to.x = std::stoi(str.substr(3, 1), 0, 16);
+		to.y = std::stoi(str.substr(4, 1), 0, 16);
+		to.pawn = charToPawn[str[5]];
+		upgrade = (str[6] == 't');
 	}
 
 	std::string DebugString() const
@@ -186,12 +194,18 @@ public:
 	{
 		std::stringstream stream;
 
-		stream << PAWN_CHAR[reserve];
-		stream << std::setfill('0') << std::setw(2) << (int)from.x;
-		stream << std::setfill('0') << std::setw(2) << (int)from.y;
-		stream << PAWN_CHAR[from.pawn];
-		stream << std::setfill('0') << std::setw(2) << (int)to.x;
-		stream << std::setfill('0') << std::setw(2) << (int)to.y;
+		stream << std::hex << (int)from.x;
+		stream << std::hex << (int)from.y;
+		if (from.x == 0 && from.y == 0)
+		{
+			stream << PAWN_CHAR[reserve];
+		}
+		else
+		{
+			stream << PAWN_CHAR[from.pawn];
+		}
+		stream << std::hex << (int)to.x;
+		stream << std::hex << (int)to.y;
 		stream << PAWN_CHAR[to.pawn];
 		if (upgrade)
 		{
