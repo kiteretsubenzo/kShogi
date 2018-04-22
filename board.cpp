@@ -268,62 +268,114 @@ MoveList Board::GetMoveList()
 				break;
 			case PAWN_KAKU:
 				x = i + 1; y = j + 1;
-				for (bool ret = true; x <= BOARD_WIDTH && y <= BOARD_HEIGHT && ret; x++, y++)
+				while (true)
 				{
-					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
+					if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+					{
+						break;
+					}
 					if (lineMin <= y && y <= lineMax)
 					{
-						ret &= AddMove(PAWN_NONE, i, j, x, y, true, moveList);
+						if (AddMove(PAWN_NONE, i, j, x, y, true, moveList) == false)
+						{
+							break;
+						}
 					}
+					x++;
+					y++;
 				}
 				x = i + 1; y = j - 1;
-				for (bool ret = true; x <= BOARD_WIDTH && 0 < y && ret; x++, y -= 1)
+				while (true)
 				{
-					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
+					if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+					{
+						break;
+					}
 					if (lineMin <= y && y <= lineMax)
 					{
-						ret &= AddMove(PAWN_NONE, i, j, x, y, true, moveList);
+						if (AddMove(PAWN_NONE, i, j, x, y, true, moveList) == false)
+						{
+							break;
+						}
 					}
+					x++;
+					y -= 1;
 				}
 				x = i - 1; y = j + 1;
-				for (bool ret = true; 0 < x && y <= BOARD_HEIGHT && ret; x -= 1, y++)
+				while (true)
 				{
-					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
+					if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+					{
+						break;
+					}
 					if (lineMin <= y && y <= lineMax)
 					{
-						ret &= AddMove(PAWN_NONE, i, j, x, y, true, moveList);
+						if (AddMove(PAWN_NONE, i, j, x, y, true, moveList) == false)
+						{
+							break;
+						}
 					}
+					x -= 1;
+					y++;
 				}
 				x = i - 1; y = j - 1;
-				for (bool ret = true; 0 < x && 0 < y && ret; x -= 1, y -= 1)
+				while (true)
 				{
-					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
+					if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+					{
+						break;
+					}
 					if (lineMin <= y && y <= lineMax)
 					{
-						ret &= AddMove(PAWN_NONE, i, j, x, y, true, moveList);
+						if (AddMove(PAWN_NONE, i, j, x, y, true, moveList) == false)
+						{
+							break;
+						}
 					}
+					x -= 1;
+					y -= 1;
 				}
 				break;
 			case PAWN_UMA:
 				x = i + 1; y = j + 1;
-				for (bool ret = true; x <= BOARD_WIDTH && y <= BOARD_HEIGHT && ret; x++, y++)
+				while (true)
 				{
-					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
+					if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+					{
+						break;
+					}
+					x++;
+					y++;
 				}
 				x = i + 1; y = j - 1;
-				for (bool ret = true; x <= BOARD_WIDTH && 0 < y && ret; x++, y -= 1)
+				while (true)
 				{
-					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
+					if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+					{
+						break;
+					}
+					x++;
+					y -= 1;
 				}
 				x = i - 1; y = j + 1;
-				for (bool ret = true; 0 < x && y <= BOARD_HEIGHT && ret; x -= 1, y++)
+				while (true)
 				{
-					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
+					if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+					{
+						break;
+					}
+					x -= 1;
+					y++;
 				}
 				x = i - 1; y = j - 1;
-				for (bool ret = true; 0 < x && 0 < y && ret; x -= 1, y -= 1)
+				while (true)
 				{
-					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
+					if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+					{
+						break;
+					}
+					x -= 1;
+					y -= 1;
 				}
 				AddMove(PAWN_NONE, i, j, i + 1, j, false, moveList);
 				AddMove(PAWN_NONE, i, j, i - 1, j, false, moveList);
@@ -332,62 +384,106 @@ MoveList Board::GetMoveList()
 				break;
 			case PAWN_HI:
 				x = i + 1; y = j;
-				for (bool ret = true; x <= BOARD_WIDTH && ret; x++)
+				while(true)
 				{
-					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
+					if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+					{
+						break;
+					}
 					if (lineMin <= y && y <= lineMax)
 					{
-						ret &= AddMove(PAWN_NONE, i, j, x, y, true, moveList);
+						if (AddMove(PAWN_NONE, i, j, x, y, true, moveList) == false)
+						{
+							break;
+						}
 					}
+					x++;
 				}
 				x = i - 1; y = j;
-				for (bool ret = true; 0 < x && ret; x -= 1)
+				while (true)
 				{
-					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
+					if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+					{
+						break;
+					}
 					if (lineMin <= y && y <= lineMax)
 					{
-						ret &= AddMove(PAWN_NONE, i, j, x, y, true, moveList);
+						if (AddMove(PAWN_NONE, i, j, x, y, true, moveList) == false)
+						{
+							break;
+						}
 					}
+					x -= 1;
 				}
 				x = i; y = j + 1;
-				for (bool ret = true; y <= BOARD_HEIGHT && ret; y++)
+				while (true)
 				{
-					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
+					if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+					{
+						break;
+					}
 					if (lineMin <= y && y <= lineMax)
 					{
-						ret &= AddMove(PAWN_NONE, i, j, x, y, true, moveList);
+						if (AddMove(PAWN_NONE, i, j, x, y, true, moveList) == false)
+						{
+							break;
+						}
 					}
+					y++;
 				}
 				x = i; y = j - 1;
-				for (bool ret = true; 0 < y && ret; y -= 1)
+				while (true)
 				{
-					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
+					if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+					{
+						break;
+					}
 					if (lineMin <= y && y <= lineMax)
 					{
-						ret &= AddMove(PAWN_NONE, i, j, x, y, true, moveList);
+						if (AddMove(PAWN_NONE, i, j, x, y, true, moveList) == false)
+						{
+							break;
+						}
 					}
+					y -= 1;
 				}
 				break;
 			case PAWN_RYU:
 				x = i + 1; y = j;
-				for (bool ret = true; x <= BOARD_WIDTH && ret; x++)
+				while (true)
 				{
-					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
+					if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+					{
+						break;
+					}
+					x++;
 				}
 				x = i - 1; y = j;
-				for (bool ret = true; 0 < x && ret; x -= 1)
+				while (true)
 				{
-					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
+					if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+					{
+						break;
+					}
+					x -= 1;
 				}
 				x = i; y = j + 1;
-				for (bool ret = true; y <= BOARD_HEIGHT && ret; y++)
+				while (true)
 				{
-					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
+					if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+					{
+						break;
+					}
+					y++;
 				}
 				x = i; y = j - 1;
-				for (bool ret = true; 0 < y && ret; y -= 1)
+				while (true)
 				{
-					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
+					if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+					{
+						break;
+					}
+					y -= 1;
 				}
 				AddMove(PAWN_NONE, i, j, i + 1, j + 1, false, moveList);
 				AddMove(PAWN_NONE, i, j, i - 1, j + 1, false, moveList);
@@ -466,35 +562,15 @@ MoveList Board::GetMoveList()
 	return moveList;
 }
 
-bool Board::AddMove(PAWN roll, char fromx, char fromy, char tox, char toy, bool upgrade, MoveList &moveList)
+bool Board::AddMove(PAWN roll, uchar fromx, uchar fromy, uchar tox, uchar toy, bool upgrade, MoveList &moveList)
 {
-	/*
-	if (tox < 1)
+	if (matrix[toy][tox].player == turn || matrix[toy][tox].player == PLAYER::WALL)
 	{
 		return false;
 	}
-	if (toy < 1)
-	{
-		return false;
-	}
-	if (BOARD_WIDTH < tox)
-	{
-		return false;
-	}
-	if (BOARD_HEIGHT < toy)
-	{
-		return false;
-	}
-	*/
-	uchar utox = (uchar)tox;
-	uchar utoy = (uchar)toy;
-	if (matrix[utoy][utox].player == turn || matrix[utoy][utox].player == PLAYER::WALL)
-	{
-		return false;
-	}
-	PAWN capture = matrix[utoy][utox].pawn;
+	PAWN capture = matrix[toy][tox].pawn;
 
-	PAWN_MOVE move( roll, fromx, fromy, utox, utoy, matrix[fromy][fromx].pawn, matrix[utoy][utox].pawn, upgrade, 0 );
+	PAWN_MOVE move( roll, fromx, fromy, tox, toy, matrix[fromy][fromx].pawn, matrix[toy][tox].pawn, upgrade, 0 );
 	if (roll != PAWN_NONE)
 	{
 		move.from.x = 0;
@@ -753,14 +829,17 @@ bool Board::IsEnd() const
 		}
 	}
 
+	int i, j;
 	// 飛龍
-	for (char i = gyokux + 1; i <= BOARD_WIDTH; i++)
+	i = gyokux + 1;
+	while (true)
 	{
 		if (matrix[gyokuy][i].player == PLAYER::NONE)
 		{
+			i++;
 			continue;
 		}
-		if (matrix[gyokuy][i].player == enemy)
+		if (matrix[gyokuy][i].player == enemy || matrix[gyokuy][i].player == PLAYER::WALL)
 		{
 			break;
 		}
@@ -770,13 +849,15 @@ bool Board::IsEnd() const
 		}
 		break;
 	}
-	for (char i = gyokux - 1; 0 < i; i--)
+	i = gyokux - 1;
+	while (true)
 	{
 		if (matrix[gyokuy][i].player == PLAYER::NONE)
 		{
+			i--;
 			continue;
 		}
-		if (matrix[gyokuy][i].player == enemy)
+		if (matrix[gyokuy][i].player == enemy || matrix[gyokuy][i].player == PLAYER::WALL)
 		{
 			break;
 		}
@@ -786,13 +867,15 @@ bool Board::IsEnd() const
 		}
 		break;
 	}
-	for (char j = gyokuy + 1; j <= BOARD_HEIGHT; j++)
+	j = gyokuy + 1;
+	while (true)
 	{
 		if (matrix[j][gyokux].player == PLAYER::NONE)
 		{
+			j++;
 			continue;
 		}
-		if (matrix[j][gyokux].player == enemy)
+		if (matrix[j][gyokux].player == enemy || matrix[j][gyokux].player == PLAYER::WALL)
 		{
 			break;
 		}
@@ -802,13 +885,15 @@ bool Board::IsEnd() const
 		}
 		break;
 	}
-	for (char j = gyokuy - 1; 0 < j; j--)
+	j = gyokuy - 1;
+	while (true)
 	{
 		if (matrix[j][gyokux].player == PLAYER::NONE)
 		{
+			j--;
 			continue;
 		}
-		if (matrix[j][gyokux].player == enemy)
+		if (matrix[j][gyokux].player == enemy || matrix[j][gyokux].player == PLAYER::WALL)
 		{
 			break;
 		}
@@ -820,13 +905,17 @@ bool Board::IsEnd() const
 	}
 
 	// 角馬
-	for (char i = gyokux + 1, j = gyokuy + 1; i <= BOARD_WIDTH && j <= BOARD_HEIGHT; i++, j++)
+	i = gyokux + 1;
+	j = gyokuy + 1;
+	while(true)
 	{
 		if (matrix[j][i].player == PLAYER::NONE)
 		{
+			i++;
+			j++;
 			continue;
 		}
-		if (matrix[j][i].player == enemy)
+		if (matrix[j][i].player == enemy || matrix[j][i].player == PLAYER::WALL)
 		{
 			break;
 		}
@@ -836,13 +925,17 @@ bool Board::IsEnd() const
 		}
 		break;
 	}
-	for (char i = gyokux - 1, j = gyokuy + 1; 0 < i && j <= BOARD_HEIGHT; i--, j++)
+	i = gyokux - 1;
+	j = gyokuy + 1;
+	while (true)
 	{
 		if (matrix[j][i].player == PLAYER::NONE)
 		{
+			i--;
+			j++;
 			continue;
 		}
-		if (matrix[j][i].player == enemy)
+		if (matrix[j][i].player == enemy || matrix[j][i].player == PLAYER::WALL)
 		{
 			break;
 		}
@@ -852,13 +945,17 @@ bool Board::IsEnd() const
 		}
 		break;
 	}
-	for (char i = gyokux - 1, j = gyokuy - 1; 0 < i && 0 < j; i--, j--)
+	i = gyokux - 1;
+	j = gyokuy - 1;
+	while (true)
 	{
 		if (matrix[j][i].player == PLAYER::NONE)
 		{
+			i--;
+			j--;
 			continue;
 		}
-		if (matrix[j][i].player == enemy)
+		if (matrix[j][i].player == enemy || matrix[j][i].player == PLAYER::WALL)
 		{
 			break;
 		}
@@ -868,13 +965,17 @@ bool Board::IsEnd() const
 		}
 		break;
 	}
-	for (char i = gyokux + 1, j = gyokuy - 1; i <= BOARD_WIDTH && 0 < j; i++, j--)
+	i = gyokux + 1;
+	j = gyokuy - 1;
+	while (true)
 	{
 		if (matrix[j][i].player == PLAYER::NONE)
 		{
+			i++;
+			j--;
 			continue;
 		}
-		if (matrix[j][i].player == enemy)
+		if (matrix[j][i].player == enemy || matrix[j][i].player == PLAYER::WALL)
 		{
 			break;
 		}
@@ -888,30 +989,13 @@ bool Board::IsEnd() const
 	return false;
 }
 
-bool Board::GetCell(char tox, char toy, CELL &cell) const
+bool Board::GetCell(uchar tox, uchar toy, CELL &cell) const
 {
-	if (matrix[toy][tox].player != turn || matrix[toy][tox].player == PLAYER::WALL)
+	if (matrix[toy][tox].player != turn)
 	{
 		return false;
 	}
-	/*
-	if (tox < 1)
-	{
-		return false;
-	}
-	if (toy < 1)
-	{
-		return false;
-	}
-	if (BOARD_WIDTH < tox)
-	{
-		return false;
-	}
-	if (BOARD_HEIGHT < toy)
-	{
-		return false;
-	}
-	*/
+
 	cell = matrix[toy][tox];
 
 	return true;

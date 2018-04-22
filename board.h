@@ -259,9 +259,9 @@ public:
 	}
 
 private:
-	bool AddMove(PAWN roll, char fromx, char fromy, char tox, char toy, bool upgrade, MoveList &moveList);
+	bool AddMove(PAWN roll, uchar fromx, uchar fromy, uchar tox, uchar toy, bool upgrade, MoveList &moveList);
 	bool IsEnd() const;
-	bool GetCell(char tox, char toy, CELL &cell) const;
+	bool GetCell(uchar tox, uchar toy, CELL &cell) const;
 	
 	uchar captured[(uchar)PLAYER::MAX][(uchar)CAPTURE_MAX];
 	CELL matrix[BOARD_HEIGHT+2][BOARD_WIDTH+2];
