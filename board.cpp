@@ -51,8 +51,8 @@ void Board::Init(const std::string &str)
 	
 	for (int i = 0; i < PLAYER_MAX; i++)
 	{
-		gyokux[i] = -1;
-		gyokuy[i] = -1;
+		gyokux[i] = 0;
+		gyokuy[i] = 0;
 	}
 
 	for( int i=0; i<(uchar)CAPTURE_MAX; i++ )
@@ -628,7 +628,7 @@ bool Board::IsEnd() const
 	// 玉の位置を求める
 	char gyokux = this->gyokux[enemy];
 	char gyokuy = this->gyokuy[enemy];
-	if (gyokux == -1)
+	if (gyokux == 0)
 	{
 		return false;
 	}

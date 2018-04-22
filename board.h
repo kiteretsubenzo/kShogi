@@ -289,8 +289,8 @@ private:
 	PLAYER turn;
 	PLAYER enemy;
 
-	char gyokux[PLAYER_MAX];
-	char gyokuy[PLAYER_MAX];
+	uchar gyokux[PLAYER_MAX];
+	uchar gyokuy[PLAYER_MAX];
 };
 
 #if USE_PRIORITY == PRIORITY_MULTISET
