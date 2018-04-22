@@ -4,6 +4,7 @@
 enum class PLAYER
 {
   FIRST, SECOND,
+  WALL,
   MAX, NONE = MAX
 };
 
@@ -87,7 +88,7 @@ public:
 
 		std::string str;
 		//uchar tox, toy;
-		str += numberToZenkaku[(uchar)to.x] + numberToKanji[(uchar)to.y];
+		str += numberToZenkaku[(uchar)to.x-1] + numberToKanji[(uchar)to.y-1];
 
 		if (reserve != PAWN_NONE)
 		{
@@ -97,7 +98,7 @@ public:
 		else
 		{
 			str += " " + PAWN_KANJI[from.pawn];
-			str += "(" + std::to_string(BOARD_WIDTH - from.x) + "," + std::to_string(from.y + 1) + ")";
+			str += "(" + std::to_string(BOARD_WIDTH - from.x + 1) + "," + std::to_string(from.y) + ")";
 
 			//bool upgrade;
 			if (upgrade)
@@ -258,12 +259,12 @@ public:
 	}
 
 private:
-	bool AddMove(PAWN roll, uchar fromx, uchar fromy, char tox, char toy, bool upgrade, MoveList &moveList);
+	bool AddMove(PAWN roll, char fromx, char fromy, char tox, char toy, bool upgrade, MoveList &moveList);
 	bool IsEnd() const;
 	bool GetCell(char tox, char toy, CELL &cell) const;
 	
 	uchar captured[(uchar)PLAYER::MAX][(uchar)CAPTURE_MAX];
-	CELL matrix[BOARD_HEIGHT][BOARD_WIDTH];
+	CELL matrix[BOARD_HEIGHT+2][BOARD_WIDTH+2];
 	PLAYER turn;
 	PLAYER enemy;
 

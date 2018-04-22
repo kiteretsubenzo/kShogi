@@ -227,7 +227,7 @@ int main()
 #endif
 	Ai ai;
 	ai.AddWorker();
-#if true
+#if false
 	std::chrono::system_clock::time_point start, end;
 
 	Score aiScore = SCORE_NONE;
@@ -261,8 +261,7 @@ int main()
 	std::cout << "end" << std::endl;
 #endif
 #if false
-	
-	ai.SetDebug(false);
+	ai.SetDebug(true);
 
 	std::chrono::system_clock::time_point start, end;
 	start = std::chrono::system_clock::now();
@@ -277,18 +276,18 @@ int main()
 		board.Init(strs[0]);
 
 		// 点数を求める
-		ai.SetMode("scout");
-		ai.SetSearchScore(0);
+		ai.SetMode("scouttest");
+		ai.SetSearchScore(-SCORE_WIN);
 		ai.Start(board);
 
 		while (ai.Tick() == false) {
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 
-		int scoutScore;
+		Score scoutScore = SCORE_NONE;
 		ai.GetResult(scoutScore);
 
-		std::cout << scoutScore << std::endl;
+		std::cout << (std::string)scoutScore << std::endl;
 
 		PAWN_MOVE scoutMove = scoutScore.moveList.front();
 		std::cout << scoutMove.DebugString() << " " << strs[1] << std::endl;

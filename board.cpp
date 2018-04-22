@@ -19,12 +19,24 @@ Board::Board()
 		}
 	}
   
-	for( uchar j=0; j<BOARD_HEIGHT; j++ )
+	for( uchar j=1; j<=BOARD_HEIGHT; j++ )
 	{
-		for( uchar i=0; i<BOARD_WIDTH; i++ )
+		for( uchar i=1; i<=BOARD_WIDTH; i++ )
 		{
 			matrix[j][i] = { PLAYER::NONE, PAWN_NONE };
 		}
+	}
+
+	for (uchar i = 0; i < BOARD_WIDTH+2; i++)
+	{
+		matrix[0][i] = { PLAYER::WALL, PAWN_NONE };
+		matrix[BOARD_HEIGHT+1][i] = { PLAYER::WALL, PAWN_NONE };
+	}
+
+	for (uchar j = 1; j <= BOARD_HEIGHT; j++)
+	{
+		matrix[j][0] = { PLAYER::WALL, PAWN_NONE };
+		matrix[j][BOARD_WIDTH+1] = { PLAYER::WALL, PAWN_NONE };
 	}
 	
 	turn = PLAYER::FIRST;
@@ -52,11 +64,11 @@ void Board::Init(const std::string &str)
 		captured[(uchar)PLAYER::SECOND][i] = atoi(second);
 	}
 
-	for( int j=1; j < BOARD_HEIGHT+1; j++ )
+	for( int j=2; j <= BOARD_HEIGHT+1; j++ )
 	{
-		for( int i=0; i<BOARD_WIDTH; i++ )
+		for( int i=1; i <= BOARD_WIDTH; i++ )
 		{
-			char c[2] = { strs[j][i*2], strs[j][i*2+1] };
+			char c[2] = { strs[j-1][(i-1)*2], strs[j-1][(i-1)*2+1] };
 			if( c[0] == ' ' )
 			{
 				matrix[j-1][i].player = PLAYER::NONE;
@@ -111,9 +123,9 @@ std::string Board::BoardToString() const
 	}
 	sout << '\n';
 	
-	for( int j=1; j < BOARD_HEIGHT+1; j++ )
+	for( int j=2; j <= BOARD_HEIGHT+1; j++ )
 	{
-		for( int i=0; i<BOARD_WIDTH; i++ )
+		for( int i=1; i <= BOARD_WIDTH; i++ )
 		{
 			if( matrix[j-1][i].player == PLAYER::FIRST )
 			{
@@ -159,26 +171,26 @@ MoveList Board::GetMoveList()
 
 	if (turn == PLAYER::FIRST)
 	{
-		lineMax = 2;
-		lineMin = 0;
-		lineTop = 0;
-		lineMid = 1;
+		lineMax = 3;
+		lineMin = 1;
+		lineTop = 1;
+		lineMid = 2;
 	}
 	else
 	{
-		lineMax = BOARD_HEIGHT - 1;
-		lineMin = BOARD_HEIGHT - 3;
-		lineTop = BOARD_HEIGHT - 1;
-		lineMid = BOARD_HEIGHT - 2;
+		lineMax = BOARD_HEIGHT;
+		lineMin = BOARD_HEIGHT - 2;
+		lineTop = BOARD_HEIGHT;
+		lineMid = BOARD_HEIGHT - 1;
 	}
 	int forward = -1;
 	if (turn == PLAYER::SECOND)
 	{
 		forward = +1;
 	}
-	for (char j = 0; j<BOARD_HEIGHT; j++)
+	for (char j = 1; j<=BOARD_HEIGHT; j++)
 	{
-		for (char i = 0; i<BOARD_WIDTH; i++)
+		for (char i = 1; i<=BOARD_WIDTH; i++)
 		{
 			CELL cell = matrix[(uchar)j][(uchar)i];
 			if (cell.player == enemy)
@@ -203,7 +215,7 @@ MoveList Board::GetMoveList()
 				break;
 			case PAWN_KYOH:
 				y = j + forward;
-				for (bool ret = true; 0 <= (int)y && (int)y < BOARD_HEIGHT && ret; y += forward)
+				for (bool ret = true; 0 < y && y <= BOARD_HEIGHT && ret; y += forward)
 				{
 					if (y != lineTop)
 					{
@@ -256,7 +268,7 @@ MoveList Board::GetMoveList()
 				break;
 			case PAWN_KAKU:
 				x = i + 1; y = j + 1;
-				for (bool ret = true; x < BOARD_WIDTH && y < BOARD_HEIGHT && ret; x++, y++)
+				for (bool ret = true; x <= BOARD_WIDTH && y <= BOARD_HEIGHT && ret; x++, y++)
 				{
 					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
 					if (lineMin <= y && y <= lineMax)
@@ -265,7 +277,7 @@ MoveList Board::GetMoveList()
 					}
 				}
 				x = i + 1; y = j - 1;
-				for (bool ret = true; x < BOARD_WIDTH && 0 <= y && ret; x++, y -= 1)
+				for (bool ret = true; x <= BOARD_WIDTH && 0 < y && ret; x++, y -= 1)
 				{
 					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
 					if (lineMin <= y && y <= lineMax)
@@ -274,7 +286,7 @@ MoveList Board::GetMoveList()
 					}
 				}
 				x = i - 1; y = j + 1;
-				for (bool ret = true; 0 <= x && y < BOARD_HEIGHT && ret; x -= 1, y++)
+				for (bool ret = true; 0 < x && y <= BOARD_HEIGHT && ret; x -= 1, y++)
 				{
 					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
 					if (lineMin <= y && y <= lineMax)
@@ -283,7 +295,7 @@ MoveList Board::GetMoveList()
 					}
 				}
 				x = i - 1; y = j - 1;
-				for (bool ret = true; 0 <= x && 0 <= y && ret; x -= 1, y -= 1)
+				for (bool ret = true; 0 < x && 0 < y && ret; x -= 1, y -= 1)
 				{
 					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
 					if (lineMin <= y && y <= lineMax)
@@ -294,22 +306,22 @@ MoveList Board::GetMoveList()
 				break;
 			case PAWN_UMA:
 				x = i + 1; y = j + 1;
-				for (bool ret = true; x < BOARD_WIDTH && y < BOARD_HEIGHT && ret; x++, y++)
+				for (bool ret = true; x <= BOARD_WIDTH && y <= BOARD_HEIGHT && ret; x++, y++)
 				{
 					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
 				}
 				x = i + 1; y = j - 1;
-				for (bool ret = true; x < BOARD_WIDTH && 0 <= y && ret; x++, y -= 1)
+				for (bool ret = true; x <= BOARD_WIDTH && 0 < y && ret; x++, y -= 1)
 				{
 					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
 				}
 				x = i - 1; y = j + 1;
-				for (bool ret = true; 0 <= x && y < BOARD_HEIGHT && ret; x -= 1, y++)
+				for (bool ret = true; 0 < x && y <= BOARD_HEIGHT && ret; x -= 1, y++)
 				{
 					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
 				}
 				x = i - 1; y = j - 1;
-				for (bool ret = true; 0 <= x && 0 <= y && ret; x -= 1, y -= 1)
+				for (bool ret = true; 0 < x && 0 < y && ret; x -= 1, y -= 1)
 				{
 					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
 				}
@@ -320,7 +332,7 @@ MoveList Board::GetMoveList()
 				break;
 			case PAWN_HI:
 				x = i + 1; y = j;
-				for (bool ret = true; x < BOARD_WIDTH && ret; x++)
+				for (bool ret = true; x <= BOARD_WIDTH && ret; x++)
 				{
 					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
 					if (lineMin <= y && y <= lineMax)
@@ -329,7 +341,7 @@ MoveList Board::GetMoveList()
 					}
 				}
 				x = i - 1; y = j;
-				for (bool ret = true; 0 <= x && ret; x -= 1)
+				for (bool ret = true; 0 < x && ret; x -= 1)
 				{
 					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
 					if (lineMin <= y && y <= lineMax)
@@ -338,7 +350,7 @@ MoveList Board::GetMoveList()
 					}
 				}
 				x = i; y = j + 1;
-				for (bool ret = true; y < BOARD_HEIGHT && ret; y++)
+				for (bool ret = true; y <= BOARD_HEIGHT && ret; y++)
 				{
 					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
 					if (lineMin <= y && y <= lineMax)
@@ -347,7 +359,7 @@ MoveList Board::GetMoveList()
 					}
 				}
 				x = i; y = j - 1;
-				for (bool ret = true; 0 <= y && ret; y -= 1)
+				for (bool ret = true; 0 < y && ret; y -= 1)
 				{
 					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
 					if (lineMin <= y && y <= lineMax)
@@ -358,22 +370,22 @@ MoveList Board::GetMoveList()
 				break;
 			case PAWN_RYU:
 				x = i + 1; y = j;
-				for (bool ret = true; x < BOARD_WIDTH && ret; x++)
+				for (bool ret = true; x <= BOARD_WIDTH && ret; x++)
 				{
 					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
 				}
 				x = i - 1; y = j;
-				for (bool ret = true; 0 <= x && ret; x -= 1)
+				for (bool ret = true; 0 < x && ret; x -= 1)
 				{
 					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
 				}
 				x = i; y = j + 1;
-				for (bool ret = true; y < BOARD_HEIGHT && ret; y++)
+				for (bool ret = true; y <= BOARD_HEIGHT && ret; y++)
 				{
 					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
 				}
 				x = i; y = j - 1;
-				for (bool ret = true; 0 <= y && ret; y -= 1)
+				for (bool ret = true; 0 < y && ret; y -= 1)
 				{
 					ret &= AddMove(PAWN_NONE, i, j, x, y, false, moveList);
 				}
@@ -393,6 +405,7 @@ MoveList Board::GetMoveList()
 				AddMove(PAWN_NONE, i, j, i + 1, j + 1, false, moveList);
 				break;
 			default:
+				// 空きだったら打ち
 				for (uchar roll = 0; roll < CAPTURE_MAX; roll++)
 				{
 					if (captured[(uchar)turn][roll] == 0)
@@ -405,14 +418,14 @@ MoveList Board::GetMoveList()
 						if (j != lineTop)
 						{
 							uchar k;
-							for (k = 0; k < BOARD_HEIGHT; k++)
+							for (k = 1; k <= BOARD_HEIGHT; k++)
 							{
 								if (matrix[k][i].player == turn && matrix[k][i].pawn == PAWN_HU)
 								{
 									break;
 								}
 							}
-							if (BOARD_HEIGHT <= k)
+							if (BOARD_HEIGHT < k)
 							{
 								AddMove(roll, 0, 0, i, j, false, moveList);
 							}
@@ -429,7 +442,6 @@ MoveList Board::GetMoveList()
 						{
 							AddMove(roll, 0, 0, i, j, false, moveList);
 						}
-						break;
 						break;
 					case PAWN_GIN:
 					case PAWN_KIN:
@@ -454,19 +466,29 @@ MoveList Board::GetMoveList()
 	return moveList;
 }
 
-bool Board::AddMove(PAWN roll, uchar fromx, uchar fromy, char tox, char toy, bool upgrade, MoveList &moveList)
+bool Board::AddMove(PAWN roll, char fromx, char fromy, char tox, char toy, bool upgrade, MoveList &moveList)
 {
-	if (tox < 0 || BOARD_WIDTH <= tox)
+	/*
+	if (tox < 1)
 	{
 		return false;
 	}
-	if (toy < 0 || BOARD_HEIGHT <= toy)
+	if (toy < 1)
 	{
 		return false;
 	}
+	if (BOARD_WIDTH < tox)
+	{
+		return false;
+	}
+	if (BOARD_HEIGHT < toy)
+	{
+		return false;
+	}
+	*/
 	uchar utox = (uchar)tox;
 	uchar utoy = (uchar)toy;
-	if (matrix[utoy][utox].player == turn)
+	if (matrix[utoy][utox].player == turn || matrix[utoy][utox].player == PLAYER::WALL)
 	{
 		return false;
 	}
@@ -597,23 +619,26 @@ bool Board::IsEnd() const
 		}
 
 		// 桂
-		if (GetCell(gyokux - 1, gyokuy + 2, cell))
+		if (gyokuy < BOARD_HEIGHT)
 		{
-			if (cell.pawn == PAWN_KEI)
+			if (GetCell(gyokux - 1, gyokuy + 2, cell))
 			{
-				return true;
+				if (cell.pawn == PAWN_KEI)
+				{
+					return true;
+				}
 			}
-		}
-		if (GetCell(gyokux + 1, gyokuy + 2, cell))
-		{
-			if (cell.pawn == PAWN_KEI)
+			if (GetCell(gyokux + 1, gyokuy + 2, cell))
 			{
-				return true;
+				if (cell.pawn == PAWN_KEI)
+				{
+					return true;
+				}
 			}
 		}
 
 		// 香
-		for (char j = gyokuy + 1; j < BOARD_HEIGHT; j++)
+		for (char j = gyokuy + 1; j <= BOARD_HEIGHT; j++)
 		{
 			if (matrix[j][gyokux].player == PLAYER::NONE)
 			{
@@ -691,23 +716,26 @@ bool Board::IsEnd() const
 		}
 
 		// 桂
-		if (GetCell(gyokux - 1, gyokuy - 2, cell))
+		if (2 <= gyokuy)
 		{
-			if (cell.pawn == PAWN_KEI)
+			if (GetCell(gyokux - 1, gyokuy - 2, cell))
 			{
-				return true;
+				if (cell.pawn == PAWN_KEI)
+				{
+					return true;
+				}
 			}
-		}
-		if (GetCell(gyokux + 1, gyokuy - 2, cell))
-		{
-			if (cell.pawn == PAWN_KEI)
+			if (GetCell(gyokux + 1, gyokuy - 2, cell))
 			{
-				return true;
+				if (cell.pawn == PAWN_KEI)
+				{
+					return true;
+				}
 			}
 		}
 
 		// 香
-		for (char j = gyokuy - 1; j >= 0; j--)
+		for (char j = gyokuy - 1; 0 < j; j--)
 		{
 			if (matrix[j][gyokux].player == PLAYER::NONE)
 			{
@@ -726,7 +754,7 @@ bool Board::IsEnd() const
 	}
 
 	// 飛龍
-	for (char i = gyokux + 1; i < BOARD_WIDTH; i++)
+	for (char i = gyokux + 1; i <= BOARD_WIDTH; i++)
 	{
 		if (matrix[gyokuy][i].player == PLAYER::NONE)
 		{
@@ -742,7 +770,7 @@ bool Board::IsEnd() const
 		}
 		break;
 	}
-	for (char i = gyokux - 1; i >= 0; i--)
+	for (char i = gyokux - 1; 0 < i; i--)
 	{
 		if (matrix[gyokuy][i].player == PLAYER::NONE)
 		{
@@ -758,7 +786,7 @@ bool Board::IsEnd() const
 		}
 		break;
 	}
-	for (char j = gyokuy + 1; j < BOARD_HEIGHT; j++)
+	for (char j = gyokuy + 1; j <= BOARD_HEIGHT; j++)
 	{
 		if (matrix[j][gyokux].player == PLAYER::NONE)
 		{
@@ -774,7 +802,7 @@ bool Board::IsEnd() const
 		}
 		break;
 	}
-	for (char j = gyokuy - 1; j >= 0; j--)
+	for (char j = gyokuy - 1; 0 < j; j--)
 	{
 		if (matrix[j][gyokux].player == PLAYER::NONE)
 		{
@@ -792,7 +820,7 @@ bool Board::IsEnd() const
 	}
 
 	// 角馬
-	for (char i = gyokux + 1, j = gyokuy + 1; i < BOARD_WIDTH && j < BOARD_HEIGHT; i++, j++)
+	for (char i = gyokux + 1, j = gyokuy + 1; i <= BOARD_WIDTH && j <= BOARD_HEIGHT; i++, j++)
 	{
 		if (matrix[j][i].player == PLAYER::NONE)
 		{
@@ -808,7 +836,7 @@ bool Board::IsEnd() const
 		}
 		break;
 	}
-	for (char i = gyokux - 1, j = gyokuy + 1; i >= 0 && j < BOARD_HEIGHT; i--, j++)
+	for (char i = gyokux - 1, j = gyokuy + 1; 0 < i && j <= BOARD_HEIGHT; i--, j++)
 	{
 		if (matrix[j][i].player == PLAYER::NONE)
 		{
@@ -824,7 +852,7 @@ bool Board::IsEnd() const
 		}
 		break;
 	}
-	for (char i = gyokux - 1, j = gyokuy - 1; i >= 0 && j >= 0; i--, j--)
+	for (char i = gyokux - 1, j = gyokuy - 1; 0 < i && 0 < j; i--, j--)
 	{
 		if (matrix[j][i].player == PLAYER::NONE)
 		{
@@ -840,7 +868,7 @@ bool Board::IsEnd() const
 		}
 		break;
 	}
-	for (char i = gyokux + 1, j = gyokuy - 1; i < BOARD_WIDTH && j >= 0; i++, j--)
+	for (char i = gyokux + 1, j = gyokuy - 1; i <= BOARD_WIDTH && 0 < j; i++, j--)
 	{
 		if (matrix[j][i].player == PLAYER::NONE)
 		{
@@ -862,19 +890,28 @@ bool Board::IsEnd() const
 
 bool Board::GetCell(char tox, char toy, CELL &cell) const
 {
-	if (tox < 0 || BOARD_WIDTH <= tox)
+	if (matrix[toy][tox].player != turn || matrix[toy][tox].player == PLAYER::WALL)
 	{
 		return false;
 	}
-	if (toy < 0 || BOARD_HEIGHT <= toy)
+	/*
+	if (tox < 1)
 	{
 		return false;
 	}
-	if (matrix[toy][tox].player != turn)
+	if (toy < 1)
 	{
 		return false;
 	}
-
+	if (BOARD_WIDTH < tox)
+	{
+		return false;
+	}
+	if (BOARD_HEIGHT < toy)
+	{
+		return false;
+	}
+	*/
 	cell = matrix[toy][tox];
 
 	return true;
@@ -973,9 +1010,9 @@ void Board::PrintBoard() const
 	}
 	std::cout << std::endl;
 	std::cout << "９８７６５４３２１" << std::endl;
-	for( uchar j=0; j<BOARD_HEIGHT; j++ )
+	for( uchar j=1; j<=BOARD_HEIGHT; j++ )
 	{
-		for( uchar i=0; i<BOARD_WIDTH; i++ )
+		for( uchar i=1; i<=BOARD_WIDTH; i++ )
 		{
 			switch(matrix[j][i].player)
 			{
@@ -992,7 +1029,7 @@ void Board::PrintBoard() const
 				break;
 			}
 		}
-		std::cout << " " << numberToKanji[j] << std::endl;
+		std::cout << " " << numberToKanji[j-1] << std::endl;
 	}
 	for( uchar i=0; i<(uchar)CAPTURE_MAX; i++)
 	{
