@@ -171,7 +171,11 @@ void Worker::SearchImplementation(const std::string &job)
 				{
 					if (0 < ite->moves.size())
 					{
+#if USE_PRIORITY == PRIORITY_MULTISET
+						childItr->score.moveList.push_back(*(ite->moves.begin()));
+#else
 						childItr->score.moveList.push_back(ite->moves.front());
+#endif
 					}
 				}
 				break;
@@ -189,7 +193,11 @@ void Worker::SearchImplementation(const std::string &job)
 				{
 					if (0 < ite->moves.size())
 					{
+#if USE_PRIORITY == PRIORITY_MULTISET
+						childItr->score.moveList.push_back(*(ite->moves.begin()));
+#else
 						childItr->score.moveList.push_back(ite->moves.front());
+#endif
 					}
 				}
 
