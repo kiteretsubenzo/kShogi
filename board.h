@@ -4,18 +4,11 @@
 typedef unsigned char PLAYER;
 
 #define PLAYER_FIRST	0
-#define PLAYER_SECOND	16
-#define PLAYER_NONE		32
-#define PLAYER_WALL		64
-/*
-#define PLAYER_SHIFT_FIRST	0
-#define PLAYER_SHIFT_SECOND	16
-#define PLAYER_SHIFT_NONE	32
-#define PLAYER_SHIFT_WALL	64
-*/
-#define PLAYER_MAX		2
+#define PLAYER_SECOND	1
+#define PLAYER_NONE		2
+#define PLAYER_WALL		3
 
-#define PlayerShiftToIndex(player)	( player >> 4 )
+#define PLAYER_MAX		2
 
 struct CELL
 {
