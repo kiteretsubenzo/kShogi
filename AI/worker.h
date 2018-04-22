@@ -15,7 +15,7 @@ struct Score
 		score = scoreValue;
 	}
 
-	Score(const int &scoreValue, std::list<PAWN_MOVE> moveListValue)
+	Score(const int &scoreValue, const std::list<PAWN_MOVE> &moveListValue)
 	{
 		score = scoreValue;
 		moveList = moveListValue;

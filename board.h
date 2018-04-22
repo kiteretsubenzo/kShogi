@@ -1,20 +1,27 @@
 ﻿#ifndef BOARD_H
 #define BOARD_H
 
-enum class PLAYER
-{
-  FIRST, SECOND,
-  WALL,
-  MAX, NONE = MAX
-};
+typedef unsigned char PLAYER;
+
+#define PLAYER_FIRST	0
+#define PLAYER_SECOND	1
+#define PLAYER_NONE		2
+#define PLAYER_WALL		4
+/*
+#define PLAYER_SHIFT_FIRST	0
+#define PLAYER_SHIFT_SECOND	16
+#define PLAYER_SHIFT_NONE	32
+#define PLAYER_SHIFT_WALL	64
+*/
+#define PLAYER_MAX		2
 
 struct CELL
 {
-  PLAYER player;
-  PAWN pawn;
+	PLAYER player;
+	PAWN pawn;
 };
 
-static const std::string PLAYER_STRING[(uchar)PLAYER::MAX] =
+static const std::string PLAYER_STRING[PLAYER_MAX] =
 {
 	"先手番", "後手番"
 };
@@ -236,15 +243,15 @@ public:
 	void Back(const PAWN_MOVE &move);
 	void SwitchTurn()
 	{
-		if (turn == PLAYER::FIRST)
+		if (turn == PLAYER_FIRST)
 		{
-			turn = PLAYER::SECOND;
-			enemy = PLAYER::FIRST;
+			turn = PLAYER_SECOND;
+			enemy = PLAYER_FIRST;
 		}
 		else
 		{
-			turn = PLAYER::FIRST;
-			enemy = PLAYER::SECOND;
+			turn = PLAYER_FIRST;
+			enemy = PLAYER_SECOND;
 		}
 	}
 
@@ -287,13 +294,13 @@ private:
 		return true;
 	}
 	
-	uchar captured[(uchar)PLAYER::MAX][(uchar)CAPTURE_MAX];
+	uchar captured[PLAYER_MAX][(uchar)CAPTURE_MAX];
 	CELL matrix[BOARD_HEIGHT+2][BOARD_WIDTH+2];
 	PLAYER turn;
 	PLAYER enemy;
 
-	char gyokux[(uchar)PLAYER::MAX];
-	char gyokuy[(uchar)PLAYER::MAX];
+	char gyokux[PLAYER_MAX];
+	char gyokuy[PLAYER_MAX];
 };
 
 #if USE_PRIORITY == PRIORITY_MULTISET

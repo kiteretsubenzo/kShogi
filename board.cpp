@@ -11,7 +11,7 @@
 
 Board::Board()
 {
-	for( uchar i=0; i<(uchar)PLAYER::MAX; i++ )
+	for( uchar i=0; i<PLAYER_MAX; i++ )
 	{
 		for( uchar j=0; j<(uchar)CAPTURE_MAX; j++ )
 		{
@@ -23,34 +23,33 @@ Board::Board()
 	{
 		for( uchar i=1; i<=BOARD_WIDTH; i++ )
 		{
-			matrix[j][i] = { PLAYER::NONE, PAWN_NONE };
+			matrix[j][i] = { PLAYER_NONE, PAWN_NONE };
 		}
 	}
 
 	for (uchar i = 0; i < BOARD_WIDTH+2; i++)
 	{
-		matrix[0][i] = { PLAYER::WALL, PAWN_NONE };
-		matrix[BOARD_HEIGHT+1][i] = { PLAYER::WALL, PAWN_NONE };
+		matrix[0][i] = { PLAYER_WALL, PAWN_NONE };
+		matrix[BOARD_HEIGHT+1][i] = { PLAYER_WALL, PAWN_NONE };
 	}
 
 	for (uchar j = 1; j <= BOARD_HEIGHT; j++)
 	{
-		matrix[j][0] = { PLAYER::WALL, PAWN_NONE };
-		matrix[j][BOARD_WIDTH+1] = { PLAYER::WALL, PAWN_NONE };
+		matrix[j][0] = { PLAYER_WALL, PAWN_NONE };
+		matrix[j][BOARD_WIDTH+1] = { PLAYER_WALL, PAWN_NONE };
 	}
 	
-	turn = PLAYER::FIRST;
-	enemy = PLAYER::SECOND;
+	turn = PLAYER_FIRST;
+	enemy = PLAYER_SECOND;
 }
 
 void Board::Init(const std::string &str)
 {
-	
 	//'h', 'H', 'y', 'Y', 'e', 'E', 'g', 'G', 'k', 'u', 'U', 'r', 'R', 'o';
 
 	std::vector<std::string> strs = split(str, '\n');
 	
-	for (int i = 0; i < (int)PLAYER::MAX; i++)
+	for (int i = 0; i < PLAYER_MAX; i++)
 	{
 		gyokux[i] = -1;
 		gyokuy[i] = -1;
@@ -60,8 +59,8 @@ void Board::Init(const std::string &str)
 	{
 		char first[3] = { strs[BOARD_HEIGHT+1][i*4+1], strs[BOARD_HEIGHT+1][i*4+2], '\0' };
 		char second[3] = { strs[0][i*4+1], strs[0][i*4+2], '\0' };
-		captured[(uchar)PLAYER::FIRST][i] = atoi(first);
-		captured[(uchar)PLAYER::SECOND][i] = atoi(second);
+		captured[PLAYER_FIRST][i] = atoi(first);
+		captured[PLAYER_SECOND][i] = atoi(second);
 	}
 
 	for( int j=2; j <= BOARD_HEIGHT+1; j++ )
@@ -71,7 +70,7 @@ void Board::Init(const std::string &str)
 			char c[2] = { strs[j-1][(i-1)*2], strs[j-1][(i-1)*2+1] };
 			if( c[0] == ' ' )
 			{
-				matrix[j-1][i].player = PLAYER::NONE;
+				matrix[j-1][i].player = PLAYER_NONE;
 				matrix[j-1][i].pawn = PAWN_NONE;
 			}
 			else
@@ -79,12 +78,12 @@ void Board::Init(const std::string &str)
 				char type;
 				if( c[0] == '^' )
 				{
-					matrix[j-1][i].player = PLAYER::FIRST;
+					matrix[j-1][i].player = PLAYER_FIRST;
 					type = c[1];
 				}
 				else
 				{
-					matrix[j-1][i].player = PLAYER::SECOND;
+					matrix[j-1][i].player = PLAYER_SECOND;
 					type = c[0];
 				}
 
@@ -100,13 +99,13 @@ void Board::Init(const std::string &str)
 
 	if( strs[BOARD_HEIGHT+2] == "first" )
 	{
-		turn = PLAYER::FIRST;
-		enemy = PLAYER::SECOND;
+		turn = PLAYER_FIRST;
+		enemy = PLAYER_SECOND;
 	}
 	else if( strs[BOARD_HEIGHT+2] == "second" )
 	{
-		turn = PLAYER::SECOND;
-		enemy = PLAYER::SECOND;
+		turn = PLAYER_SECOND;
+		enemy = PLAYER_SECOND;
 	}
 }
 
@@ -117,8 +116,7 @@ std::string Board::BoardToString() const
 	for( int i=0; i<(uchar)CAPTURE_MAX; i++ )
 	{
 		sout << PAWN_CHAR[i];
-		//std::cout << "::" << (int)captured[(uchar)PLAYER::SECOND][i] << std::endl;
-		sout << std::setfill('0') << std::setw(2) << (int)(captured[(uchar)PLAYER::SECOND][i]);
+		sout << std::setfill('0') << std::setw(2) << (int)(captured[PLAYER_SECOND][i]);
 		sout << ' ';
 	}
 	sout << '\n';
@@ -127,11 +125,11 @@ std::string Board::BoardToString() const
 	{
 		for( int i=1; i <= BOARD_WIDTH; i++ )
 		{
-			if( matrix[j-1][i].player == PLAYER::FIRST )
+			if( matrix[j-1][i].player == PLAYER_FIRST )
 			{
 				sout << '^' << PAWN_CHAR[matrix[j-1][i].pawn];
 			}
-			else if( matrix[j-1][i].player == PLAYER::SECOND )
+			else if( matrix[j-1][i].player == PLAYER_SECOND )
 			{
 				sout << PAWN_CHAR[matrix[j-1][i].pawn] << '_';
 			}
@@ -146,12 +144,12 @@ std::string Board::BoardToString() const
 	for( int i=0; i<(uchar)CAPTURE_MAX; i++ )
 	{
 		sout << PAWN_CHAR[i];
-		sout << std::setfill('0') << std::setw(2) << (int)captured[(uchar)PLAYER::FIRST][i];
+		sout << std::setfill('0') << std::setw(2) << (int)captured[PLAYER_FIRST][i];
 		sout << ' ';
 	}
 	sout << '\n';
 	
-	if( turn == PLAYER::FIRST )
+	if( turn == PLAYER_FIRST )
 	{
 		sout << "first";
 	}
@@ -169,7 +167,7 @@ MoveList Board::GetMoveList()
 
 	uchar lineMax, lineMin, lineTop, lineMid;
 
-	if (turn == PLAYER::FIRST)
+	if (turn == PLAYER_FIRST)
 	{
 		lineMax = 3;
 		lineMin = 1;
@@ -184,7 +182,7 @@ MoveList Board::GetMoveList()
 		lineMid = BOARD_HEIGHT - 1;
 	}
 	int forward = -1;
-	if (turn == PLAYER::SECOND)
+	if (turn == PLAYER_SECOND)
 	{
 		forward = +1;
 	}
@@ -564,7 +562,7 @@ MoveList Board::GetMoveList()
 
 bool Board::AddMove(PAWN roll, uchar fromx, uchar fromy, uchar tox, uchar toy, bool upgrade, MoveList &moveList)
 {
-	if (matrix[toy][tox].player == turn || matrix[toy][tox].player == PLAYER::WALL)
+	if (matrix[toy][tox].player == turn || matrix[toy][tox].player == PLAYER_WALL)
 	{
 		return false;
 	}
@@ -633,7 +631,7 @@ bool Board::IsEnd() const
 		return false;
 	}
 	CELL cell;
-	if (turn == PLAYER::FIRST)
+	if (turn == PLAYER_FIRST)
 	{
 		// 玉の周囲
 		if (GetCell(gyokux - 1, gyokuy, cell))
@@ -715,7 +713,7 @@ bool Board::IsEnd() const
 		// 香
 		for (char j = gyokuy + 1; j <= BOARD_HEIGHT; j++)
 		{
-			if (matrix[j][gyokux].player == PLAYER::NONE)
+			if (matrix[j][gyokux].player == PLAYER_NONE)
 			{
 				continue;
 			}
@@ -812,7 +810,7 @@ bool Board::IsEnd() const
 		// 香
 		for (char j = gyokuy - 1; 0 < j; j--)
 		{
-			if (matrix[j][gyokux].player == PLAYER::NONE)
+			if (matrix[j][gyokux].player == PLAYER_NONE)
 			{
 				continue;
 			}
@@ -837,7 +835,7 @@ bool Board::IsEnd() const
 		{
 			return true;
 		}
-		if (matrix[gyokuy][i].player != PLAYER::NONE)
+		if (matrix[gyokuy][i].player != PLAYER_NONE)
 		{
 			break;
 		}
@@ -850,7 +848,7 @@ bool Board::IsEnd() const
 		{
 			return true;
 		}
-		if (matrix[gyokuy][i].player != PLAYER::NONE)
+		if (matrix[gyokuy][i].player != PLAYER_NONE)
 		{
 			break;
 		}
@@ -863,7 +861,7 @@ bool Board::IsEnd() const
 		{
 			return true;
 		}
-		if (matrix[j][gyokux].player != PLAYER::NONE)
+		if (matrix[j][gyokux].player != PLAYER_NONE)
 		{
 			break;
 		}
@@ -876,7 +874,7 @@ bool Board::IsEnd() const
 		{
 			return true;
 		}
-		if (matrix[j][gyokux].player != PLAYER::NONE)
+		if (matrix[j][gyokux].player != PLAYER_NONE)
 		{
 			break;
 		}
@@ -892,7 +890,7 @@ bool Board::IsEnd() const
 		{
 			return true;
 		}
-		if (matrix[j][i].player != PLAYER::NONE)
+		if (matrix[j][i].player != PLAYER_NONE)
 		{
 			break;
 		}
@@ -907,7 +905,7 @@ bool Board::IsEnd() const
 		{
 			return true;
 		}
-		if (matrix[j][i].player != PLAYER::NONE)
+		if (matrix[j][i].player != PLAYER_NONE)
 		{
 			break;
 		}
@@ -922,7 +920,7 @@ bool Board::IsEnd() const
 		{
 			return true;
 		}
-		if (matrix[j][i].player != PLAYER::NONE)
+		if (matrix[j][i].player != PLAYER_NONE)
 		{
 			break;
 		}
@@ -937,7 +935,7 @@ bool Board::IsEnd() const
 		{
 			return true;
 		}
-		if (matrix[j][i].player != PLAYER::NONE)
+		if (matrix[j][i].player != PLAYER_NONE)
 		{
 			break;
 		}
@@ -969,7 +967,7 @@ void Board::Move(const PAWN_MOVE &move)
 	}
 	matrix[move.to.y][move.to.x].player = turn;
 	matrix[move.to.y][move.to.x].pawn = pawn;
-	matrix[move.from.y][move.from.x].player = PLAYER::NONE;
+	matrix[move.from.y][move.from.x].player = PLAYER_NONE;
 	matrix[move.from.y][move.from.x].pawn = PAWN_NONE;
 
 	if( move.to.pawn != PAWN_NONE )
@@ -989,14 +987,12 @@ void Board::Move(const PAWN_MOVE &move)
 void Board::Back(const PAWN_MOVE &move)
 {
 	assert(move != PAWN_MOVE_ZERO);
-
-	PLAYER prevTurn = enemy;
 	
 	if( move.reserve != PAWN_NONE )
 	{
-		captured[(uchar)prevTurn][(int)move.reserve]++;
+		captured[(uchar)enemy][(int)move.reserve]++;
 
-		matrix[move.to.y][move.to.x].player = PLAYER::NONE;
+		matrix[move.to.y][move.to.x].player = PLAYER_NONE;
 		matrix[move.to.y][move.to.x].pawn = PAWN_NONE;
 
 		SwitchTurn();
@@ -1008,26 +1004,26 @@ void Board::Back(const PAWN_MOVE &move)
 	{
 		Downgrade(pawn);
 	}
-	matrix[move.from.y][move.from.x].player = prevTurn;
+	matrix[move.from.y][move.from.x].player = enemy;
 	matrix[move.from.y][move.from.x].pawn = pawn;
 
 	if (move.to.pawn != PAWN_NONE)
 	{
-		captured[(uchar)prevTurn][move.to.pawn]--;
+		captured[(uchar)enemy][move.to.pawn]--;
 
 		matrix[move.to.y][move.to.x].player = turn;
 		matrix[move.to.y][move.to.x].pawn = move.to.pawn;
 	}
 	else
 	{
-		matrix[move.to.y][move.to.x].player = PLAYER::NONE;
+		matrix[move.to.y][move.to.x].player = PLAYER_NONE;
 		matrix[move.to.y][move.to.x].pawn = PAWN_NONE;
 	}
 
 	if (move.from.pawn == PAWN_GYOKU)
 	{
-		gyokux[(int)prevTurn] = move.from.x;
-		gyokuy[(int)prevTurn] = move.from.y;
+		gyokux[(int)enemy] = move.from.x;
+		gyokuy[(int)enemy] = move.from.y;
 	}
 
 	SwitchTurn();
@@ -1037,7 +1033,7 @@ void Board::PrintBoard() const
 {
 	for( uchar i=0; i<(uchar)CAPTURE_MAX; i++)
 	{
-		std::cout << PAWN_KANJI[i] << ":" << (unsigned int)captured[(uchar)PLAYER::SECOND][i] << " ";
+		std::cout << PAWN_KANJI[i] << ":" << (unsigned int)captured[PLAYER_SECOND][i] << " ";
 	}
 	std::cout << std::endl;
 	std::cout << "９８７６５４３２１" << std::endl;
@@ -1047,13 +1043,13 @@ void Board::PrintBoard() const
 		{
 			switch(matrix[j][i].player)
 			{
-			case PLAYER::FIRST:
+			case PLAYER_FIRST:
 				std::cout << "^" << PAWN_CHAR[matrix[j][i].pawn];
 				break;
-			case PLAYER::SECOND:
+			case PLAYER_SECOND:
 				std::cout << PAWN_CHAR[matrix[j][i].pawn]  << "_";
 				break;
-			case PLAYER::NONE:
+			case PLAYER_NONE:
 				std::cout << " .";
 				break;
 			default:
@@ -1064,8 +1060,8 @@ void Board::PrintBoard() const
 	}
 	for( uchar i=0; i<(uchar)CAPTURE_MAX; i++)
 	{
-		std::cout << PAWN_KANJI[i] << ":" << (unsigned int)captured[(uchar)PLAYER::FIRST][i] << " ";
+		std::cout << PAWN_KANJI[i] << ":" << (unsigned int)captured[PLAYER_FIRST][i] << " ";
 	}
 	std::cout << std::endl;
-	std::cout << PLAYER_STRING[(uchar)turn] << std::endl;
+	std::cout << PLAYER_STRING[(int)turn] << std::endl;
 }
