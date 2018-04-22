@@ -833,7 +833,7 @@ bool Board::IsEnd() const
 	i = gyokux + 1;
 	while (true)
 	{
-		if (matrix[gyokuy][i].player == turn && (matrix[gyokuy][i].pawn == PAWN_HI || matrix[gyokuy][i].pawn == PAWN_RYU))
+		if (matrix[gyokuy][i].player == turn && Down(matrix[gyokuy][i].pawn) == PAWN_HI)
 		{
 			return true;
 		}
@@ -846,7 +846,7 @@ bool Board::IsEnd() const
 	i = gyokux - 1;
 	while (true)
 	{
-		if (matrix[gyokuy][i].player == turn && (matrix[gyokuy][i].pawn == PAWN_HI || matrix[gyokuy][i].pawn == PAWN_RYU))
+		if (matrix[gyokuy][i].player == turn && Down(matrix[gyokuy][i].pawn) == PAWN_HI)
 		{
 			return true;
 		}
@@ -859,7 +859,7 @@ bool Board::IsEnd() const
 	j = gyokuy + 1;
 	while (true)
 	{
-		if (matrix[j][gyokux].player == turn && (matrix[j][gyokux].pawn == PAWN_HI || matrix[j][gyokux].pawn == PAWN_RYU))
+		if (matrix[j][gyokux].player == turn && Down(matrix[j][gyokux].pawn) == PAWN_HI)
 		{
 			return true;
 		}
@@ -872,7 +872,7 @@ bool Board::IsEnd() const
 	j = gyokuy - 1;
 	while (true)
 	{
-		if (matrix[j][gyokux].player == turn && (matrix[j][gyokux].pawn == PAWN_HI || matrix[j][gyokux].pawn == PAWN_RYU))
+		if (matrix[j][gyokux].player == turn && Down(matrix[j][gyokux].pawn) == PAWN_HI)
 		{
 			return true;
 		}
@@ -888,7 +888,7 @@ bool Board::IsEnd() const
 	j = gyokuy + 1;
 	while(true)
 	{
-		if (matrix[j][i].player == turn && (matrix[j][i].pawn == PAWN_KAKU || matrix[j][i].pawn == PAWN_UMA))
+		if (matrix[j][i].player == turn && Down(matrix[j][i].pawn) == PAWN_KAKU)
 		{
 			return true;
 		}
@@ -903,7 +903,7 @@ bool Board::IsEnd() const
 	j = gyokuy + 1;
 	while (true)
 	{
-		if (matrix[j][i].player == turn && (matrix[j][i].pawn == PAWN_KAKU || matrix[j][i].pawn == PAWN_UMA))
+		if (matrix[j][i].player == turn && Down(matrix[j][i].pawn) == PAWN_KAKU)
 		{
 			return true;
 		}
@@ -918,7 +918,7 @@ bool Board::IsEnd() const
 	j = gyokuy - 1;
 	while (true)
 	{
-		if (matrix[j][i].player == turn && (matrix[j][i].pawn == PAWN_KAKU || matrix[j][i].pawn == PAWN_UMA))
+		if (matrix[j][i].player == turn && Down(matrix[j][i].pawn) == PAWN_KAKU)
 		{
 			return true;
 		}
@@ -933,7 +933,7 @@ bool Board::IsEnd() const
 	j = gyokuy - 1;
 	while (true)
 	{
-		if (matrix[j][i].player == turn && (matrix[j][i].pawn == PAWN_KAKU || matrix[j][i].pawn == PAWN_UMA))
+		if (matrix[j][i].player == turn && Down(matrix[j][i].pawn) == PAWN_KAKU)
 		{
 			return true;
 		}

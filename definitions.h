@@ -154,6 +154,7 @@ DEL	127	0x7f
 
 #define Upgrade(type)	(type |= 0x08)
 #define Downgrade(type)	(type &= 0x07)
+#define Down(type)		(type & 0x07)
 #define IsUpgrade(type)	((type & 0x08) != 0)
 #define IsGyokuKinUpgrade(type) (PAWN_KIN <= type)
 
