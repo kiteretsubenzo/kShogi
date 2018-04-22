@@ -59,8 +59,8 @@ void Board::Init(const std::string &str)
 	{
 		char first[3] = { strs[BOARD_HEIGHT+1][i*4+1], strs[BOARD_HEIGHT+1][i*4+2], '\0' };
 		char second[3] = { strs[0][i*4+1], strs[0][i*4+2], '\0' };
-		captured[PLAYER_FIRST][i] = atoi(first);
-		captured[PLAYER_SECOND][i] = atoi(second);
+		captured[PlayerShiftToIndex(PLAYER_FIRST)][i] = atoi(first);
+		captured[PlayerShiftToIndex(PLAYER_SECOND)][i] = atoi(second);
 	}
 
 	for( int j=2; j <= BOARD_HEIGHT+1; j++ )
@@ -76,22 +76,24 @@ void Board::Init(const std::string &str)
 			else
 			{
 				char type;
+				PLAYER player = PLAYER_NONE;
 				if( c[0] == '^' )
 				{
-					matrix[j-1][i].player = PLAYER_FIRST;
+					player = PLAYER_FIRST;
 					type = c[1];
 				}
 				else
 				{
-					matrix[j-1][i].player = PLAYER_SECOND;
+					player = PLAYER_SECOND;
 					type = c[0];
 				}
-
+				matrix[j - 1][i].player = player;
 				matrix[j - 1][i].pawn = charToPawn[type];
+
 				if (type == 'o')
 				{
-					gyokux[(int)(matrix[j - 1][i].player)] = i;
-					gyokuy[(int)(matrix[j - 1][i].player)] = j - 1;
+					gyokux[PlayerShiftToIndex(player)] = i;
+					gyokuy[PlayerShiftToIndex(player)] = j - 1;
 				}
 			}
 		}
@@ -105,7 +107,7 @@ void Board::Init(const std::string &str)
 	else if( strs[BOARD_HEIGHT+2] == "second" )
 	{
 		turn = PLAYER_SECOND;
-		enemy = PLAYER_SECOND;
+		enemy = PLAYER_FIRST;
 	}
 }
 
@@ -116,7 +118,7 @@ std::string Board::BoardToString() const
 	for( int i=0; i<(uchar)CAPTURE_MAX; i++ )
 	{
 		sout << PAWN_CHAR[i];
-		sout << std::setfill('0') << std::setw(2) << (int)(captured[PLAYER_SECOND][i]);
+		sout << std::setfill('0') << std::setw(2) << (int)(captured[PlayerShiftToIndex(PLAYER_SECOND)][i]);
 		sout << ' ';
 	}
 	sout << '\n';
@@ -144,7 +146,7 @@ std::string Board::BoardToString() const
 	for( int i=0; i<(uchar)CAPTURE_MAX; i++ )
 	{
 		sout << PAWN_CHAR[i];
-		sout << std::setfill('0') << std::setw(2) << (int)captured[PLAYER_FIRST][i];
+		sout << std::setfill('0') << std::setw(2) << (int)captured[PlayerShiftToIndex(PLAYER_FIRST)][i];
 		sout << ' ';
 	}
 	sout << '\n';
@@ -502,7 +504,7 @@ MoveList Board::GetMoveList()
 				// 空きだったら打ち
 				for (uchar roll = 0; roll < CAPTURE_MAX; roll++)
 				{
-					if (captured[(uchar)turn][roll] == 0)
+					if (captured[PlayerShiftToIndex(turn)][roll] == 0)
 					{
 						continue;
 					}
@@ -624,8 +626,8 @@ int Board::GetPriority(const PAWN_MOVE &move)
 bool Board::IsEnd() const
 {
 	// 玉の位置を求める
-	char gyokux = this->gyokux[(int)enemy];
-	char gyokuy = this->gyokuy[(int)enemy];
+	char gyokux = this->gyokux[PlayerShiftToIndex(enemy)];
+	char gyokuy = this->gyokuy[PlayerShiftToIndex(enemy)];
 	if (gyokux == -1)
 	{
 		return false;
@@ -952,7 +954,7 @@ void Board::Move(const PAWN_MOVE &move)
 
 	if( move.reserve != PAWN_NONE )
 	{
-		captured[(int)turn][(int)move.reserve]--;
+		captured[PlayerShiftToIndex(turn)][(int)move.reserve]--;
 		matrix[move.to.y][move.to.x].player = turn;
 		matrix[move.to.y][move.to.x].pawn = move.reserve;
 
@@ -973,12 +975,12 @@ void Board::Move(const PAWN_MOVE &move)
 	if( move.to.pawn != PAWN_NONE )
 	{
 		PAWN roll = move.to.pawn;
-		captured[(int)turn][(int)roll]++;
+		captured[PlayerShiftToIndex(turn)][(int)roll]++;
 	}
 	if (move.from.pawn == PAWN_GYOKU)
 	{
-		gyokux[(int)turn] = move.to.x;
-		gyokuy[(int)turn] = move.to.y;
+		gyokux[PlayerShiftToIndex(turn)] = move.to.x;
+		gyokuy[PlayerShiftToIndex(turn)] = move.to.y;
 	}
 
 	SwitchTurn();
@@ -990,7 +992,7 @@ void Board::Back(const PAWN_MOVE &move)
 	
 	if( move.reserve != PAWN_NONE )
 	{
-		captured[(uchar)enemy][(int)move.reserve]++;
+		captured[PlayerShiftToIndex(enemy)][(int)move.reserve]++;
 
 		matrix[move.to.y][move.to.x].player = PLAYER_NONE;
 		matrix[move.to.y][move.to.x].pawn = PAWN_NONE;
@@ -1009,7 +1011,7 @@ void Board::Back(const PAWN_MOVE &move)
 
 	if (move.to.pawn != PAWN_NONE)
 	{
-		captured[(uchar)enemy][move.to.pawn]--;
+		captured[PlayerShiftToIndex(enemy)][move.to.pawn]--;
 
 		matrix[move.to.y][move.to.x].player = turn;
 		matrix[move.to.y][move.to.x].pawn = move.to.pawn;
@@ -1022,8 +1024,8 @@ void Board::Back(const PAWN_MOVE &move)
 
 	if (move.from.pawn == PAWN_GYOKU)
 	{
-		gyokux[(int)enemy] = move.from.x;
-		gyokuy[(int)enemy] = move.from.y;
+		gyokux[PlayerShiftToIndex(enemy)] = move.from.x;
+		gyokuy[PlayerShiftToIndex(enemy)] = move.from.y;
 	}
 
 	SwitchTurn();
@@ -1033,7 +1035,7 @@ void Board::PrintBoard() const
 {
 	for( uchar i=0; i<(uchar)CAPTURE_MAX; i++)
 	{
-		std::cout << PAWN_KANJI[i] << ":" << (unsigned int)captured[PLAYER_SECOND][i] << " ";
+		std::cout << PAWN_KANJI[i] << ":" << (unsigned int)captured[PlayerShiftToIndex(PLAYER_SECOND)][i] << " ";
 	}
 	std::cout << std::endl;
 	std::cout << "９８７６５４３２１" << std::endl;
@@ -1060,8 +1062,16 @@ void Board::PrintBoard() const
 	}
 	for( uchar i=0; i<(uchar)CAPTURE_MAX; i++)
 	{
-		std::cout << PAWN_KANJI[i] << ":" << (unsigned int)captured[PLAYER_FIRST][i] << " ";
+		std::cout << PAWN_KANJI[i] << ":" << (unsigned int)captured[PlayerShiftToIndex(PLAYER_FIRST)][i] << " ";
 	}
 	std::cout << std::endl;
-	std::cout << PLAYER_STRING[(int)turn] << std::endl;
+	//std::cout << PLAYER_STRING[(int)turn] << std::endl;
+	if (turn == PLAYER_FIRST)
+	{
+		std::cout << "先手番" << std::endl;
+	}
+	else
+	{
+		std::cout << "後手番" << std::endl;
+	}
 }

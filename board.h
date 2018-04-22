@@ -4,9 +4,9 @@
 typedef unsigned char PLAYER;
 
 #define PLAYER_FIRST	0
-#define PLAYER_SECOND	1
-#define PLAYER_NONE		2
-#define PLAYER_WALL		4
+#define PLAYER_SECOND	16
+#define PLAYER_NONE		32
+#define PLAYER_WALL		64
 /*
 #define PLAYER_SHIFT_FIRST	0
 #define PLAYER_SHIFT_SECOND	16
@@ -15,15 +15,12 @@ typedef unsigned char PLAYER;
 */
 #define PLAYER_MAX		2
 
+#define PlayerShiftToIndex(player)	( player >> 4 )
+
 struct CELL
 {
 	PLAYER player;
 	PAWN pawn;
-};
-
-static const std::string PLAYER_STRING[PLAYER_MAX] =
-{
-	"先手番", "後手番"
 };
 
 static const std::string numberToZenkaku[9] =
