@@ -220,17 +220,52 @@ public:
 class Board
 {
 public:
-	
-	Board();
-	
-	void Init(const std::string &str);
+	virtual void Init(const std::string &str) = 0;
 	// TODO
-	std::string BoardToString() const;
+	virtual std::string BoardToString() const = 0;
 	
-	MoveList GetMoveList();
+	virtual MoveList GetMoveList() = 0;
 
-	void Move(const PAWN_MOVE &move);
-	void Back(const PAWN_MOVE &move);
+	virtual void Move(const PAWN_MOVE &move) = 0;
+	virtual void Back(const PAWN_MOVE &move) = 0;
+
+	virtual int GetEvaluate(const MoveList &moveList) = 0;
+	virtual int GetPriority(const PAWN_MOVE &move) = 0;
+
+	virtual void PrintBoard() const = 0;
+
+	bool operator==(const Board& rhs) const
+	{
+		return (
+			matrix == rhs.matrix &&
+			turn == rhs.turn
+		);
+	}
+	bool operator!=(const Board& rhs) const
+	{
+		return (
+			matrix != rhs.matrix ||
+			turn != rhs.turn
+		);
+	}
+
+protected:
+	virtual bool AddMove(PAWN roll, uchar fromx, uchar fromy, uchar tox, uchar toy, bool upgrade, MoveList &moveList) = 0;
+	virtual bool IsEnd() const = 0;
+
+	CELL GetCell(uchar x, uchar y) { return matrix[y][x]; }
+	bool GetCell(uchar tox, uchar toy, CELL &cell) const
+	{
+		if (matrix[toy][tox].player != turn)
+		{
+			return false;
+		}
+
+		cell = matrix[toy][tox];
+
+		return true;
+	}
+
 	void SwitchTurn()
 	{
 		if (turn == PLAYER_FIRST)
@@ -244,53 +279,11 @@ public:
 			enemy = PLAYER_SECOND;
 		}
 	}
-
-	virtual int GetEvaluate(const MoveList &moveList);
-	virtual int GetPriority(const PAWN_MOVE &move);
 	
-	CELL GetCell(uchar x, uchar y) { return matrix[y][x]; }
 	
-	void PrintBoard() const;
-
-	bool operator==(const Board& rhs) const
-	{
-		return (
-			captured == rhs.captured &&
-			matrix == rhs.matrix &&
-			turn == rhs.turn
-		);
-	}
-	bool operator!=(const Board& rhs) const
-	{
-		return (
-			captured != rhs.captured ||
-			matrix != rhs.matrix ||
-			turn != rhs.turn
-		);
-	}
-
-private:
-	bool AddMove(PAWN roll, uchar fromx, uchar fromy, uchar tox, uchar toy, bool upgrade, MoveList &moveList);
-	bool IsEnd() const;
-	bool GetCell(uchar tox, uchar toy, CELL &cell) const
-	{
-		if (matrix[toy][tox].player != turn)
-		{
-			return false;
-		}
-
-		cell = matrix[toy][tox];
-
-		return true;
-	}
-	
-	uchar captured[PLAYER_MAX][(uchar)CAPTURE_MAX];
 	CELL matrix[BOARD_HEIGHT+2][BOARD_WIDTH+2];
 	PLAYER turn;
 	PLAYER enemy;
-
-	uchar gyokux[PLAYER_MAX];
-	uchar gyokuy[PLAYER_MAX];
 };
 
 #if USE_PRIORITY == PRIORITY_MULTISET

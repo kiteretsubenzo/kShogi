@@ -8,10 +8,11 @@
 #include <algorithm>
 #include <mutex>
 #include <condition_variable>
-#include <random>
 #include "../definitions.h"
 #include "../board.h"
+#include "../Shogi/shogiboard.h"
 #include "worker.h"
+#include "aiworker.h"
 #include "ai.h"
 
 Ai::Ai()
@@ -21,19 +22,19 @@ Ai::Ai()
 Ai::~Ai()
 {
 	Stop();
-	for (std::list<Worker>::iterator ite = workers.begin(); ite != workers.end(); ++ite)
+	for (std::list<std::shared_ptr<Worker>>::iterator ite = workers.begin(); ite != workers.end(); ++ite)
 	{
-		ite->Stop();
+		(*ite)->Stop();
 	}
 }
 
 void Ai::AddWorker()
 {
-	workers.push_back(Worker(this));
-	workers.rbegin()->Start();
+	workers.push_back(std::shared_ptr<Worker>(new AiWorker(this)));
+	(*workers.rbegin())->Start();
 }
 
-void Ai::Start(Board boardValue)
+void Ai::Start(ShogiBoard boardValue)
 {
 	jobs.clear();
 	waits.clear();

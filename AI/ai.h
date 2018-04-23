@@ -12,7 +12,7 @@ public:
 		std::list<PAWN_MOVE> moves;
 		Score window;
 		int deep;
-		Board board;
+		ShogiBoard board;
 	};
 
 	Ai();
@@ -20,12 +20,12 @@ public:
 
 	void AddWorker();
 	
-	void SetBoard(const Board &boardValue) { board = boardValue; }
+	void SetBoard(const ShogiBoard &boardValue) { board = boardValue; }
 	void SetMode(const std::string &modeValue) { mode = modeValue; }
 	void SetSearchScore(const Score &score) { searchScore = score; }
 	void SetLimit(const bool &limitValue) { limit = limitValue; }
 	void SetDebug(const bool &debugValue) { debug = debugValue; }
-	void Start(Board board);
+	void Start(ShogiBoard board);
 	bool Tick();
 	PAWN_MOVE GetMove() const { return move; }
 	void CallBack(const std::string &str);
@@ -37,7 +37,7 @@ public:
 	void Stop();
 	
 private:
-	Board board;
+	ShogiBoard board;
 	PAWN_MOVE move;
 	
 	std::string mode = "minimax";
@@ -47,8 +47,7 @@ private:
 
 	Score bestScore = SCORE_NONE;
 	
-	//Worker *worker;
-	std::list<Worker> workers;
+	std::list<std::shared_ptr<Worker>> workers;
 	std::mutex mtx;
 	std::condition_variable cv;
 	bool ready = true;

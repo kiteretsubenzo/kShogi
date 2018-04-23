@@ -10,6 +10,7 @@
 #include <chrono>
 #include "../definitions.h"
 #include "../board.h"
+#include "../Shogi/shogiboard.h"
 #include "../AI/worker.h"
 #include "../AI/ai.h"
 #include "move.h"
@@ -20,7 +21,7 @@
 
 bool Test()
 {
-	Board board;
+	ShogiBoard board;
 	
 	// 差し手のテスト
 	// 移動テスト

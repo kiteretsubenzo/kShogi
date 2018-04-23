@@ -7,16 +7,9 @@
 #include <algorithm>
 #include <thread>
 #include <mutex>
-#include <random>
 #include "../definitions.h"
 #include "../board.h"
 #include "worker.h"
-#include "ai.h"
-
-Worker::Worker(Ai *aiValue)
-{
-	ai = aiValue;
-}
 
 void Worker::Start()
 {
@@ -39,7 +32,7 @@ void Worker::Search()
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		std::string job;
-		ai->GetJob(job);
+		GetJob(job);
 		if( job == "empty" )
 		{
 			continue;
@@ -71,10 +64,10 @@ void Worker::SearchImplementation(const std::string &job)
 
 	debug = (debugStr == "true");
 
-	board.Init(boardStr);
+	board->Init(boardStr);
 	if (debug)
 	{
-		//board.PrintBoard();
+		//board->PrintBoard();
 	}
 
 	Score window = SCORE_NONE;
@@ -89,7 +82,7 @@ void Worker::SearchImplementation(const std::string &job)
 	// ルート
 	nodeStack.push_back({ {}, SCORE_NONE });
 	// 自分
-	nodeStack.push_back({ board.GetMoveList(), SCORE_NONE });
+	nodeStack.push_back({ board->GetMoveList(), SCORE_NONE });
 
 	int count = 0;
 	while (true)
@@ -99,7 +92,7 @@ void Worker::SearchImplementation(const std::string &job)
 		if ((count & 0xffff) == 0)
 		{
 			// たまにjobが生きているか確認
-			if (ai->IsAlive(jobId) == false)
+			if (IsAlive(jobId) == false)
 			{
 				break;
 			}
@@ -155,12 +148,12 @@ void Worker::SearchImplementation(const std::string &job)
 
 			// 盤面を進める
 #if USE_PRIORITY == PRIORITY_MULTISET
-			board.Move(*(childItr->moves.begin()));
+			board->Move(*(childItr->moves.begin()));
 #else
-			board.Move(childItr->moves.front());
+			board->Move(childItr->moves.front());
 #endif
 			// 着手を取得
-			MoveList moveList = board.GetMoveList();
+			MoveList moveList = board->GetMoveList();
 
 			// 新しい盤面に着手が無かったら勝負あり
 			if (moveList.empty())
@@ -187,7 +180,7 @@ void Worker::SearchImplementation(const std::string &job)
 				Score score = SCORE_NONE;
 
 				// 評価
-				score = board.GetEvaluate(moveList);
+				score = board->GetEvaluate(moveList);
 				score.moveList.clear();
 				for (std::list<NODE>::const_iterator ite = nodeStack.cbegin(); ite != nodeStack.cend(); ++ite)
 				{
@@ -262,9 +255,9 @@ void Worker::SearchImplementation(const std::string &job)
 
 			// 子ノードの着手を戻す
 #if USE_PRIORITY == PRIORITY_MULTISET
-			board.Back(*(childItr->moves.begin()));
+			board->Back(*(childItr->moves.begin()));
 #else
-			board.Back(childItr->moves.front());
+			board->Back(childItr->moves.front());
 #endif
 
 			// スコアがwindowの外側だったら終わり
@@ -298,7 +291,7 @@ void Worker::SearchImplementation(const std::string &job)
 			// ルートノードなので終わり
 			if (nodeStack.size() <= 1)
 			{
-				ai->CallBack("jobid:" + jobId + ",score:" + childItr->score.toJson() + ",count:" + std::to_string(count));
+				CallBack("jobid:" + jobId + ",score:" + childItr->score.toJson() + ",count:" + std::to_string(count));
 				return;
 			}
 		}

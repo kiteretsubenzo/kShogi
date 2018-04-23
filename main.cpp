@@ -9,6 +9,7 @@
 #include <random>
 #include "definitions.h"
 #include "board.h"
+#include "Shogi/shogiboard.h"
 #include "AI/worker.h"
 #include "AI/ai.h"
 #include "Test/test.h"
@@ -79,7 +80,7 @@ int main()
 		return 1;
 	}
   
-  Board board;
+	ShogiBoard board;
   std::string boardInits[] =
   {
     "h01 y00 e00 g00 u00 r00 k00\n"
