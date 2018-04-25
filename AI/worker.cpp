@@ -15,7 +15,7 @@
 
 void Worker::Start()
 {
-	th = std::thread(&Worker::Search, this);
+	th = std::thread(&Worker::SearchLoop, this);
 	isStart = true;
 }
 
@@ -28,41 +28,57 @@ void Worker::Stop()
 	}
 }
 
-void Worker::Search()
+void Worker::SearchLoop()
 {
-	while(true)
+	while (Search() == false)
 	{
+		// たまにスリープ入れる
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	}
+}
+
+bool Worker::Search()
+{
+	switch (state)
+	{
+	case IDLE:
+	{
 		std::string job;
 		GetJob(job);
-		if( job == "empty" )
+		if (job == "empty")
 		{
-			continue;
+			return false;
 		}
-		if( job == "stop" )
+		if (job == "stop")
 		{
+			return true;
+		}
+
+		SearchInit(job);
+
+		state = SEARCH;
+	}
+		break;
+
+	case SEARCH:
+		//jobが生きているか確認
+		if (IsAlive(jobId) == false)
+		{
+			state = IDLE;
 			break;
 		}
 
-		/*
-		std::cout << "#prepare thread start" << std::endl;
-		std::cout << "#prepare thread finished" << std::endl;
-		int score = rnd() % 100 + 1;
-		*/
-
-		SearchInit(job);
-		while (SearchImplementation() == false)
+		if (SearchImplementation() == true)
 		{
-			// たまにjobが生きているか確認
-			if (IsAlive(jobId) == false)
-			{
-				break;
-			}
-
-			// たまにスリープ入れる
-			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+			state = IDLE;
 		}
+		break;
+
+	default:
+		break;
 	}
+
+	return false;
 }
 
 void Worker::SearchInit(const std::string &job)

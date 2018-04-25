@@ -23,8 +23,15 @@ private:
 		Score score;
 	};
 
+	enum STATE
+	{
+		IDLE,
+		SEARCH
+	};
+
 	std::thread th;
 	bool isStart = false;
+	STATE state = IDLE;
 
 	std::string jobId = "";
 	bool debug = true;
@@ -34,7 +41,8 @@ private:
 
 	std::list<NODE> nodeStack;
 
-	void Search();
+	void SearchLoop();
+	bool Search();
 	void SearchInit(const std::string &job);
 	bool SearchImplementation();
 };
