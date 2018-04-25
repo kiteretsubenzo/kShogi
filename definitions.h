@@ -4,19 +4,7 @@
 #define BOARD_WIDTH 9
 #define BOARD_HEIGHT 9
 
-#define PRIORITY_NONE		0
-#define PRIORITY_LIST		1
-#define PRIORITY_MULTISET	2
-
-#define USE_PRIORITY PRIORITY_NONE
-
 struct PAWN_MOVE;
-
-#if USE_PRIORITY == PRIORITY_MULTISET
-typedef std::multiset<PAWN_MOVE> MoveList;
-#else
-typedef std::list<PAWN_MOVE> MoveList;
-#endif
 
 typedef unsigned char uchar;
 typedef unsigned char PAWN;

@@ -1,6 +1,12 @@
 ﻿#ifndef BOARD_H
 #define BOARD_H
 
+#define PRIORITY_NONE		0
+#define PRIORITY_LIST		1
+#define PRIORITY_MULTISET	2
+
+#define USE_PRIORITY PRIORITY_NONE
+
 typedef unsigned char PLAYER;
 
 #define PLAYER_FIRST	0
@@ -15,6 +21,76 @@ struct CELL
 	PLAYER player;
 	PAWN pawn;
 };
+
+#if USE_PRIORITY == PRIORITY_MULTISET
+class MoveList
+{
+public:
+	bool empty() const
+	{
+		return list.empty();
+	}
+	size_t size() const
+	{
+		return list.size();
+	}
+	void clear()
+	{
+		list.clear();
+	}
+	void push(const PAWN_MOVE &move)
+	{
+		list.insert(move);
+	}
+	PAWN_MOVE front() const
+	{
+		return *(list.begin());
+	}
+	void pop_front()
+	{
+		list.erase(list.begin());
+	}
+	void sort() {}
+private:
+	std::multiset<PAWN_MOVE> list;
+};
+#else
+class MoveList
+{
+public:
+	bool empty() const
+	{
+		return list.empty();
+	}
+	size_t size() const
+	{
+		return list.size();
+	}
+	void clear()
+	{
+		list.clear();
+	}
+	void push(const PAWN_MOVE &move)
+	{
+		list.push_back(move);
+	}
+	PAWN_MOVE front() const
+	{
+		return *(list.begin());
+	}
+	void pop_front()
+	{
+		list.erase(list.begin());
+	}
+	void sort()
+	{
+		list.sort();
+	}
+private:
+	std::list<PAWN_MOVE> list;
+};
+#endif
+
 
 class Board
 {
@@ -84,10 +160,6 @@ protected:
 	PLAYER enemy;
 };
 
-#if USE_PRIORITY == PRIORITY_MULTISET
 static const PAWN_MOVE PAWN_MOVE_ZERO(PAWN_NONE, 0, 0, 0, 0, PAWN_NONE, PAWN_NONE, false, 99999);
-#else
-static const PAWN_MOVE PAWN_MOVE_ZERO( PAWN_NONE, 0, 0, 0, 0, PAWN_NONE, PAWN_NONE, false, 0 );
-#endif
 
 #endif // BOARD_H

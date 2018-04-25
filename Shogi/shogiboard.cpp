@@ -4,11 +4,14 @@
 #include <list>
 #include <vector>
 #include <unordered_map>
+#include <set>
 #include <cassert>
 #include "../definitions.h"
 #include "../pawnmove.h"
 #include "../board.h"
 #include "shogiboard.h"
+
+//#define USE_SHOGI_PRIORITY
 
 ShogiBoard::ShogiBoard()
 {
@@ -557,7 +560,7 @@ MoveList ShogiBoard::GetMoveList()
 		}
 	}
 
-#if USE_PRIORITY == PRIORITY_LIST
+#ifdef USE_SHOGI_PRIORITY
 	moveList.sort();
 #endif
 	return moveList;
@@ -583,11 +586,7 @@ bool ShogiBoard::AddMove(PAWN roll, uchar fromx, uchar fromy, uchar tox, uchar t
 	if (IsEnd() == false)
 	{
 		move.priority = GetPriority(move);
-#if USE_PRIORITY == PRIORITY_MULTISET
-		moveList.insert(move);
-#else
-		moveList.push_back(move);
-#endif
+		moveList.push(move);
 	}
 	Back(move);
 
@@ -602,7 +601,7 @@ int ShogiBoard::GetEvaluate(const MoveList &moveList)
 int ShogiBoard::GetPriority(const PAWN_MOVE &move)
 {
 	int priority = 0;
-#if USE_PRIORITY == PRIORITY_LIST || USE_PRIORITY == PRIORITY_MULTISET
+#ifdef USE_SHOGI_PRIORITY
 	// â§éËÇ™Ç©Ç©Ç¡ÇƒÇÈÇ©ÅH
 	SwitchTurn();
 	if (IsEnd())

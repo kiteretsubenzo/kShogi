@@ -131,11 +131,7 @@ void Worker::SearchImplementation(const std::string &job)
 				{
 					if (0 < ite->moves.size())
 					{
-#if USE_PRIORITY == PRIORITY_MULTISET
-						std::cout << ":" << ite->moves.begin()->DebugString() << "(" << (std::string)(ite->score) << ")";
-#else
 						std::cout << ":" << ite->moves.front().DebugString() << "(" << (std::string)(ite->score) << ")";
-#endif
 					}
 					else
 					{
@@ -149,11 +145,8 @@ void Worker::SearchImplementation(const std::string &job)
 			std::list<NODE>::reverse_iterator childItr = nodeStack.rbegin();
 
 			// 盤面を進める
-#if USE_PRIORITY == PRIORITY_MULTISET
-			board->Move(*(childItr->moves.begin()));
-#else
 			board->Move(childItr->moves.front());
-#endif
+
 			// 着手を取得
 			MoveList moveList = board->GetMoveList();
 
@@ -166,11 +159,7 @@ void Worker::SearchImplementation(const std::string &job)
 				{
 					if (0 < ite->moves.size())
 					{
-#if USE_PRIORITY == PRIORITY_MULTISET
-						childItr->score.moveList.push_back(*(ite->moves.begin()));
-#else
 						childItr->score.moveList.push_back(ite->moves.front());
-#endif
 					}
 				}
 				break;
@@ -188,11 +177,7 @@ void Worker::SearchImplementation(const std::string &job)
 				{
 					if (0 < ite->moves.size())
 					{
-#if USE_PRIORITY == PRIORITY_MULTISET
-						childItr->score.moveList.push_back(*(ite->moves.begin()));
-#else
 						childItr->score.moveList.push_back(ite->moves.front());
-#endif
 					}
 				}
 
@@ -219,11 +204,7 @@ void Worker::SearchImplementation(const std::string &job)
 				{
 					if (0 < ite->moves.size())
 					{
-#if USE_PRIORITY == PRIORITY_MULTISET
-						std::cout << ":" << ite->moves.begin()->DebugString() << "(" << (std::string)(ite->score) << ")";
-#else
 						std::cout << ":" << ite->moves.front().DebugString() << "(" << (std::string)(ite->score) << ")";
-#endif
 					}
 					else
 					{
@@ -256,11 +237,7 @@ void Worker::SearchImplementation(const std::string &job)
 			}
 
 			// 子ノードの着手を戻す
-#if USE_PRIORITY == PRIORITY_MULTISET
-			board->Back(*(childItr->moves.begin()));
-#else
 			board->Back(childItr->moves.front());
-#endif
 
 			// スコアがwindowの外側だったら終わり
 			if (childItr->score != SCORE_NONE && window != SCORE_NONE && (limit == false || childItr->score < window.Negate()))
@@ -281,7 +258,7 @@ void Worker::SearchImplementation(const std::string &job)
 			// 次の指し手を取得
 			if (1 < childItr->moves.size())
 			{
-				childItr->moves.erase(childItr->moves.begin());
+				childItr->moves.pop_front();
 				childItr->score = SCORE_NONE;
 				break;
 			}
