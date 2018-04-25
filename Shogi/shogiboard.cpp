@@ -13,6 +13,12 @@
 
 //#define USE_SHOGI_PRIORITY
 
+#define Upgrade(type)	(type |= 0x08)
+#define Downgrade(type)	(type &= 0x07)
+#define Down(type)		(type & 0x07)
+#define IsUpgrade(type)	((type & 0x08) != 0)
+#define IsGyokuKinUpgrade(type) (PAWN_KIN <= type)
+
 ShogiBoard::ShogiBoard()
 {
 	for (uchar i = 0; i<PLAYER_MAX; i++)

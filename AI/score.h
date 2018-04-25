@@ -128,5 +128,6 @@ struct Score
 };
 
 static const Score SCORE_NONE(std::numeric_limits<int>::max() - 1);
+static const int SCORE_WIN = 99999;
 
 #endif // SCORE_H

@@ -202,4 +202,6 @@ public:
 	}
 };
 
+static const int MOVES_MAX = (BOARD_WIDTH + BOARD_HEIGHT - 2) * BOARD_WIDTH * BOARD_HEIGHT * 2 + (CAPTURE_MAX - 1) * BOARD_WIDTH * BOARD_HEIGHT;
+
 #endif // PAWM_MOVE_H

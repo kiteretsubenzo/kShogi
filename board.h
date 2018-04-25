@@ -9,12 +9,12 @@
 
 typedef unsigned char PLAYER;
 
-#define PLAYER_FIRST	0
-#define PLAYER_SECOND	1
-#define PLAYER_NONE		2
-#define PLAYER_WALL		3
+static const PLAYER PLAYER_FIRST	= 0;
+static const PLAYER PLAYER_SECOND	= 1;
+static const PLAYER PLAYER_NONE		= 2;
+static const PLAYER PLAYER_WALL		= 3;
 
-#define PLAYER_MAX		2
+static const PLAYER PLAYER_MAX = 2;
 
 struct CELL
 {
