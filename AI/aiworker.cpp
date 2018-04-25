@@ -4,8 +4,10 @@
 #include <thread>
 #include <mutex>
 #include "../definitions.h"
+#include "../pawnmove.h"
 #include "../board.h"
 #include "../Shogi/shogiboard.h"
+#include "score.h"
 #include "worker.h"
 #include "ai.h"
 #include "aiworker.h"

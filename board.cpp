@@ -8,5 +8,6 @@
 #include <algorithm>
 #include <cassert>
 #include "definitions.h"
+#include "pawnmove.h"
 #include "board.h"
 */

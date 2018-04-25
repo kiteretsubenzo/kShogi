@@ -8,7 +8,9 @@
 #include <thread>
 #include <mutex>
 #include "../definitions.h"
+#include "../pawnmove.h"
 #include "../board.h"
+#include "score.h"
 #include "worker.h"
 
 void Worker::Start()

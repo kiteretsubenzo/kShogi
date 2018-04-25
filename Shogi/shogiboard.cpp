@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <cassert>
 #include "../definitions.h"
+#include "../pawnmove.h"
 #include "../board.h"
 #include "shogiboard.h"
 

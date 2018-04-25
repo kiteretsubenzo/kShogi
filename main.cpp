@@ -8,8 +8,10 @@
 #include <mutex>
 #include <random>
 #include "definitions.h"
+#include "pawnmove.h"
 #include "board.h"
 #include "Shogi/shogiboard.h"
+#include "AI/score.h"
 #include "AI/worker.h"
 #include "AI/ai.h"
 #include "Test/test.h"

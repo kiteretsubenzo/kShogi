@@ -9,8 +9,10 @@
 #include <mutex>
 #include <condition_variable>
 #include "../definitions.h"
+#include "../pawnmove.h"
 #include "../board.h"
 #include "../Shogi/shogiboard.h"
+#include "score.h"
 #include "worker.h"
 #include "aiworker.h"
 #include "ai.h"
