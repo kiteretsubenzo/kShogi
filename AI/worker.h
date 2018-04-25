@@ -26,10 +26,17 @@ private:
 	std::thread th;
 	bool isStart = false;
 
+	std::string jobId = "";
 	bool debug = true;
+	Score window = SCORE_NONE;
+	unsigned int deep = 0;
+	bool limit = false;
+
+	std::list<NODE> nodeStack;
 
 	void Search();
-	void SearchImplementation(const std::string &job);
+	void SearchInit(const std::string &job);
+	bool SearchImplementation();
 };
 
 #endif // WORKER_H

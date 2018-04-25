@@ -50,48 +50,8 @@ void Worker::Search()
 		int score = rnd() % 100 + 1;
 		*/
 
-		SearchImplementation(job);
-	}
-}
-
-void Worker::SearchImplementation(const std::string &job)
-{
-	std::unordered_map<std::string, std::string> params = fromJson(job);
-	std::string jobId = params["jobid"];
-	std::string windowStr = params["window"];
-	std::string limitStr = params["limit"];
-	std::string deepStr = params["deep"];
-	std::string debugStr = params["debug"];
-	std::string boardStr = params["board"];
-
-	debug = (debugStr == "true");
-
-	board->Init(boardStr);
-	if (debug)
-	{
-		//board->PrintBoard();
-	}
-
-	Score window = SCORE_NONE;
-	if (windowStr != "")
-	{
-		window = Score(windowStr);
-	}
-	const unsigned int deep = std::stoi(deepStr);
-	bool limit = (limitStr == "true");
-
-	std::list<NODE> nodeStack;
-	// ルート
-	nodeStack.push_back({ {}, SCORE_NONE });
-	// 自分
-	nodeStack.push_back({ board->GetMoveList(), SCORE_NONE });
-
-	int count = 0;
-	while (true)
-	{
-		count++;
-
-		if ((count & 0xffff) == 0)
+		SearchInit(job);
+		while (SearchImplementation() == false)
 		{
 			// たまにjobが生きているか確認
 			if (IsAlive(jobId) == false)
@@ -102,13 +62,56 @@ void Worker::SearchImplementation(const std::string &job)
 			// たまにスリープ入れる
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
+	}
+}
 
-		std::list<NODE>::iterator top = nodeStack.begin();
+void Worker::SearchInit(const std::string &job)
+{
+	std::unordered_map<std::string, std::string> params = fromJson(job);
+	std::string windowStr = params["window"];
+	std::string limitStr = params["limit"];
+	std::string deepStr = params["deep"];
+	std::string debugStr = params["debug"];
+	std::string boardStr = params["board"];
 
+	jobId = params["jobid"];
+
+	debug = (debugStr == "true");
+
+	board->Init(boardStr);
+	if (debug)
+	{
+		//board->PrintBoard();
+	}
+
+	if (windowStr != "")
+	{
+		window = Score(windowStr);
+	}
+	else
+	{
+		window = SCORE_NONE;
+	}
+	
+	deep = std::stoi(deepStr);
+	limit = (limitStr == "true");
+
+	nodeStack.clear();
+	// ルート
+	nodeStack.push_back({ {}, SCORE_NONE });
+	// 自分
+	nodeStack.push_back({ board->GetMoveList(), SCORE_NONE });
+}
+
+bool Worker::SearchImplementation()
+{
+	for (int i=0; i<0xffff; i++)
+	{
 		bool debugPrint = true && debug;
 		/*
 		if ( 1 < nodeStack.size() )
 		{
+			std::list<NODE>::iterator top = nodeStack.begin();
 			std::list<NODE>::iterator next = ++top;
 			if (next != nodeStack.end())
 			{
@@ -270,9 +273,12 @@ void Worker::SearchImplementation(const std::string &job)
 			// ルートノードなので終わり
 			if (nodeStack.size() <= 1)
 			{
-				CallBack("jobid:" + jobId + ",score:" + childItr->score.toJson() + ",count:" + std::to_string(count));
-				return;
+				CallBack("jobid:" + jobId + ",score:" + childItr->score.toJson() + ",count:" + std::to_string(i));
+				return true;
 			}
 		}
 	}
+
+	// いったんお返し
+	return false;
 }
