@@ -47,7 +47,7 @@ private:
 
 	Score bestScore = SCORE_NONE;
 	
-	std::list<std::shared_ptr<Worker>> workers;
+	std::list<std::shared_ptr<WorkerController>> workers;
 	std::mutex mtx;
 	std::condition_variable cv;
 	bool ready = true;

@@ -6,15 +6,13 @@ class Ai;
 class Worker
 {
 public:
-	void Start();
-	void Stop();
-
-public:
 	std::shared_ptr<Board> board = nullptr;
 
 	virtual void CallBack(const std::string &str) = 0;
 	virtual void GetJob(std::string &job) = 0;
 	virtual bool IsAlive(const std::string &jobId) = 0;
+
+	bool Search();
 		
 private:
 	struct NODE
@@ -29,8 +27,6 @@ private:
 		SEARCH
 	};
 
-	std::thread th;
-	bool isStart = false;
 	STATE state = IDLE;
 
 	std::string jobId = "";
@@ -41,8 +37,6 @@ private:
 
 	std::list<NODE> nodeStack;
 
-	void SearchLoop();
-	bool Search();
 	void SearchInit(const std::string &job);
 	bool SearchImplementation();
 };

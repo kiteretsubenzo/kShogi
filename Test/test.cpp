@@ -14,6 +14,8 @@
 #include "../Shogi/shogiboard.h"
 #include "../AI/score.h"
 #include "../AI/worker.h"
+#include "../AI/aiworker.h"
+#include "../AI/workercontroller.h"
 #include "../AI/ai.h"
 #include "move.h"
 #include "put.h"

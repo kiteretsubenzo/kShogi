@@ -15,6 +15,7 @@
 #include "score.h"
 #include "worker.h"
 #include "aiworker.h"
+#include "workercontroller.h"
 #include "ai.h"
 
 Ai::Ai()
@@ -24,7 +25,7 @@ Ai::Ai()
 Ai::~Ai()
 {
 	Stop();
-	for (std::list<std::shared_ptr<Worker>>::iterator ite = workers.begin(); ite != workers.end(); ++ite)
+	for (std::list<std::shared_ptr<WorkerController>>::iterator ite = workers.begin(); ite != workers.end(); ++ite)
 	{
 		(*ite)->Stop();
 	}
@@ -32,7 +33,7 @@ Ai::~Ai()
 
 void Ai::AddWorker()
 {
-	workers.push_back(std::shared_ptr<Worker>(new AiWorker(this)));
+	workers.push_back(std::shared_ptr<WorkerController>(new WorkerController(this)));
 	(*workers.rbegin())->Start();
 }
 

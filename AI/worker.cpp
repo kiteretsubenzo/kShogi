@@ -5,37 +5,12 @@
 #include <unordered_map>
 #include <set>
 #include <algorithm>
-#include <thread>
-#include <mutex>
+#include <memory>
 #include "../definitions.h"
 #include "../pawnmove.h"
 #include "../board.h"
 #include "score.h"
 #include "worker.h"
-
-void Worker::Start()
-{
-	th = std::thread(&Worker::SearchLoop, this);
-	isStart = true;
-}
-
-void Worker::Stop()
-{
-	if (isStart)
-	{
-		th.join();
-		isStart = false;
-	}
-}
-
-void Worker::SearchLoop()
-{
-	while (Search() == false)
-	{
-		// たまにスリープ入れる
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
-	}
-}
 
 bool Worker::Search()
 {
