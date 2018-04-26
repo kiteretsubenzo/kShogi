@@ -6,9 +6,9 @@
 #include <unordered_map>
 #include <set>
 #include <cassert>
-#include "../definitions.h"
-#include "../pawnmove.h"
-#include "../board.h"
+#include "../core/definitions.h"
+#include "../core/pawnmove.h"
+#include "../core/board.h"
 #include "shogiboard.h"
 
 //#define USE_SHOGI_PRIORITY

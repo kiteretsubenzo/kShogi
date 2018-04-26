@@ -1,14 +1,13 @@
 ﻿#include <iostream>
 #include <sstream>
-#include <iomanip>
 #include <list>
 #include <unordered_map>
 #include <set>
 #include <algorithm>
 #include <memory>
-#include "../definitions.h"
-#include "../pawnmove.h"
-#include "../board.h"
+#include "definitions.h"
+#include "pawnmove.h"
+#include "board.h"
 #include "score.h"
 #include "worker.h"
 

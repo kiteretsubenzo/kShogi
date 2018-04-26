@@ -4,11 +4,11 @@
 #include <vector>
 #include <unordered_map>
 #include <thread>
-#include "../definitions.h"
-#include "../pawnmove.h"
-#include "../board.h"
-#include "score.h"
-#include "worker.h"
+#include "core/definitions.h"
+#include "core/pawnmove.h"
+#include "core/board.h"
+#include "core/score.h"
+#include "core/worker.h"
 #include "aiworker.h"
 #include "workercontroller.h"
 
