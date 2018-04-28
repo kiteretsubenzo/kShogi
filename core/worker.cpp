@@ -1,14 +1,1 @@
-﻿#include <iostream>
-#include <sstream>
-#include <iomanip>
-#include <list>
-#include <unordered_map>
-#include <set>
-#include <algorithm>
-#include <memory>
-#include "definitions.h"
-#include "../Shogi/definitions.h"
-#include "../Shogi/move.h"
-#include "../Shogi/board.h"
-#include "score.h"
-#include "worker.h"
+﻿

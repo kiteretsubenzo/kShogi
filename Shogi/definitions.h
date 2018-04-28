@@ -1,6 +1,7 @@
 #ifndef SHOGI_DEFINITIONS_H
 #define SHOGI_DEFINITIONS_H
 
+typedef unsigned char uchar;
 typedef unsigned char PAWN;
 
 static const int BOARD_WIDTH = 9;
