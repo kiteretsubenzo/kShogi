@@ -81,7 +81,7 @@ private:
 
 	void SearchInit(const std::string &job)
 	{
-		std::unordered_map<std::string, std::string> params = fromJson(job);
+		std::unordered_map<std::string, std::string> params = Json::fromJson(job);
 		std::string windowStr = params["window"];
 		std::string limitStr = params["limit"];
 		std::string deepStr = params["deep"];
@@ -170,7 +170,7 @@ private:
 				// 新しい盤面に着手が無かったら勝負あり
 				if (moveList.empty())
 				{
-					childItr->score = SCORE_WIN;
+					childItr->score = Score::SCORE_WIN;
 					childItr->score.moveList.clear();
 					for (std::list<NODE>::const_iterator ite = nodeStack.cbegin(); ite != nodeStack.cend(); ++ite)
 					{

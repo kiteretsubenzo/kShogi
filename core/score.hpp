@@ -21,9 +21,9 @@ struct Score
 
 	Score(const std::string &json)
 	{
-		std::unordered_map<std::string, std::string> strs = fromJson(json);
+		std::unordered_map<std::string, std::string> strs = Json::fromJson(json);
 		score = std::stoi(strs["score"]);
-		std::list<std::string> moves = fromJsonArray(strs["moves"]);
+		std::list<std::string> moves = Json::fromJsonArray(strs["moves"]);
 		for (std::list<std::string>::const_iterator ite = moves.cbegin(); ite != moves.cend(); ++ite)
 		{
 			moveList.push_back(MOVE(*ite));
@@ -128,6 +128,5 @@ struct Score
 };
 
 static const Score SCORE_NONE(std::numeric_limits<int>::max() - 1);
-static const int SCORE_WIN = 99999;
 
 #endif // SCORE_H

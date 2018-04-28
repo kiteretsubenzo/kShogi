@@ -217,13 +217,13 @@ bool Test()
 	{
 		std::cout << "NO." << (i + 1) << std::endl;
 
-		std::vector<std::string> strs = split(testProblem3[i], ':');
+		std::vector<std::string> strs = Json::split(testProblem3[i], ':');
 
 		board.Init(strs[0]);
 
 		// 点数を求める
 		ai.SetMode("scouttest");
-		ai.SetSearchScore(-SCORE_WIN);
+		ai.SetSearchScore(-Score::SCORE_WIN);
 		ai.Start(board);
 
 		while (ai.Tick() == false) {

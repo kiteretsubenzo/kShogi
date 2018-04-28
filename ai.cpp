@@ -96,7 +96,7 @@ void Ai::CallBack(const std::string &str)
 
 	ready = false;
 
-	std::unordered_map<std::string, std::string> strs = fromJson(str);
+	std::unordered_map<std::string, std::string> strs = Json::fromJson(str);
 	if (waits.find(strs["jobid"]) != waits.end())
 	{
 		results.push_back(str);
@@ -185,7 +185,7 @@ bool Ai::Tick()
 	// 結果を回収
 	while( 0 < results.size() )
 	{
-		std::unordered_map<std::string, std::string> strs = fromJson(results.front());
+		std::unordered_map<std::string, std::string> strs = Json::fromJson(results.front());
 		std::string jobId = strs["jobid"];
 		std::string scoreString = strs["score"];
 		std::string countString = strs["count"];

@@ -122,7 +122,7 @@ public:
 
 	void Init(const std::string &str)
 	{
-		std::vector<std::string> strs = split(str, '\n');
+		std::vector<std::string> strs = Json::split(str, '\n');
 
 		for (int i = 0; i < PLAYER_MAX; i++)
 		{
