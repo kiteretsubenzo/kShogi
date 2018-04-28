@@ -6,12 +6,12 @@
 #include <unordered_map>
 #include <thread>
 #include <algorithm>
-#include "core/json.h"
+#include "core/json.hpp"
 #include "Shogi/definitions.h"
-#include "Shogi/move.h"
-#include "Shogi/board.h"
-#include "core/score.h"
-#include "core/worker.h"
+#include "Shogi/move.hpp"
+#include "Shogi/board.hpp"
+#include "core/score.hpp"
+#include "core/worker.hpp"
 #include "aiworker.h"
 #include "workercontroller.h"
 
