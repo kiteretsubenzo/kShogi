@@ -6,11 +6,12 @@
 #include <set>
 #include <thread>
 #include <mutex>
+#include <algorithm>
 #include <random>
 #include "core/definitions.h"
-#include "core/pawnmove.h"
-#include "core/board.h"
-#include "Shogi/shogiboard.h"
+#include "Shogi/definitions.h"
+#include "Shogi/move.h"
+#include "Shogi/board.h"
 #include "core/score.h"
 #include "core/worker.h"
 #include "aiworker.h"
@@ -84,7 +85,7 @@ int main()
 		return 1;
 	}
   
-	ShogiBoard board;
+	Board board;
   std::string boardInits[] =
   {
     "h01 y00 e00 g00 u00 r00 k00\n"
@@ -153,7 +154,7 @@ int main()
 	"second"
   };
   board.Init(testProblem3test[2]);
-  std::list<PAWN_MOVE> history;
+  std::list<MOVE> history;
   /*
   board.PrintBoard();
   if( board.IsEnd() )
@@ -171,7 +172,7 @@ int main()
   {
     board.PrintBoard();
     
-    std::vector<Board::PAWN_MOVE> moveList;
+    std::vector<Board::MOVE> moveList;
     board.GetMoveList(moveList);
     std::cout << moveList.size() << std::endl;
     for( unsigned int i=0; i<moveList.size(); i++ )
@@ -212,7 +213,7 @@ int main()
   */
   
   /*
-  Board::PAWN_MOVE move{ PAWN_ROLL::NONE, 6, 1, 7, 1, PAWN_TYPE::RYU, PAWN_TYPE::NONE, false };
+  Board::MOVE move{ PAWN_ROLL::NONE, 6, 1, 7, 1, PAWN_TYPE::RYU, PAWN_TYPE::NONE, false };
 
   std::cout << board.BoardToString() << std::endl;
   std::cout << (std::string)move << std::endl;
@@ -250,12 +251,12 @@ int main()
 
 	ai.GetResult(aiScore);
 
-	PAWN_MOVE aiMove = aiScore.moveList.front();
+	MOVE aiMove = aiScore.moveList.front();
 
 	std::cout << "best move is " << aiMove.DebugString() << std::endl;
 	std::cout << "best score is " << aiScore.toJson() << std::endl;
 	board.PrintBoard();
-	for (std::list<PAWN_MOVE>::const_iterator ite = aiScore.moveList.cbegin(); ite != aiScore.moveList.cend(); ++ite)
+	for (std::list<MOVE>::const_iterator ite = aiScore.moveList.cbegin(); ite != aiScore.moveList.cend(); ++ite)
 	{
 		std::cout << ite->DebugString() << " : ";
 	}
@@ -294,7 +295,7 @@ int main()
 
 		std::cout << (std::string)scoutScore << std::endl;
 
-		PAWN_MOVE scoutMove = scoutScore.moveList.front();
+		MOVE scoutMove = scoutScore.moveList.front();
 		std::cout << scoutMove.DebugString() << " " << strs[1] << std::endl;
 		if (scoutMove.DebugString() != strs[1])
 		{

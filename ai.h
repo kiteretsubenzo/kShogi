@@ -9,10 +9,10 @@ public:
 	struct JOB
 	{
 		unsigned int jobId;
-		std::list<PAWN_MOVE> moves;
+		std::list<MOVE> moves;
 		Score window;
 		int deep;
-		ShogiBoard board;
+		Board board;
 	};
 
 	Ai();
@@ -20,14 +20,14 @@ public:
 
 	void AddWorker();
 	
-	void SetBoard(const ShogiBoard &boardValue) { board = boardValue; }
+	void SetBoard(const Board &boardValue) { board = boardValue; }
 	void SetMode(const std::string &modeValue) { mode = modeValue; }
 	void SetSearchScore(const Score &score) { searchScore = score; }
 	void SetLimit(const bool &limitValue) { limit = limitValue; }
 	void SetDebug(const bool &debugValue) { debug = debugValue; }
-	void Start(ShogiBoard board);
+	void Start(Board board);
 	bool Tick();
-	PAWN_MOVE GetMove() const { return move; }
+	MOVE GetMove() const { return move; }
 	void CallBack(const std::string &str);
 	void GetJob(std::string &job);
 	bool IsAlive(const std::string &jobId);
@@ -37,8 +37,8 @@ public:
 	void Stop();
 	
 private:
-	ShogiBoard board;
-	PAWN_MOVE move;
+	Board board;
+	MOVE move;
 	
 	std::string mode = "minimax";
 	Score searchScore = Score(std::numeric_limits<int>::min());
@@ -53,7 +53,7 @@ private:
 	bool ready = true;
 
 	std::list<JOB> jobs;
-	std::unordered_map<std::string, std::list<PAWN_MOVE>> waits;
+	std::unordered_map<std::string, std::list<MOVE>> waits;
 	std::list<std::string> results;
 
 	unsigned int jobId = 0;

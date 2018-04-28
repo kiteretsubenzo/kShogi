@@ -6,14 +6,14 @@ struct Score
 	static const int SCORE_WIN = 99999;
 
 	int score;
-	std::list<PAWN_MOVE> moveList;
+	std::list<MOVE> moveList;
 
 	Score(const int &scoreValue)
 	{
 		score = scoreValue;
 	}
 
-	Score(const int &scoreValue, const std::list<PAWN_MOVE> &moveListValue)
+	Score(const int &scoreValue, const std::list<MOVE> &moveListValue)
 	{
 		score = scoreValue;
 		moveList = moveListValue;
@@ -26,7 +26,7 @@ struct Score
 		std::list<std::string> moves = fromJsonArray(strs["moves"]);
 		for (std::list<std::string>::const_iterator ite = moves.cbegin(); ite != moves.cend(); ++ite)
 		{
-			moveList.push_back(PAWN_MOVE(*ite));
+			moveList.push_back(MOVE(*ite));
 		}
 	}
 
@@ -37,7 +37,7 @@ struct Score
 		if (0 < moveList.size())
 		{
 			str += ",moves:[";
-			std::list<PAWN_MOVE>::const_iterator ite = moveList.cbegin();
+			std::list<MOVE>::const_iterator ite = moveList.cbegin();
 			str += (std::string)(*ite);
 			++ite;
 			while (ite != moveList.cend())
@@ -94,7 +94,7 @@ struct Score
 			return false;
 		}
 #if false
-		for (std::list<PAWN_MOVE>::const_iterator ite = moveList.cbegin(), rhsite = rhs.moveList.cbegin(); ite != moveList.cend() && rhsite != rhs.moveList.cend(); ++ite, ++rhsite)
+		for (std::list<MOVE>::const_iterator ite = moveList.cbegin(), rhsite = rhs.moveList.cbegin(); ite != moveList.cend() && rhsite != rhs.moveList.cend(); ++ite, ++rhsite)
 		{
 			if (*ite < *rhsite)
 			{
@@ -113,7 +113,7 @@ struct Score
 		str = std::to_string(score) + "(";
 		if (0 < moveList.size())
 		{
-			std::list<PAWN_MOVE>::const_iterator ite = moveList.cbegin();
+			std::list<MOVE>::const_iterator ite = moveList.cbegin();
 			str += (std::string)(*ite);
 			++ite;
 			while (ite != moveList.cend())

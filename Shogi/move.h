@@ -1,17 +1,7 @@
 #ifndef PAWM_MOVE_H
 #define PAWM_MOVE_H
 
-static const std::string numberToZenkaku[9] =
-{
-	"‚X", "‚W", "‚V", "‚U", "‚T", "‚S", "‚R", "‚Q", "‚P"
-};
-
-static const std::string numberToKanji[9] =
-{
-	"ˆê", "“ñ", "ŽO", "Žl", "ŒÜ", "˜Z", "Žµ", "”ª", "‹ã"
-};
-
-struct PAWN_MOVE
+struct MOVE
 {
 public:
 	union MOVE_PAWN_MEMORY
@@ -32,13 +22,13 @@ public:
 	bool upgrade = false;
 	int priority = 0;
 
-	PAWN_MOVE() : reserve(PAWN_NONE), upgrade(false), priority(0)
+	MOVE() : reserve(PAWN_NONE), upgrade(false), priority(0)
 	{
 		from.mem = 0;
 		to.mem = 0;
 	}
 
-	PAWN_MOVE(PAWN reserveValue, uchar fromx, uchar fromy, uchar tox, uchar toy, PAWN fromPawn, PAWN toPawn, bool upgradeValue, int priorityValue)
+	MOVE(PAWN reserveValue, uchar fromx, uchar fromy, uchar tox, uchar toy, PAWN fromPawn, PAWN toPawn, bool upgradeValue, int priorityValue)
 		: reserve(reserveValue), upgrade(upgradeValue), priority(priorityValue)
 	{
 		from.x = fromx;
@@ -49,7 +39,7 @@ public:
 		to.pawn = toPawn;
 	}
 
-	PAWN_MOVE(std::string str)
+	MOVE(std::string str)
 	{
 		from.x = std::stoi(str.substr(0, 1), 0, 16);
 		from.y = std::stoi(str.substr(1, 1), 0, 16);
@@ -100,7 +90,7 @@ public:
 		return str;
 	}
 
-	bool operator==(const PAWN_MOVE& rhs) const
+	bool operator==(const MOVE& rhs) const
 	{
 		return (
 			reserve == rhs.reserve &&
@@ -109,7 +99,7 @@ public:
 			upgrade == rhs.upgrade
 			);
 	}
-	bool operator!=(const PAWN_MOVE& rhs) const
+	bool operator!=(const MOVE& rhs) const
 	{
 		return (
 			reserve != rhs.reserve ||
@@ -119,7 +109,7 @@ public:
 			);
 	}
 
-	bool operator<(const PAWN_MOVE& rhs) const
+	bool operator<(const MOVE& rhs) const
 	{
 		if (priority > rhs.priority)
 		{

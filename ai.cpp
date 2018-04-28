@@ -9,11 +9,11 @@
 #include <mutex>
 #include <condition_variable>
 #include "core/definitions.h"
-#include "core/pawnmove.h"
-#include "core/board.h"
+#include "Shogi/definitions.h"
+#include "Shogi/move.h"
+#include "Shogi/board.h"
 #include "core/score.h"
 #include "core/worker.h"
-#include "Shogi/shogiboard.h"
 #include "aiworker.h"
 #include "workercontroller.h"
 #include "ai.h"
@@ -37,7 +37,7 @@ void Ai::AddWorker()
 	(*workers.rbegin())->Start();
 }
 
-void Ai::Start(ShogiBoard boardValue)
+void Ai::Start(Board boardValue)
 {
 	jobs.clear();
 	waits.clear();
@@ -53,10 +53,10 @@ void Ai::Start(ShogiBoard boardValue)
 	/*
 	for( unsigned int i=0; i<moveList.size(); i++ )
 	{
-		PAWN_MOVE &move = moveList[i];
+		MOVE &move = moveList[i];
 		//board.PrintKihu(move);
 		board.Move(move);
-		std::list<PAWN_MOVE> moves;
+		std::list<MOVE> moves;
 		moves.push_back(move);
 		JOB job = { GetJobId(), moves, board };
 		if( i < 4 )
@@ -69,7 +69,7 @@ void Ai::Start(ShogiBoard boardValue)
 	
 	if (mode == "scout" || mode == "scouttest")
 	{
-		std::list<PAWN_MOVE> moves;
+		std::list<MOVE> moves;
 		moves.push_back(PAWN_MOVE_ZERO);
 		bestScore = 0;
 		JOB job = { GetJobId(), { PAWN_MOVE_ZERO }, searchScore.Negate(), 4, board };
@@ -77,7 +77,7 @@ void Ai::Start(ShogiBoard boardValue)
 	}
 	else if(mode == "minimax")
 	{
-		std::list<PAWN_MOVE> moves;
+		std::list<MOVE> moves;
 		moves.push_back(PAWN_MOVE_ZERO);
 		JOB job = { GetJobId(), moves, SCORE_NONE, 4, board };
 		jobs.push_back(job);

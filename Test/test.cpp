@@ -9,11 +9,11 @@
 #include <mutex>
 #include <chrono>
 #include "../core/definitions.h"
-#include "../core/pawnmove.h"
-#include "../core/board.h"
+#include "../Shogi/definitions.h"
+#include "../Shogi/move.h"
+#include "../Shogi/board.h"
 #include "../core/score.h"
 #include "../core/worker.h"
-#include "../Shogi/shogiboard.h"
 #include "../aiworker.h"
 #include "../workercontroller.h"
 #include "../ai.h"
@@ -25,7 +25,7 @@
 
 bool Test()
 {
-	ShogiBoard board;
+	Board board;
 	
 	// 差し手のテスト
 	// 移動テスト
@@ -40,9 +40,9 @@ bool Test()
 		//board.PrintBoard();
 		//std::cout << strs[1] << std::endl;
 		std::vector<std::string> tests = split(strs[1], '\n');
-		std::list<Board::PAWN_MOVE> moveListTmp = board.GetMoveList();
-		std::vector<Board::PAWN_MOVE> moveList;
-		for (std::list<Board::PAWN_MOVE>::iterator ite = moveListTmp.begin(); ite != moveListTmp.end(); ++ite)
+		std::list<Board::MOVE> moveListTmp = board.GetMoveList();
+		std::vector<Board::MOVE> moveList;
+		for (std::list<Board::MOVE>::iterator ite = moveListTmp.begin(); ite != moveListTmp.end(); ++ite)
 		{
 			moveList.push_back(*ite);
 		}
@@ -86,9 +86,9 @@ bool Test()
 		//board.PrintBoard();
 		//std::cout << strs[1] << std::endl;
 		std::vector<std::string> tests = split(strs[1], '\n');
-		std::list<Board::PAWN_MOVE> moveListTmp = board.GetMoveList();
-		std::vector<Board::PAWN_MOVE> moveList;
-		for (std::list<Board::PAWN_MOVE>::iterator ite = moveListTmp.begin(); ite != moveListTmp.end(); ++ite)
+		std::list<Board::MOVE> moveListTmp = board.GetMoveList();
+		std::vector<Board::MOVE> moveList;
+		for (std::list<Board::MOVE>::iterator ite = moveListTmp.begin(); ite != moveListTmp.end(); ++ite)
 		{
 			moveList.push_back(*ite);
 		}
@@ -132,9 +132,9 @@ bool Test()
 		//board.PrintBoard();
 		//std::cout << strs[1] << std::endl;
 		std::vector<std::string> tests = split(strs[1], '\n');
-		std::list<Board::PAWN_MOVE> moveListTmp = board.GetMoveList();
-		std::vector<Board::PAWN_MOVE> moveList;
-		for (std::list<Board::PAWN_MOVE>::iterator ite = moveListTmp.begin(); ite != moveListTmp.end(); ++ite)
+		std::list<Board::MOVE> moveListTmp = board.GetMoveList();
+		std::vector<Board::MOVE> moveList;
+		for (std::list<Board::MOVE>::iterator ite = moveListTmp.begin(); ite != moveListTmp.end(); ++ite)
 		{
 			moveList.push_back(*ite);
 		}
@@ -233,7 +233,7 @@ bool Test()
 		Score scoutScore = SCORE_NONE;
 		ai.GetResult(scoutScore);
 
-		PAWN_MOVE scoutMove = scoutScore.moveList.front();
+		MOVE scoutMove = scoutScore.moveList.front();
 		std::cout << scoutMove.DebugString() << " " << strs[1] << std::endl;
 		if (scoutMove.DebugString() != strs[1])
 		{

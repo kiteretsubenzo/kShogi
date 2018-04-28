@@ -1,12 +1,15 @@
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 #include <list>
 #include <vector>
 #include <unordered_map>
 #include <thread>
+#include <algorithm>
 #include "core/definitions.h"
-#include "core/pawnmove.h"
-#include "core/board.h"
+#include "Shogi/definitions.h"
+#include "Shogi/move.h"
+#include "Shogi/board.h"
 #include "core/score.h"
 #include "core/worker.h"
 #include "aiworker.h"
