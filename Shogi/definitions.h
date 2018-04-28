@@ -1,5 +1,5 @@
-#ifndef SHOGI_DEFINITIONS_H
-#define SHOGI_DEFINITIONS_H
+#ifndef DEFINITIONS_H
+#define DEFINITIONS_H
 
 typedef unsigned char uchar;
 typedef unsigned char PAWN;
@@ -74,4 +74,4 @@ static const std::string numberToKanji[9] =
 	"ˆê", "“ñ", "ŽO", "Žl", "ŒÜ", "˜Z", "Žµ", "”ª", "‹ã"
 };
 
-#endif // SHOGI_DEFINITIONS_H
+#endif // DEFINITIONS_H

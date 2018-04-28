@@ -8,7 +8,7 @@
 #include <thread>
 #include <mutex>
 #include <chrono>
-#include "../core/definitions.h"
+#include "../core/json.h"
 #include "../Shogi/definitions.h"
 #include "../Shogi/move.h"
 #include "../Shogi/board.h"

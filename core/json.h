@@ -1,5 +1,5 @@
-﻿#ifndef DEFINITIONS_H
-#define DEFINITIONS_H
+﻿#ifndef JSON_H
+#define JSON_H
 
 static std::vector<std::string> split(std::string str, char c)
 {
@@ -90,4 +90,4 @@ static std::list<std::string> fromJsonArray(std::string str)
 	return splited;
 }
 
-#endif // DEFINITIONS_H
+#endif // JSON_H

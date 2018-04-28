@@ -8,7 +8,7 @@
 #include <mutex>
 #include <algorithm>
 #include <random>
-#include "core/definitions.h"
+#include "core/json.h"
 #include "Shogi/definitions.h"
 #include "Shogi/move.h"
 #include "Shogi/board.h"

@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <thread>
 #include <algorithm>
-#include "core/definitions.h"
+#include "core/json.h"
 #include "Shogi/definitions.h"
 #include "Shogi/move.h"
 #include "Shogi/board.h"

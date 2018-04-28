@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <mutex>
 #include <condition_variable>
-#include "core/definitions.h"
+#include "core/json.h"
 #include "Shogi/definitions.h"
 #include "Shogi/move.h"
 #include "Shogi/board.h"
