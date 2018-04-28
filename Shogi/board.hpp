@@ -11,6 +11,9 @@ struct CELL
 {
 	PLAYER player;
 	PAWN pawn;
+
+	CELL() {}
+	CELL(const PLAYER &playerValue, const PAWN &pawnValue) : player(playerValue), pawn(pawnValue) {}
 };
 
 #if USE_PRIORITY == PRIORITY_MULTISET
@@ -85,81 +88,80 @@ private:
 class Board
 {
 public:
-
 	Board()
 	{
-		for (uchar i = 0; i < PLAYER_MAX; i++)
+		for (uchar i = 0; i < PlayerDef::MAX; i++)
 		{
-			for (uchar j = 0; j < (uchar)CAPTURE_MAX; j++)
+			for (uchar j = 0; j < PawnDef::CAPTURE_MAX; j++)
 			{
 				captured[i][j] = 0;
 			}
 		}
 
-		for (uchar j = 1; j <= BOARD_HEIGHT; j++)
+		for (uchar j = 1; j <= BoardDef::HEIGHT; j++)
 		{
-			for (uchar i = 1; i <= BOARD_WIDTH; i++)
+			for (uchar i = 1; i <= BoardDef::WIDTH; i++)
 			{
-				matrix[j][i] = { PLAYER_NONE, PAWN_NONE };
+				matrix[j][i] = CELL(PlayerDef::NONE, PawnDef::NONE);
 			}
 		}
 
-		for (uchar i = 0; i < BOARD_WIDTH + 2; i++)
+		for (uchar i = 0; i < BoardDef::WIDTH + 2; i++)
 		{
-			matrix[0][i] = { PLAYER_WALL, PAWN_NONE };
-			matrix[BOARD_HEIGHT + 1][i] = { PLAYER_WALL, PAWN_NONE };
+			matrix[0][i] = CELL(PlayerDef::WALL, PawnDef::NONE);
+			matrix[BoardDef::HEIGHT + 1][i] = CELL(PlayerDef::WALL, PawnDef::NONE);
 		}
 
-		for (uchar j = 1; j <= BOARD_HEIGHT; j++)
+		for (uchar j = 1; j <= BoardDef::HEIGHT; j++)
 		{
-			matrix[j][0] = { PLAYER_WALL, PAWN_NONE };
-			matrix[j][BOARD_WIDTH + 1] = { PLAYER_WALL, PAWN_NONE };
+			matrix[j][0] = CELL(PlayerDef::WALL, PawnDef::NONE);
+			matrix[j][BoardDef::WIDTH + 1] = CELL(PlayerDef::WALL, PawnDef::NONE);
 		}
 
-		turn = PLAYER_FIRST;
-		enemy = PLAYER_SECOND;
+		turn = PlayerDef::FIRST;
+		enemy = PlayerDef::SECOND;
 	}
 
 	void Init(const std::string &str)
 	{
 		std::vector<std::string> strs = Json::split(str, '\n');
 
-		for (int i = 0; i < PLAYER_MAX; i++)
+		for (int i = 0; i < PlayerDef::MAX; i++)
 		{
 			gyokux[i] = 0;
 			gyokuy[i] = 0;
 		}
 
-		for (int i = 0; i < (uchar)CAPTURE_MAX; i++)
+		for (int i = 0; i < PawnDef::CAPTURE_MAX; i++)
 		{
-			char first[3] = { strs[BOARD_HEIGHT + 1][i * 4 + 1], strs[BOARD_HEIGHT + 1][i * 4 + 2], '\0' };
+			char first[3] = { strs[BoardDef::HEIGHT + 1][i * 4 + 1], strs[BoardDef::HEIGHT + 1][i * 4 + 2], '\0' };
 			char second[3] = { strs[0][i * 4 + 1], strs[0][i * 4 + 2], '\0' };
-			captured[PLAYER_FIRST][i] = atoi(first);
-			captured[PLAYER_SECOND][i] = atoi(second);
+			captured[PlayerDef::FIRST][i] = atoi(first);
+			captured[PlayerDef::SECOND][i] = atoi(second);
 		}
 
-		for (int j = 2; j <= BOARD_HEIGHT + 1; j++)
+		for (int j = 2; j <= BoardDef::HEIGHT + 1; j++)
 		{
-			for (int i = 1; i <= BOARD_WIDTH; i++)
+			for (int i = 1; i <= BoardDef::WIDTH; i++)
 			{
 				char c[2] = { strs[j - 1][(i - 1) * 2], strs[j - 1][(i - 1) * 2 + 1] };
 				if (c[0] == ' ')
 				{
-					matrix[j - 1][i].player = PLAYER_NONE;
-					matrix[j - 1][i].pawn = PAWN_NONE;
+					matrix[j - 1][i].player = PlayerDef::NONE;
+					matrix[j - 1][i].pawn = PawnDef::NONE;
 				}
 				else
 				{
 					char type;
-					PLAYER player = PLAYER_NONE;
+					PLAYER player = PlayerDef::NONE;
 					if (c[0] == '^')
 					{
-						player = PLAYER_FIRST;
+						player = PlayerDef::FIRST;
 						type = c[1];
 					}
 					else
 					{
-						player = PLAYER_SECOND;
+						player = PlayerDef::SECOND;
 						type = c[0];
 					}
 					matrix[j - 1][i].player = player;
@@ -174,15 +176,15 @@ public:
 			}
 		}
 
-		if (strs[BOARD_HEIGHT + 2] == "first")
+		if (strs[BoardDef::HEIGHT + 2] == "first")
 		{
-			turn = PLAYER_FIRST;
-			enemy = PLAYER_SECOND;
+			turn = PlayerDef::FIRST;
+			enemy = PlayerDef::SECOND;
 		}
-		else if (strs[BOARD_HEIGHT + 2] == "second")
+		else if (strs[BoardDef::HEIGHT + 2] == "second")
 		{
-			turn = PLAYER_SECOND;
-			enemy = PLAYER_FIRST;
+			turn = PlayerDef::SECOND;
+			enemy = PlayerDef::FIRST;
 		}
 	}
 
@@ -191,23 +193,23 @@ public:
 	{
 		std::ostringstream sout;
 
-		for (int i = 0; i < (uchar)CAPTURE_MAX; i++)
+		for (int i = 0; i < PawnDef::CAPTURE_MAX; i++)
 		{
 			sout << PAWN_CHAR[i];
-			sout << std::setfill('0') << std::setw(2) << (int)(captured[PLAYER_SECOND][i]);
+			sout << std::setfill('0') << std::setw(2) << (int)(captured[PlayerDef::SECOND][i]);
 			sout << ' ';
 		}
 		sout << '\n';
 
-		for (int j = 2; j <= BOARD_HEIGHT + 1; j++)
+		for (int j = 2; j <= BoardDef::HEIGHT + 1; j++)
 		{
-			for (int i = 1; i <= BOARD_WIDTH; i++)
+			for (int i = 1; i <= BoardDef::WIDTH; i++)
 			{
-				if (matrix[j - 1][i].player == PLAYER_FIRST)
+				if (matrix[j - 1][i].player == PlayerDef::FIRST)
 				{
 					sout << '^' << PAWN_CHAR[matrix[j - 1][i].pawn];
 				}
-				else if (matrix[j - 1][i].player == PLAYER_SECOND)
+				else if (matrix[j - 1][i].player == PlayerDef::SECOND)
 				{
 					sout << PAWN_CHAR[matrix[j - 1][i].pawn] << '_';
 				}
@@ -219,15 +221,15 @@ public:
 			sout << '\n';
 		}
 
-		for (int i = 0; i < (uchar)CAPTURE_MAX; i++)
+		for (int i = 0; i < PawnDef::CAPTURE_MAX; i++)
 		{
 			sout << PAWN_CHAR[i];
-			sout << std::setfill('0') << std::setw(2) << (int)captured[PLAYER_FIRST][i];
+			sout << std::setfill('0') << std::setw(2) << (int)captured[PlayerDef::FIRST][i];
 			sout << ' ';
 		}
 		sout << '\n';
 
-		if (turn == PLAYER_FIRST)
+		if (turn == PlayerDef::FIRST)
 		{
 			sout << "first";
 		}
@@ -245,7 +247,7 @@ public:
 
 		uchar lineMax, lineMin, lineTop, lineMid;
 
-		if (turn == PLAYER_FIRST)
+		if (turn == PlayerDef::FIRST)
 		{
 			lineMax = 3;
 			lineMin = 1;
@@ -254,19 +256,19 @@ public:
 		}
 		else
 		{
-			lineMax = BOARD_HEIGHT;
-			lineMin = BOARD_HEIGHT - 2;
-			lineTop = BOARD_HEIGHT;
-			lineMid = BOARD_HEIGHT - 1;
+			lineMax = BoardDef::HEIGHT;
+			lineMin = BoardDef::HEIGHT - 2;
+			lineTop = BoardDef::HEIGHT;
+			lineMid = BoardDef::HEIGHT - 1;
 		}
 		int forward = -1;
-		if (turn == PLAYER_SECOND)
+		if (turn == PlayerDef::SECOND)
 		{
 			forward = +1;
 		}
-		for (char j = 1; j <= BOARD_HEIGHT; j++)
+		for (char j = 1; j <= BoardDef::HEIGHT; j++)
 		{
-			for (char i = 1; i <= BOARD_WIDTH; i++)
+			for (char i = 1; i <= BoardDef::WIDTH; i++)
 			{
 				CELL cell = matrix[(uchar)j][(uchar)i];
 				if (cell.player == enemy)
@@ -277,82 +279,82 @@ public:
 				int x, y;
 				switch (pawn)
 				{
-				case PAWN_HU:
+				case PawnDef::HU:
 					x = i;
 					y = j + forward;
 					if (y != lineTop)
 					{
-						AddMove(PAWN_NONE, i, j, x, y, false, moveList);
+						AddMove(PawnDef::NONE, i, j, x, y, false, moveList);
 					}
 					if (lineMin <= y && y <= lineMax)
 					{
-						AddMove(PAWN_NONE, i, j, x, y, true, moveList);
+						AddMove(PawnDef::NONE, i, j, x, y, true, moveList);
 					}
 					break;
-				case PAWN_KYOH:
+				case PawnDef::KYOH:
 					y = j + forward;
-					for (bool ret = true; 0 < y && y <= BOARD_HEIGHT && ret; y += forward)
+					for (bool ret = true; 0 < y && y <= BoardDef::HEIGHT && ret; y += forward)
 					{
 						if (y != lineTop)
 						{
-							ret &= AddMove(PAWN_NONE, i, j, i, y, false, moveList);
+							ret &= AddMove(PawnDef::NONE, i, j, i, y, false, moveList);
 						}
 						if (lineMin <= y && y <= lineMax)
 						{
-							ret &= AddMove(PAWN_NONE, i, j, i, y, true, moveList);
+							ret &= AddMove(PawnDef::NONE, i, j, i, y, true, moveList);
 						}
 					}
 					break;
-				case PAWN_KEI:
+				case PawnDef::KEI:
 					x = i - 1;
 					y = j - forward - forward;
 					if (y != lineTop && y != lineMid)
 					{
-						AddMove(PAWN_NONE, i, j, x, y, false, moveList);
+						AddMove(PawnDef::NONE, i, j, x, y, false, moveList);
 					}
 					if (lineMin <= y && y <= lineMax)
 					{
-						AddMove(PAWN_NONE, i, j, x, y, true, moveList);
+						AddMove(PawnDef::NONE, i, j, x, y, true, moveList);
 					}
 					break;
-				case PAWN_GIN:
-					AddMove(PAWN_NONE, i, j, i - 1, j + forward, false, moveList);
-					AddMove(PAWN_NONE, i, j, i, j + forward, false, moveList);
-					AddMove(PAWN_NONE, i, j, i + 1, j + forward, false, moveList);
-					AddMove(PAWN_NONE, i, j, i - 1, j - forward, false, moveList);
-					AddMove(PAWN_NONE, i, j, i + 1, j - forward, false, moveList);
+				case PawnDef::GIN:
+					AddMove(PawnDef::NONE, i, j, i - 1, j + forward, false, moveList);
+					AddMove(PawnDef::NONE, i, j, i, j + forward, false, moveList);
+					AddMove(PawnDef::NONE, i, j, i + 1, j + forward, false, moveList);
+					AddMove(PawnDef::NONE, i, j, i - 1, j - forward, false, moveList);
+					AddMove(PawnDef::NONE, i, j, i + 1, j - forward, false, moveList);
 					if ((lineMin <= (j + forward) && (j + forward) <= lineMax) || (lineMin <= j && j <= lineMax))
 					{
-						AddMove(PAWN_NONE, i, j, i - 1, j + forward, true, moveList);
-						AddMove(PAWN_NONE, i, j, i, j + forward, true, moveList);
-						AddMove(PAWN_NONE, i, j, i + 1, j + forward, true, moveList);
-						AddMove(PAWN_NONE, i, j, i - 1, j - forward, true, moveList);
-						AddMove(PAWN_NONE, i, j, i + 1, j - forward, true, moveList);
+						AddMove(PawnDef::NONE, i, j, i - 1, j + forward, true, moveList);
+						AddMove(PawnDef::NONE, i, j, i, j + forward, true, moveList);
+						AddMove(PawnDef::NONE, i, j, i + 1, j + forward, true, moveList);
+						AddMove(PawnDef::NONE, i, j, i - 1, j - forward, true, moveList);
+						AddMove(PawnDef::NONE, i, j, i + 1, j - forward, true, moveList);
 					}
 					break;
-				case PAWN_KIN:
-				case PAWN_HUN:
-				case PAWN_KYOHN:
-				case PAWN_KEIN:
-				case PAWN_GINN:
-					AddMove(PAWN_NONE, i, j, i - 1, j + forward, false, moveList);
-					AddMove(PAWN_NONE, i, j, i, j + forward, false, moveList);
-					AddMove(PAWN_NONE, i, j, i + 1, j + forward, false, moveList);
-					AddMove(PAWN_NONE, i, j, i - 1, j, false, moveList);
-					AddMove(PAWN_NONE, i, j, i + 1, j, false, moveList);
-					AddMove(PAWN_NONE, i, j, i, j - forward, false, moveList);
+				case PawnDef::KIN:
+				case PawnDef::HUN:
+				case PawnDef::KYOHN:
+				case PawnDef::KEIN:
+				case PawnDef::GINN:
+					AddMove(PawnDef::NONE, i, j, i - 1, j + forward, false, moveList);
+					AddMove(PawnDef::NONE, i, j, i, j + forward, false, moveList);
+					AddMove(PawnDef::NONE, i, j, i + 1, j + forward, false, moveList);
+					AddMove(PawnDef::NONE, i, j, i - 1, j, false, moveList);
+					AddMove(PawnDef::NONE, i, j, i + 1, j, false, moveList);
+					AddMove(PawnDef::NONE, i, j, i, j - forward, false, moveList);
 					break;
-				case PAWN_KAKU:
+				case PawnDef::KAKU:
 					x = i + 1; y = j + 1;
 					while (true)
 					{
-						if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+						if (AddMove(PawnDef::NONE, i, j, x, y, false, moveList) == false)
 						{
 							break;
 						}
 						if (lineMin <= y && y <= lineMax)
 						{
-							if (AddMove(PAWN_NONE, i, j, x, y, true, moveList) == false)
+							if (AddMove(PawnDef::NONE, i, j, x, y, true, moveList) == false)
 							{
 								break;
 							}
@@ -363,13 +365,13 @@ public:
 					x = i + 1; y = j - 1;
 					while (true)
 					{
-						if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+						if (AddMove(PawnDef::NONE, i, j, x, y, false, moveList) == false)
 						{
 							break;
 						}
 						if (lineMin <= y && y <= lineMax)
 						{
-							if (AddMove(PAWN_NONE, i, j, x, y, true, moveList) == false)
+							if (AddMove(PawnDef::NONE, i, j, x, y, true, moveList) == false)
 							{
 								break;
 							}
@@ -380,13 +382,13 @@ public:
 					x = i - 1; y = j + 1;
 					while (true)
 					{
-						if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+						if (AddMove(PawnDef::NONE, i, j, x, y, false, moveList) == false)
 						{
 							break;
 						}
 						if (lineMin <= y && y <= lineMax)
 						{
-							if (AddMove(PAWN_NONE, i, j, x, y, true, moveList) == false)
+							if (AddMove(PawnDef::NONE, i, j, x, y, true, moveList) == false)
 							{
 								break;
 							}
@@ -397,13 +399,13 @@ public:
 					x = i - 1; y = j - 1;
 					while (true)
 					{
-						if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+						if (AddMove(PawnDef::NONE, i, j, x, y, false, moveList) == false)
 						{
 							break;
 						}
 						if (lineMin <= y && y <= lineMax)
 						{
-							if (AddMove(PAWN_NONE, i, j, x, y, true, moveList) == false)
+							if (AddMove(PawnDef::NONE, i, j, x, y, true, moveList) == false)
 							{
 								break;
 							}
@@ -412,11 +414,11 @@ public:
 						y -= 1;
 					}
 					break;
-				case PAWN_UMA:
+				case PawnDef::UMA:
 					x = i + 1; y = j + 1;
 					while (true)
 					{
-						if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+						if (AddMove(PawnDef::NONE, i, j, x, y, false, moveList) == false)
 						{
 							break;
 						}
@@ -426,7 +428,7 @@ public:
 					x = i + 1; y = j - 1;
 					while (true)
 					{
-						if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+						if (AddMove(PawnDef::NONE, i, j, x, y, false, moveList) == false)
 						{
 							break;
 						}
@@ -436,7 +438,7 @@ public:
 					x = i - 1; y = j + 1;
 					while (true)
 					{
-						if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+						if (AddMove(PawnDef::NONE, i, j, x, y, false, moveList) == false)
 						{
 							break;
 						}
@@ -446,29 +448,29 @@ public:
 					x = i - 1; y = j - 1;
 					while (true)
 					{
-						if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+						if (AddMove(PawnDef::NONE, i, j, x, y, false, moveList) == false)
 						{
 							break;
 						}
 						x -= 1;
 						y -= 1;
 					}
-					AddMove(PAWN_NONE, i, j, i + 1, j, false, moveList);
-					AddMove(PAWN_NONE, i, j, i - 1, j, false, moveList);
-					AddMove(PAWN_NONE, i, j, i, j + 1, false, moveList);
-					AddMove(PAWN_NONE, i, j, i, j - 1, false, moveList);
+					AddMove(PawnDef::NONE, i, j, i + 1, j, false, moveList);
+					AddMove(PawnDef::NONE, i, j, i - 1, j, false, moveList);
+					AddMove(PawnDef::NONE, i, j, i, j + 1, false, moveList);
+					AddMove(PawnDef::NONE, i, j, i, j - 1, false, moveList);
 					break;
-				case PAWN_HI:
+				case PawnDef::HI:
 					x = i + 1; y = j;
 					while (true)
 					{
-						if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+						if (AddMove(PawnDef::NONE, i, j, x, y, false, moveList) == false)
 						{
 							break;
 						}
 						if (lineMin <= y && y <= lineMax)
 						{
-							if (AddMove(PAWN_NONE, i, j, x, y, true, moveList) == false)
+							if (AddMove(PawnDef::NONE, i, j, x, y, true, moveList) == false)
 							{
 								break;
 							}
@@ -478,13 +480,13 @@ public:
 					x = i - 1; y = j;
 					while (true)
 					{
-						if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+						if (AddMove(PawnDef::NONE, i, j, x, y, false, moveList) == false)
 						{
 							break;
 						}
 						if (lineMin <= y && y <= lineMax)
 						{
-							if (AddMove(PAWN_NONE, i, j, x, y, true, moveList) == false)
+							if (AddMove(PawnDef::NONE, i, j, x, y, true, moveList) == false)
 							{
 								break;
 							}
@@ -494,13 +496,13 @@ public:
 					x = i; y = j + 1;
 					while (true)
 					{
-						if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+						if (AddMove(PawnDef::NONE, i, j, x, y, false, moveList) == false)
 						{
 							break;
 						}
 						if (lineMin <= y && y <= lineMax)
 						{
-							if (AddMove(PAWN_NONE, i, j, x, y, true, moveList) == false)
+							if (AddMove(PawnDef::NONE, i, j, x, y, true, moveList) == false)
 							{
 								break;
 							}
@@ -510,13 +512,13 @@ public:
 					x = i; y = j - 1;
 					while (true)
 					{
-						if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+						if (AddMove(PawnDef::NONE, i, j, x, y, false, moveList) == false)
 						{
 							break;
 						}
 						if (lineMin <= y && y <= lineMax)
 						{
-							if (AddMove(PAWN_NONE, i, j, x, y, true, moveList) == false)
+							if (AddMove(PawnDef::NONE, i, j, x, y, true, moveList) == false)
 							{
 								break;
 							}
@@ -524,11 +526,11 @@ public:
 						y -= 1;
 					}
 					break;
-				case PAWN_RYU:
+				case PawnDef::RYU:
 					x = i + 1; y = j;
 					while (true)
 					{
-						if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+						if (AddMove(PawnDef::NONE, i, j, x, y, false, moveList) == false)
 						{
 							break;
 						}
@@ -537,7 +539,7 @@ public:
 					x = i - 1; y = j;
 					while (true)
 					{
-						if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+						if (AddMove(PawnDef::NONE, i, j, x, y, false, moveList) == false)
 						{
 							break;
 						}
@@ -546,7 +548,7 @@ public:
 					x = i; y = j + 1;
 					while (true)
 					{
-						if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+						if (AddMove(PawnDef::NONE, i, j, x, y, false, moveList) == false)
 						{
 							break;
 						}
@@ -555,30 +557,30 @@ public:
 					x = i; y = j - 1;
 					while (true)
 					{
-						if (AddMove(PAWN_NONE, i, j, x, y, false, moveList) == false)
+						if (AddMove(PawnDef::NONE, i, j, x, y, false, moveList) == false)
 						{
 							break;
 						}
 						y -= 1;
 					}
-					AddMove(PAWN_NONE, i, j, i + 1, j + 1, false, moveList);
-					AddMove(PAWN_NONE, i, j, i - 1, j + 1, false, moveList);
-					AddMove(PAWN_NONE, i, j, i + 1, j - 1, false, moveList);
-					AddMove(PAWN_NONE, i, j, i - 1, j - 1, false, moveList);
+					AddMove(PawnDef::NONE, i, j, i + 1, j + 1, false, moveList);
+					AddMove(PawnDef::NONE, i, j, i - 1, j + 1, false, moveList);
+					AddMove(PawnDef::NONE, i, j, i + 1, j - 1, false, moveList);
+					AddMove(PawnDef::NONE, i, j, i - 1, j - 1, false, moveList);
 					break;
-				case PAWN_GYOKU:
-					AddMove(PAWN_NONE, i, j, i - 1, j - 1, false, moveList);
-					AddMove(PAWN_NONE, i, j, i, j - 1, false, moveList);
-					AddMove(PAWN_NONE, i, j, i + 1, j - 1, false, moveList);
-					AddMove(PAWN_NONE, i, j, i - 1, j, false, moveList);
-					AddMove(PAWN_NONE, i, j, i + 1, j, false, moveList);
-					AddMove(PAWN_NONE, i, j, i - 1, j + 1, false, moveList);
-					AddMove(PAWN_NONE, i, j, i, j + 1, false, moveList);
-					AddMove(PAWN_NONE, i, j, i + 1, j + 1, false, moveList);
+				case PawnDef::GYOKU:
+					AddMove(PawnDef::NONE, i, j, i - 1, j - 1, false, moveList);
+					AddMove(PawnDef::NONE, i, j, i, j - 1, false, moveList);
+					AddMove(PawnDef::NONE, i, j, i + 1, j - 1, false, moveList);
+					AddMove(PawnDef::NONE, i, j, i - 1, j, false, moveList);
+					AddMove(PawnDef::NONE, i, j, i + 1, j, false, moveList);
+					AddMove(PawnDef::NONE, i, j, i - 1, j + 1, false, moveList);
+					AddMove(PawnDef::NONE, i, j, i, j + 1, false, moveList);
+					AddMove(PawnDef::NONE, i, j, i + 1, j + 1, false, moveList);
 					break;
 				default:
 					// 空きだったら打ち
-					for (uchar roll = 0; roll < CAPTURE_MAX; roll++)
+					for (uchar roll = 0; roll < PawnDef::CAPTURE_MAX; roll++)
 					{
 						if (captured[turn][roll] == 0)
 						{
@@ -586,39 +588,39 @@ public:
 						}
 						switch (roll)
 						{
-						case PAWN_HU:
+						case PawnDef::HU:
 							if (j != lineTop)
 							{
 								uchar k;
-								for (k = 1; k <= BOARD_HEIGHT; k++)
+								for (k = 1; k <= BoardDef::HEIGHT; k++)
 								{
-									if (matrix[k][i].player == turn && matrix[k][i].pawn == PAWN_HU)
+									if (matrix[k][i].player == turn && matrix[k][i].pawn == PawnDef::HU)
 									{
 										break;
 									}
 								}
-								if (BOARD_HEIGHT < k)
+								if (BoardDef::HEIGHT < k)
 								{
 									AddMove(roll, 0, 0, i, j, false, moveList);
 								}
 							}
 							break;
-						case PAWN_KYOH:
+						case PawnDef::KYOH:
 							if (j != lineTop)
 							{
 								AddMove(roll, 0, 0, i, j, false, moveList);
 							}
 							break;
-						case PAWN_KEI:
+						case PawnDef::KEI:
 							if (j != lineTop && j != lineMid)
 							{
 								AddMove(roll, 0, 0, i, j, false, moveList);
 							}
 							break;
-						case PAWN_GIN:
-						case PAWN_KIN:
-						case PAWN_KAKU:
-						case PAWN_HI:
+						case PawnDef::GIN:
+						case PawnDef::KIN:
+						case PawnDef::KAKU:
+						case PawnDef::HI:
 							AddMove(roll, 0, 0, i, j, false, moveList);
 							break;
 						default:
@@ -640,7 +642,7 @@ public:
 
 	void Move(const MOVE &move)
 	{
-		if (move.reserve != PAWN_NONE)
+		if (move.reserve != PawnDef::NONE)
 		{
 			captured[turn][move.reserve]--;
 			matrix[move.to.y][move.to.x].player = turn;
@@ -657,15 +659,15 @@ public:
 		}
 		matrix[move.to.y][move.to.x].player = turn;
 		matrix[move.to.y][move.to.x].pawn = pawn;
-		matrix[move.from.y][move.from.x].player = PLAYER_NONE;
-		matrix[move.from.y][move.from.x].pawn = PAWN_NONE;
+		matrix[move.from.y][move.from.x].player = PlayerDef::NONE;
+		matrix[move.from.y][move.from.x].pawn = PawnDef::NONE;
 
-		if (move.to.pawn != PAWN_NONE)
+		if (move.to.pawn != PawnDef::NONE)
 		{
 			PAWN roll = move.to.pawn;
 			captured[turn][roll]++;
 		}
-		if (move.from.pawn == PAWN_GYOKU)
+		if (move.from.pawn == PawnDef::GYOKU)
 		{
 			gyokux[turn] = move.to.x;
 			gyokuy[turn] = move.to.y;
@@ -676,12 +678,12 @@ public:
 
 	void Back(const MOVE &move)
 	{
-		if (move.reserve != PAWN_NONE)
+		if (move.reserve != PawnDef::NONE)
 		{
 			captured[enemy][move.reserve]++;
 
-			matrix[move.to.y][move.to.x].player = PLAYER_NONE;
-			matrix[move.to.y][move.to.x].pawn = PAWN_NONE;
+			matrix[move.to.y][move.to.x].player = PlayerDef::NONE;
+			matrix[move.to.y][move.to.x].pawn = PawnDef::NONE;
 
 			SwitchTurn();
 			return;
@@ -695,7 +697,7 @@ public:
 		matrix[move.from.y][move.from.x].player = enemy;
 		matrix[move.from.y][move.from.x].pawn = pawn;
 
-		if (move.to.pawn != PAWN_NONE)
+		if (move.to.pawn != PawnDef::NONE)
 		{
 			captured[enemy][move.to.pawn]--;
 
@@ -704,11 +706,11 @@ public:
 		}
 		else
 		{
-			matrix[move.to.y][move.to.x].player = PLAYER_NONE;
-			matrix[move.to.y][move.to.x].pawn = PAWN_NONE;
+			matrix[move.to.y][move.to.x].player = PlayerDef::NONE;
+			matrix[move.to.y][move.to.x].pawn = PawnDef::NONE;
 		}
 
-		if (move.from.pawn == PAWN_GYOKU)
+		if (move.from.pawn == PawnDef::GYOKU)
 		{
 			gyokux[enemy] = move.from.x;
 			gyokuy[enemy] = move.from.y;
@@ -748,25 +750,25 @@ public:
 
 	void PrintBoard() const
 	{
-		for (uchar i = 0; i < (uchar)CAPTURE_MAX; i++)
+		for (uchar i = 0; i < PawnDef::CAPTURE_MAX; i++)
 		{
-			std::cout << PAWN_KANJI[i] << ":" << (unsigned int)captured[PLAYER_SECOND][i] << " ";
+			std::cout << PAWN_KANJI[i] << ":" << (unsigned int)captured[PlayerDef::SECOND][i] << " ";
 		}
 		std::cout << std::endl;
 		std::cout << "９８７６５４３２１" << std::endl;
-		for (uchar j = 1; j <= BOARD_HEIGHT; j++)
+		for (uchar j = 1; j <= BoardDef::HEIGHT; j++)
 		{
-			for (uchar i = 1; i <= BOARD_WIDTH; i++)
+			for (uchar i = 1; i <= BoardDef::WIDTH; i++)
 			{
 				switch (matrix[j][i].player)
 				{
-				case PLAYER_FIRST:
+				case PlayerDef::FIRST:
 					std::cout << "^" << PAWN_CHAR[matrix[j][i].pawn];
 					break;
-				case PLAYER_SECOND:
+				case PlayerDef::SECOND:
 					std::cout << PAWN_CHAR[matrix[j][i].pawn] << "_";
 					break;
-				case PLAYER_NONE:
+				case PlayerDef::NONE:
 					std::cout << " .";
 					break;
 				default:
@@ -775,13 +777,13 @@ public:
 			}
 			std::cout << " " << numberToKanji[j - 1] << std::endl;
 		}
-		for (uchar i = 0; i < (uchar)CAPTURE_MAX; i++)
+		for (uchar i = 0; i < PawnDef::CAPTURE_MAX; i++)
 		{
-			std::cout << PAWN_KANJI[i] << ":" << (unsigned int)captured[PLAYER_FIRST][i] << " ";
+			std::cout << PAWN_KANJI[i] << ":" << (unsigned int)captured[PlayerDef::FIRST][i] << " ";
 		}
 		std::cout << std::endl;
 		//std::cout << PLAYER_STRING[(int)turn] << std::endl;
-		if (turn == PLAYER_FIRST)
+		if (turn == PlayerDef::FIRST)
 		{
 			std::cout << "先手番" << std::endl;
 		}
@@ -807,19 +809,19 @@ public:
 	}
 
 protected:
-	bool AddMove(PAWN roll, uchar fromx, uchar fromy, uchar tox, uchar toy, bool upgrade, MoveList &moveList)
+	bool AddMove(PAWN roll, int fromx, int fromy, int tox, int toy, bool upgrade, MoveList &moveList)
 	{
-		if (matrix[toy][tox].player == turn || matrix[toy][tox].player == PLAYER_WALL)
+		if (matrix[toy][tox].player == turn || matrix[toy][tox].player == PlayerDef::WALL)
 		{
 			return false;
 		}
 
 		MOVE move(roll, fromx, fromy, tox, toy, matrix[fromy][fromx].pawn, matrix[toy][tox].pawn, upgrade, 0);
-		if (roll != PAWN_NONE)
+		if (roll != PawnDef::NONE)
 		{
 			move.from.x = 0;
 			move.from.y = 0;
-			move.from.pawn = PAWN_NONE;
+			move.from.pawn = PawnDef::NONE;
 		}
 
 		Move(move);
@@ -831,7 +833,7 @@ protected:
 		}
 		Back(move);
 
-		return matrix[toy][tox].pawn == PAWN_NONE;
+		return matrix[toy][tox].pawn == PawnDef::NONE;
 	}
 
 	bool IsEnd() const
@@ -844,7 +846,7 @@ protected:
 			return false;
 		}
 		CELL cell;
-		if (turn == PLAYER_FIRST)
+		if (turn == PlayerDef::FIRST)
 		{
 			// 玉の周囲
 			if (GetCell(gyokux - 1, gyokuy, cell))
@@ -870,53 +872,53 @@ protected:
 			}
 			if (GetCell(gyokux, gyokuy + 1, cell))
 			{
-				if (IsGyokuKinUpgrade(cell.pawn) || cell.pawn == PAWN_HU || cell.pawn == PAWN_GIN)
+				if (IsGyokuKinUpgrade(cell.pawn) || cell.pawn == PawnDef::HU || cell.pawn == PawnDef::GIN)
 				{
 					return true;
 				}
 			}
 			if (GetCell(gyokux - 1, gyokuy - 1, cell))
 			{
-				if (cell.pawn == PAWN_GYOKU || cell.pawn == PAWN_GIN || cell.pawn == PAWN_RYU)
+				if (cell.pawn == PawnDef::GYOKU || cell.pawn == PawnDef::GIN || cell.pawn == PawnDef::RYU)
 				{
 					return true;
 				}
 			}
 			if (GetCell(gyokux + 1, gyokuy - 1, cell))
 			{
-				if (cell.pawn == PAWN_GYOKU || cell.pawn == PAWN_GIN || cell.pawn == PAWN_RYU)
+				if (cell.pawn == PawnDef::GYOKU || cell.pawn == PawnDef::GIN || cell.pawn == PawnDef::RYU)
 				{
 					return true;
 				}
 			}
 			if (GetCell(gyokux + 1, gyokuy + 1, cell))
 			{
-				if (IsGyokuKinUpgrade(cell.pawn) || cell.pawn == PAWN_GIN)
+				if (IsGyokuKinUpgrade(cell.pawn) || cell.pawn == PawnDef::GIN)
 				{
 					return true;
 				}
 			}
 			if (GetCell(gyokux - 1, gyokuy + 1, cell))
 			{
-				if (IsGyokuKinUpgrade(cell.pawn) || cell.pawn == PAWN_GIN)
+				if (IsGyokuKinUpgrade(cell.pawn) || cell.pawn == PawnDef::GIN)
 				{
 					return true;
 				}
 			}
 
 			// 桂
-			if (gyokuy < BOARD_HEIGHT)
+			if (gyokuy < BoardDef::HEIGHT)
 			{
 				if (GetCell(gyokux - 1, gyokuy + 2, cell))
 				{
-					if (cell.pawn == PAWN_KEI)
+					if (cell.pawn == PawnDef::KEI)
 					{
 						return true;
 					}
 				}
 				if (GetCell(gyokux + 1, gyokuy + 2, cell))
 				{
-					if (cell.pawn == PAWN_KEI)
+					if (cell.pawn == PawnDef::KEI)
 					{
 						return true;
 					}
@@ -924,9 +926,9 @@ protected:
 			}
 
 			// 香
-			for (char j = gyokuy + 1; j <= BOARD_HEIGHT; j++)
+			for (char j = gyokuy + 1; j <= BoardDef::HEIGHT; j++)
 			{
-				if (matrix[j][gyokux].player == PLAYER_NONE)
+				if (matrix[j][gyokux].player == PlayerDef::NONE)
 				{
 					continue;
 				}
@@ -934,7 +936,7 @@ protected:
 				{
 					break;
 				}
-				if (matrix[j][gyokux].pawn == PAWN_KYOH)
+				if (matrix[j][gyokux].pawn == PawnDef::KYOH)
 				{
 					return true;
 				}
@@ -960,7 +962,7 @@ protected:
 			}
 			if (GetCell(gyokux, gyokuy - 1, cell))
 			{
-				if (IsGyokuKinUpgrade(cell.pawn) || cell.pawn == PAWN_HU || cell.pawn == PAWN_GIN)
+				if (IsGyokuKinUpgrade(cell.pawn) || cell.pawn == PawnDef::HU || cell.pawn == PawnDef::GIN)
 				{
 					return true;
 				}
@@ -974,28 +976,28 @@ protected:
 			}
 			if (GetCell(gyokux - 1, gyokuy - 1, cell))
 			{
-				if (IsGyokuKinUpgrade(cell.pawn) || cell.pawn == PAWN_GIN)
+				if (IsGyokuKinUpgrade(cell.pawn) || cell.pawn == PawnDef::GIN)
 				{
 					return true;
 				}
 			}
 			if (GetCell(gyokux + 1, gyokuy - 1, cell))
 			{
-				if (IsGyokuKinUpgrade(cell.pawn) || cell.pawn == PAWN_GIN)
+				if (IsGyokuKinUpgrade(cell.pawn) || cell.pawn == PawnDef::GIN)
 				{
 					return true;
 				}
 			}
 			if (GetCell(gyokux + 1, gyokuy + 1, cell))
 			{
-				if (cell.pawn == PAWN_GYOKU || cell.pawn == PAWN_GIN || cell.pawn == PAWN_RYU)
+				if (cell.pawn == PawnDef::GYOKU || cell.pawn == PawnDef::GIN || cell.pawn == PawnDef::RYU)
 				{
 					return true;
 				}
 			}
 			if (GetCell(gyokux - 1, gyokuy + 1, cell))
 			{
-				if (cell.pawn == PAWN_GYOKU || cell.pawn == PAWN_GIN || cell.pawn == PAWN_RYU)
+				if (cell.pawn == PawnDef::GYOKU || cell.pawn == PawnDef::GIN || cell.pawn == PawnDef::RYU)
 				{
 					return true;
 				}
@@ -1006,14 +1008,14 @@ protected:
 			{
 				if (GetCell(gyokux - 1, gyokuy - 2, cell))
 				{
-					if (cell.pawn == PAWN_KEI)
+					if (cell.pawn == PawnDef::KEI)
 					{
 						return true;
 					}
 				}
 				if (GetCell(gyokux + 1, gyokuy - 2, cell))
 				{
-					if (cell.pawn == PAWN_KEI)
+					if (cell.pawn == PawnDef::KEI)
 					{
 						return true;
 					}
@@ -1023,7 +1025,7 @@ protected:
 			// 香
 			for (char j = gyokuy - 1; 0 < j; j--)
 			{
-				if (matrix[j][gyokux].player == PLAYER_NONE)
+				if (matrix[j][gyokux].player == PlayerDef::NONE)
 				{
 					continue;
 				}
@@ -1031,7 +1033,7 @@ protected:
 				{
 					break;
 				}
-				if (matrix[j][gyokux].pawn == PAWN_KYOH)
+				if (matrix[j][gyokux].pawn == PawnDef::KYOH)
 				{
 					return true;
 				}
@@ -1039,128 +1041,130 @@ protected:
 			}
 		}
 
-		int i, j;
-		// 飛龍
-		i = gyokux + 1;
-		while (true)
 		{
-			if (matrix[gyokuy][i].player == turn && Down(matrix[gyokuy][i].pawn) == PAWN_HI)
+			int i, j;
+			// 飛龍
+			i = gyokux + 1;
+			while (true)
 			{
-				return true;
+				if (matrix[gyokuy][i].player == turn && Down(matrix[gyokuy][i].pawn) == PawnDef::HI)
+				{
+					return true;
+				}
+				if (matrix[gyokuy][i].player != PlayerDef::NONE)
+				{
+					break;
+				}
+				i++;
 			}
-			if (matrix[gyokuy][i].player != PLAYER_NONE)
+			i = gyokux - 1;
+			while (true)
 			{
-				break;
+				if (matrix[gyokuy][i].player == turn && Down(matrix[gyokuy][i].pawn) == PawnDef::HI)
+				{
+					return true;
+				}
+				if (matrix[gyokuy][i].player != PlayerDef::NONE)
+				{
+					break;
+				}
+				i--;
 			}
-			i++;
-		}
-		i = gyokux - 1;
-		while (true)
-		{
-			if (matrix[gyokuy][i].player == turn && Down(matrix[gyokuy][i].pawn) == PAWN_HI)
+			j = gyokuy + 1;
+			while (true)
 			{
-				return true;
+				if (matrix[j][gyokux].player == turn && Down(matrix[j][gyokux].pawn) == PawnDef::HI)
+				{
+					return true;
+				}
+				if (matrix[j][gyokux].player != PlayerDef::NONE)
+				{
+					break;
+				}
+				j++;
 			}
-			if (matrix[gyokuy][i].player != PLAYER_NONE)
+			j = gyokuy - 1;
+			while (true)
 			{
-				break;
+				if (matrix[j][gyokux].player == turn && Down(matrix[j][gyokux].pawn) == PawnDef::HI)
+				{
+					return true;
+				}
+				if (matrix[j][gyokux].player != PlayerDef::NONE)
+				{
+					break;
+				}
+				j--;
 			}
-			i--;
-		}
-		j = gyokuy + 1;
-		while (true)
-		{
-			if (matrix[j][gyokux].player == turn && Down(matrix[j][gyokux].pawn) == PAWN_HI)
-			{
-				return true;
-			}
-			if (matrix[j][gyokux].player != PLAYER_NONE)
-			{
-				break;
-			}
-			j++;
-		}
-		j = gyokuy - 1;
-		while (true)
-		{
-			if (matrix[j][gyokux].player == turn && Down(matrix[j][gyokux].pawn) == PAWN_HI)
-			{
-				return true;
-			}
-			if (matrix[j][gyokux].player != PLAYER_NONE)
-			{
-				break;
-			}
-			j--;
-		}
 
-		// 角馬
-		i = gyokux + 1;
-		j = gyokuy + 1;
-		while (true)
-		{
-			if (matrix[j][i].player == turn && Down(matrix[j][i].pawn) == PAWN_KAKU)
+			// 角馬
+			i = gyokux + 1;
+			j = gyokuy + 1;
+			while (true)
 			{
-				return true;
+				if (matrix[j][i].player == turn && Down(matrix[j][i].pawn) == PawnDef::KAKU)
+				{
+					return true;
+				}
+				if (matrix[j][i].player != PlayerDef::NONE)
+				{
+					break;
+				}
+				i++;
+				j++;
 			}
-			if (matrix[j][i].player != PLAYER_NONE)
+			i = gyokux - 1;
+			j = gyokuy + 1;
+			while (true)
 			{
-				break;
+				if (matrix[j][i].player == turn && Down(matrix[j][i].pawn) == PawnDef::KAKU)
+				{
+					return true;
+				}
+				if (matrix[j][i].player != PlayerDef::NONE)
+				{
+					break;
+				}
+				i--;
+				j++;
 			}
-			i++;
-			j++;
-		}
-		i = gyokux - 1;
-		j = gyokuy + 1;
-		while (true)
-		{
-			if (matrix[j][i].player == turn && Down(matrix[j][i].pawn) == PAWN_KAKU)
+			i = gyokux - 1;
+			j = gyokuy - 1;
+			while (true)
 			{
-				return true;
+				if (matrix[j][i].player == turn && Down(matrix[j][i].pawn) == PawnDef::KAKU)
+				{
+					return true;
+				}
+				if (matrix[j][i].player != PlayerDef::NONE)
+				{
+					break;
+				}
+				i--;
+				j--;
 			}
-			if (matrix[j][i].player != PLAYER_NONE)
+			i = gyokux + 1;
+			j = gyokuy - 1;
+			while (true)
 			{
-				break;
+				if (matrix[j][i].player == turn && Down(matrix[j][i].pawn) == PawnDef::KAKU)
+				{
+					return true;
+				}
+				if (matrix[j][i].player != PlayerDef::NONE)
+				{
+					break;
+				}
+				i++;
+				j--;
 			}
-			i--;
-			j++;
-		}
-		i = gyokux - 1;
-		j = gyokuy - 1;
-		while (true)
-		{
-			if (matrix[j][i].player == turn && Down(matrix[j][i].pawn) == PAWN_KAKU)
-			{
-				return true;
-			}
-			if (matrix[j][i].player != PLAYER_NONE)
-			{
-				break;
-			}
-			i--;
-			j--;
-		}
-		i = gyokux + 1;
-		j = gyokuy - 1;
-		while (true)
-		{
-			if (matrix[j][i].player == turn && Down(matrix[j][i].pawn) == PAWN_KAKU)
-			{
-				return true;
-			}
-			if (matrix[j][i].player != PLAYER_NONE)
-			{
-				break;
-			}
-			i++;
-			j--;
 		}
 
 		return false;
 	}
 
-	CELL GetCell(uchar x, uchar y) { return matrix[y][x]; }
-	bool GetCell(uchar tox, uchar toy, CELL &cell) const
+	CELL GetCell(int x, int y) { return matrix[y][x]; }
+	bool GetCell(int tox, int toy, CELL &cell) const
 	{
 		if (matrix[toy][tox].player != turn)
 		{
@@ -1174,27 +1178,27 @@ protected:
 
 	void SwitchTurn()
 	{
-		if (turn == PLAYER_FIRST)
+		if (turn == PlayerDef::FIRST)
 		{
-			turn = PLAYER_SECOND;
-			enemy = PLAYER_FIRST;
+			turn = PlayerDef::SECOND;
+			enemy = PlayerDef::FIRST;
 		}
 		else
 		{
-			turn = PLAYER_FIRST;
-			enemy = PLAYER_SECOND;
+			turn = PlayerDef::FIRST;
+			enemy = PlayerDef::SECOND;
 		}
 	}
 	
-	CELL matrix[BOARD_HEIGHT+2][BOARD_WIDTH+2];
+	CELL matrix[BoardDef::HEIGHT+2][BoardDef::WIDTH+2];
 	PLAYER turn;
 	PLAYER enemy;
 
 private:
-	uchar captured[PLAYER_MAX][(uchar)CAPTURE_MAX];
+	uchar captured[PlayerDef::MAX][PawnDef::CAPTURE_MAX];
 
-	uchar gyokux[PLAYER_MAX];
-	uchar gyokuy[PLAYER_MAX];
+	uchar gyokux[PlayerDef::MAX];
+	uchar gyokuy[PlayerDef::MAX];
 
 	static void Upgrade(PAWN &type)
 	{
@@ -1214,10 +1218,8 @@ private:
 	}
 	static bool IsGyokuKinUpgrade(const PAWN type)
 	{
-		return (PAWN_KIN <= type);
+		return (PawnDef::KIN <= type);
 	}
 };
-
-static const MOVE PAWN_MOVE_ZERO(PAWN_NONE, 0, 0, 0, 0, PAWN_NONE, PAWN_NONE, false, 99999);
 
 #endif // BOARD_H

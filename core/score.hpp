@@ -69,10 +69,7 @@ struct Score
 
 	bool operator!=(const Score& rhs) const
 	{
-		return (
-			score != rhs.score ||
-			moveList != rhs.moveList
-			);
+		return !(*this == rhs);
 	}
 
 	bool operator<(const Score& rhs) const
@@ -105,6 +102,10 @@ struct Score
 #else
 		return (moveList < rhs.moveList);
 #endif
+	}
+	bool operator>(const Score& rhs) const
+	{
+		return !(*this < rhs) && *this != rhs;
 	}
 
 	operator std::string() const

@@ -1,7 +1,7 @@
 #ifndef PAWM_MOVE_H
 #define PAWM_MOVE_H
 
-struct MOVE
+class MOVE
 {
 public:
 	union MOVE_PAWN_MEMORY
@@ -22,7 +22,7 @@ public:
 	bool upgrade = false;
 	int priority = 0;
 
-	MOVE() : reserve(PAWN_NONE), upgrade(false), priority(0)
+	MOVE() : reserve(PawnDef::NONE), upgrade(false), priority(0)
 	{
 		from.mem = 0;
 		to.mem = 0;
@@ -46,11 +46,11 @@ public:
 		if (from.x == 0 && from.y == 0)
 		{
 			reserve = charToPawn[str[2]];
-			from.pawn = PAWN_NONE;
+			from.pawn = PawnDef::NONE;
 		}
 		else
 		{
-			reserve = PAWN_NONE;
+			reserve = PawnDef::NONE;
 			from.pawn = charToPawn[str[2]];
 		}
 		to.x = std::stoi(str.substr(3, 1), 0, 16);
@@ -61,7 +61,7 @@ public:
 
 	std::string DebugString() const
 	{
-		if (reserve == PAWN_NONE && from.x == to.x && from.y == to.y)
+		if (reserve == PawnDef::NONE && from.x == to.x && from.y == to.y)
 		{
 			return "ZERO";
 		}
@@ -70,7 +70,7 @@ public:
 		//uchar tox, toy;
 		str += numberToZenkaku[(uchar)to.x - 1] + numberToKanji[(uchar)to.y - 1];
 
-		if (reserve != PAWN_NONE)
+		if (reserve != PawnDef::NONE)
 		{
 			//PAWN_ROLL reserve;
 			str += " " + PAWN_KANJI[reserve] + " ‘Å‚¿";
@@ -78,7 +78,7 @@ public:
 		else
 		{
 			str += " " + PAWN_KANJI[from.pawn];
-			str += "(" + std::to_string(BOARD_WIDTH - from.x + 1) + "," + std::to_string(from.y) + ")";
+			str += "(" + std::to_string(BoardDef::WIDTH - from.x + 1) + "," + std::to_string(from.y) + ")";
 
 			//bool upgrade;
 			if (upgrade)
@@ -101,12 +101,7 @@ public:
 	}
 	bool operator!=(const MOVE& rhs) const
 	{
-		return (
-			reserve != rhs.reserve ||
-			from.mem != rhs.from.mem ||
-			to.mem != rhs.to.mem ||
-			upgrade != rhs.upgrade
-			);
+		return !(*this == rhs);
 	}
 
 	bool operator<(const MOVE& rhs) const
@@ -120,11 +115,11 @@ public:
 			return false;
 		}
 
-		if (reserve == PAWN_NONE && rhs.reserve != PAWN_NONE)
+		if (reserve == PawnDef::NONE && rhs.reserve != PawnDef::NONE)
 		{
 			return true;
 		}
-		if (reserve != PAWN_NONE && rhs.reserve == PAWN_NONE)
+		if (reserve != PawnDef::NONE && rhs.reserve == PawnDef::NONE)
 		{
 			return false;
 		}
@@ -161,6 +156,10 @@ public:
 
 		return false;
 	}
+	bool operator>(const MOVE& rhs) const
+	{
+		return !(*this < rhs) && *this != rhs;
+	}
 
 	operator std::string() const
 	{
@@ -190,8 +189,12 @@ public:
 
 		return stream.str();
 	}
+
+	static const int MOVES_MAX = (BoardDef::WIDTH + BoardDef::HEIGHT - 2) * BoardDef::WIDTH * BoardDef::HEIGHT * 2 + (PawnDef::CAPTURE_MAX - 1) * BoardDef::WIDTH * BoardDef::HEIGHT;
 };
 
-static const int MOVES_MAX = (BOARD_WIDTH + BOARD_HEIGHT - 2) * BOARD_WIDTH * BOARD_HEIGHT * 2 + (CAPTURE_MAX - 1) * BOARD_WIDTH * BOARD_HEIGHT;
+static const MOVE PAWN_MOVE_ZERO(PawnDef::NONE, 0, 0, 0, 0, PawnDef::NONE, PawnDef::NONE, false, 99999);
+
+
 
 #endif // PAWM_MOVE_H
