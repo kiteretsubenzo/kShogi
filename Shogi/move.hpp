@@ -93,8 +93,8 @@ public:
 
 	MOVE(std::string str)
 	{
-		from.x = std::stoi(str.substr(0, 1), 0, 16);
-		from.y = std::stoi(str.substr(1, 1), 0, 16);
+		from.x = std::stoi(str.substr(0, 1));
+		from.y = std::stoi(str.substr(1, 1));
 		if (from.x == 0 && from.y == 0)
 		{
 			reserve = charToPawn[str[2]];
@@ -105,8 +105,8 @@ public:
 			reserve = PawnDef::NONE;
 			from.pawn = charToPawn[str[2]];
 		}
-		to.x = std::stoi(str.substr(3, 1), 0, 16);
-		to.y = std::stoi(str.substr(4, 1), 0, 16);
+		to.x = std::stoi(str.substr(3, 1));
+		to.y = std::stoi(str.substr(4, 1));
 		to.pawn = charToPawn[str[5]];
 		upgrade = (str[6] == 't');
 	}
@@ -215,31 +215,31 @@ public:
 
 	operator std::string() const
 	{
-		std::stringstream stream;
+		std::string stream = "";
 
-		stream << std::hex << (int)from.x;
-		stream << std::hex << (int)from.y;
+		stream += std::to_string(from.x);
+		stream += std::to_string(from.y);
 		if (from.x == 0 && from.y == 0)
 		{
-			stream << PAWN_CHAR[reserve];
+			stream += PAWN_CHAR[reserve];
 		}
 		else
 		{
-			stream << PAWN_CHAR[from.pawn];
+			stream += PAWN_CHAR[from.pawn];
 		}
-		stream << std::hex << (int)to.x;
-		stream << std::hex << (int)to.y;
-		stream << PAWN_CHAR[to.pawn];
+		stream += std::to_string(to.x);
+		stream += std::to_string(to.y);
+		stream += PAWN_CHAR[to.pawn];
 		if (upgrade)
 		{
-			stream << "t";
+			stream += "t";
 		}
 		else
 		{
-			stream << "f";
+			stream += "f";
 		}
 
-		return stream.str();
+		return stream;
 	}
 
 	static const int MOVES_MAX = (BoardDef::WIDTH + BoardDef::HEIGHT - 2) * BoardDef::WIDTH * BoardDef::HEIGHT * 2 + (PawnDef::CAPTURE_MAX - 1) * BoardDef::WIDTH * BoardDef::HEIGHT;

@@ -134,10 +134,10 @@ public:
 
 		for (int i = 0; i < PawnDef::CAPTURE_MAX; i++)
 		{
-			char first[3] = { strs[BoardDef::HEIGHT + 1][i * 4 + 1], strs[BoardDef::HEIGHT + 1][i * 4 + 2], '\0' };
-			char second[3] = { strs[0][i * 4 + 1], strs[0][i * 4 + 2], '\0' };
-			captured[PlayerDef::FIRST][i] = atoi(first);
-			captured[PlayerDef::SECOND][i] = atoi(second);
+			std::string first = strs[BoardDef::HEIGHT + 1].substr(i * 4 + 1, 2);
+			std::string second = strs[0].substr(i * 4 + 1, 2);
+			captured[PlayerDef::FIRST][i] = stoi(first);
+			captured[PlayerDef::SECOND][i] = stoi(second);
 		}
 
 		for (int j = 2; j <= BoardDef::HEIGHT + 1; j++)
@@ -191,15 +191,19 @@ public:
 	// TODO
 	std::string BoardToString() const
 	{
-		std::ostringstream sout;
+		std::string sout = "";
 
 		for (int i = 0; i < PawnDef::CAPTURE_MAX; i++)
 		{
-			sout << PAWN_CHAR[i];
-			sout << std::setfill('0') << std::setw(2) << (int)(captured[PlayerDef::SECOND][i]);
-			sout << ' ';
+			sout += PAWN_CHAR[i];
+			if (captured[PlayerDef::SECOND][i] < 10)
+			{
+				sout += '0';
+			}
+			sout += std::to_string(captured[PlayerDef::SECOND][i]);
+			sout += ' ';
 		}
-		sout << '\n';
+		sout += '\n';
 
 		for (int j = 2; j <= BoardDef::HEIGHT + 1; j++)
 		{
@@ -207,38 +211,44 @@ public:
 			{
 				if (matrix[j - 1][i].player == PlayerDef::FIRST)
 				{
-					sout << '^' << PAWN_CHAR[matrix[j - 1][i].pawn];
+					sout += '^';
+					sout += PAWN_CHAR[matrix[j - 1][i].pawn];
 				}
 				else if (matrix[j - 1][i].player == PlayerDef::SECOND)
 				{
-					sout << PAWN_CHAR[matrix[j - 1][i].pawn] << '_';
+					sout += PAWN_CHAR[matrix[j - 1][i].pawn];
+					sout += '_';
 				}
 				else
 				{
-					sout << " .";
+					sout += " .";
 				}
 			}
-			sout << '\n';
+			sout += '\n';
 		}
 
 		for (int i = 0; i < PawnDef::CAPTURE_MAX; i++)
 		{
-			sout << PAWN_CHAR[i];
-			sout << std::setfill('0') << std::setw(2) << (int)captured[PlayerDef::FIRST][i];
-			sout << ' ';
+			sout += PAWN_CHAR[i];
+			if (captured[PlayerDef::FIRST][i] < 10)
+			{
+				sout += '0';
+			}
+			sout += std::to_string(captured[PlayerDef::FIRST][i]);
+			sout += ' ';
 		}
-		sout << '\n';
+		sout += '\n';
 
 		if (turn == PlayerDef::FIRST)
 		{
-			sout << "first";
+			sout += "first";
 		}
 		else
 		{
-			sout << "second";
+			sout += "second";
 		}
 
-		return sout.str();
+		return sout;
 	}
 	
 	MoveList GetMoveList()
@@ -926,7 +936,7 @@ protected:
 			}
 
 			// 香
-			for (char j = gyokuy + 1; j <= BoardDef::HEIGHT; j++)
+			for (int j = gyokuy + 1; j <= BoardDef::HEIGHT; j++)
 			{
 				if (matrix[j][gyokux].player == PlayerDef::NONE)
 				{
@@ -1023,7 +1033,7 @@ protected:
 			}
 
 			// 香
-			for (char j = gyokuy - 1; 0 < j; j--)
+			for (int j = gyokuy - 1; 0 < j; j--)
 			{
 				if (matrix[j][gyokux].player == PlayerDef::NONE)
 				{
