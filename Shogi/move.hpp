@@ -4,16 +4,68 @@
 class MOVE
 {
 public:
-	union MOVE_PAWN_MEMORY
+	class MOVE_PAWN_MEMORY
 	{
-		struct
+	public:
+		uchar x;
+		uchar y;
+		PAWN pawn;
+
+		MOVE_PAWN_MEMORY()
 		{
-			// ※アライメント注意！sizeof(int)バイトをまたがないように
-			uchar x : 4;
-			uchar y : 4;
-			PAWN pawn;
-		};
-		unsigned short mem;
+			x = 0;
+			y = 0;
+			pawn = PawnDef::NONE;
+		}
+
+		bool operator==(const MOVE_PAWN_MEMORY& rhs) const
+		{
+			return (
+				x == rhs.x &&
+				y == rhs.y &&
+				pawn == rhs.pawn
+				);
+		}
+		bool operator!=(const MOVE_PAWN_MEMORY& rhs) const
+		{
+			return !(*this == rhs);
+		}
+
+		bool operator<(const MOVE_PAWN_MEMORY& rhs) const
+		{
+			if (x > rhs.x)
+			{
+				return true;
+			}
+			if (x < rhs.x)
+			{
+				return false;
+			}
+
+			if (y < rhs.y)
+			{
+				return true;
+			}
+			if (y > rhs.y)
+			{
+				return false;
+			}
+
+			if (pawn < rhs.pawn)
+			{
+				return true;
+			}
+			if (pawn > rhs.pawn)
+			{
+				return false;
+			}
+
+			return false;
+		}
+		bool operator>(const MOVE_PAWN_MEMORY& rhs) const
+		{
+			return !(*this < rhs) && *this != rhs;
+		}
 	};
 
 	PAWN reserve;
@@ -24,8 +76,8 @@ public:
 
 	MOVE() : reserve(PawnDef::NONE), upgrade(false), priority(0)
 	{
-		from.mem = 0;
-		to.mem = 0;
+		from = MOVE_PAWN_MEMORY();
+		to = MOVE_PAWN_MEMORY();
 	}
 
 	MOVE(PAWN reserveValue, uchar fromx, uchar fromy, uchar tox, uchar toy, PAWN fromPawn, PAWN toPawn, bool upgradeValue, int priorityValue)
@@ -94,8 +146,8 @@ public:
 	{
 		return (
 			reserve == rhs.reserve &&
-			from.mem == rhs.from.mem &&
-			to.mem == rhs.to.mem &&
+			from == rhs.from &&
+			to == rhs.to &&
 			upgrade == rhs.upgrade
 			);
 	}
@@ -132,19 +184,19 @@ public:
 			return false;
 		}
 
-		if (from.mem < rhs.from.mem)
+		if (from < rhs.from)
 		{
 			return true;
 		}
-		if (from.mem > rhs.from.mem)
+		if (from > rhs.from)
 		{
 			return false;
 		}
-		if (to.mem < rhs.to.mem)
+		if (to < rhs.to)
 		{
 			return true;
 		}
-		if (to.mem > rhs.to.mem)
+		if (to > rhs.to)
 		{
 			return false;
 		}

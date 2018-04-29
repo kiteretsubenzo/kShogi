@@ -61,6 +61,9 @@ private:
 	{
 		MoveList moves;
 		Score score;
+
+		NODE() : score(SCORE_NONE) {}
+		NODE(const MoveList &movesValue, const Score &scoreValue) : moves(movesValue), score(scoreValue) {}
 	};
 
 	enum STATE
@@ -112,9 +115,9 @@ private:
 
 		nodeStack.clear();
 		// ルート
-		nodeStack.push_back({ {}, SCORE_NONE });
+		nodeStack.push_back(NODE( MoveList(), SCORE_NONE ));
 		// 自分
-		nodeStack.push_back({ board->GetMoveList(), SCORE_NONE });
+		nodeStack.push_back(NODE( board->GetMoveList(), SCORE_NONE ));
 	}
 
 	bool SearchImplementation()
@@ -208,7 +211,7 @@ private:
 				}
 
 				// 子供を追加してもう一回
-				nodeStack.push_back({ std::move(moveList), SCORE_NONE });
+				nodeStack.push_back(NODE( std::move(moveList), SCORE_NONE ));
 			}
 
 			// back
