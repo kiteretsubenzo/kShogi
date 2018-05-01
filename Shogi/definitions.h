@@ -52,7 +52,7 @@ static const char PAWN_CHAR[PawnDef::MAX + 1] =
 
 static const std::string PAWN_KANJI[PawnDef::MAX] =
 {
-	"•à", "ˆÇ", "Œj", "‹â", "Šp", "”ò", "‹à", "‹Ê", "‚Æ", "—ß", "‰î", "‘S", "”n", "—´",
+	"•à", "ˆÇ", "Œj", "‹â", "Šp", "”ò", "‹à", "‹Ê", "‚Æ", "—ß", "‰î", "‘S", "”n", "—´"
 };
 
 static const PAWN charToPawn[256] =

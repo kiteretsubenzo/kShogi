@@ -57,13 +57,13 @@ public:
 	}
 		
 private:
-	struct NODE
+	struct Node
 	{
 		MoveList moves;
 		Score score;
 
-		NODE() : score(SCORE_NONE) {}
-		NODE(const MoveList &movesValue, const Score &scoreValue) : moves(movesValue), score(scoreValue) {}
+		Node() : score(SCORE_NONE) {}
+		Node(const MoveList &movesValue, const Score &scoreValue) : moves(movesValue), score(scoreValue) {}
 	};
 
 	enum STATE
@@ -80,7 +80,7 @@ private:
 	unsigned int deep = 0;
 	bool limit = false;
 
-	std::list<NODE> nodeStack;
+	std::list<Node> nodeStack;
 
 	void SearchInit(const std::string &job)
 	{
@@ -115,9 +115,9 @@ private:
 
 		nodeStack.clear();
 		// ルート
-		nodeStack.push_back(NODE( MoveList(), SCORE_NONE ));
+		nodeStack.push_back(Node( MoveList(), SCORE_NONE ));
 		// 自分
-		nodeStack.push_back(NODE( board->GetMoveList(), SCORE_NONE ));
+		nodeStack.push_back(Node( board->GetMoveList(), SCORE_NONE ));
 	}
 
 	bool SearchImplementation()
@@ -147,7 +147,7 @@ private:
 				if (debugPrint)
 				{
 					//std::cout << '\r' << std::flush;
-					for (std::list<NODE>::iterator ite = nodeStack.begin(); ite != nodeStack.end(); ++ite)
+					for (std::list<Node>::iterator ite = nodeStack.begin(); ite != nodeStack.end(); ++ite)
 					{
 						if (0 < ite->moves.size())
 						{
@@ -162,7 +162,7 @@ private:
 				}
 
 				// 子ノードを取得
-				std::list<NODE>::reverse_iterator childItr = nodeStack.rbegin();
+				std::list<Node>::reverse_iterator childItr = nodeStack.rbegin();
 
 				// 盤面を進める
 				board->Move(childItr->moves.front());
@@ -175,7 +175,7 @@ private:
 				{
 					childItr->score = Score::SCORE_WIN;
 					childItr->score.moveList.clear();
-					for (std::list<NODE>::const_iterator ite = nodeStack.cbegin(); ite != nodeStack.cend(); ++ite)
+					for (std::list<Node>::const_iterator ite = nodeStack.cbegin(); ite != nodeStack.cend(); ++ite)
 					{
 						if (0 < ite->moves.size())
 						{
@@ -188,12 +188,8 @@ private:
 				if (deep <= nodeStack.size())
 				{
 					// 新しい子が末端だったら追加せずに評価
-					Score score = SCORE_NONE;
-
 					// 評価
-					score = board->GetEvaluate(moveList);
-					score.moveList.clear();
-					for (std::list<NODE>::const_iterator ite = nodeStack.cbegin(); ite != nodeStack.cend(); ++ite)
+					for (std::list<Node>::const_iterator ite = nodeStack.cbegin(); ite != nodeStack.cend(); ++ite)
 					{
 						if (0 < ite->moves.size())
 						{
@@ -202,16 +198,20 @@ private:
 					}
 
 					// 親ノードに得点をマージ
+					Score score = Score(board->GetEvaluate(moveList));
 					if (score != SCORE_NONE || (limit == true && (window.Negate() == childItr->score || window.Negate() < childItr->score)))
 					{
-						childItr->score = std::min<Score>(childItr->score, score.Negate());
+						if (score.Negate() < childItr->score)
+						{
+							childItr->score = score.Negate();
+						}
 					}
 
 					break;
 				}
 
 				// 子供を追加してもう一回
-				nodeStack.push_back(NODE( std::move(moveList), SCORE_NONE ));
+				nodeStack.push_back(Node( std::move(moveList), SCORE_NONE ));
 			}
 
 			// back
@@ -220,7 +220,7 @@ private:
 				if (debugPrint)
 				{
 					//std::cout << '\r' << std::flush;
-					for (std::list<NODE>::iterator ite = nodeStack.begin(); ite != nodeStack.end(); ++ite)
+					for (std::list<Node>::iterator ite = nodeStack.begin(); ite != nodeStack.end(); ++ite)
 					{
 						if (0 < ite->moves.size())
 						{
@@ -235,12 +235,12 @@ private:
 				}
 
 				// 子ノードを取得
-				std::list<NODE>::reverse_iterator childItr = nodeStack.rbegin();
+				std::list<Node>::reverse_iterator childItr = nodeStack.rbegin();
 
 				// 親ノードに得点をマージ
 				if (2 <= nodeStack.size() && childItr->score != SCORE_NONE)
 				{
-					std::list<NODE>::reverse_iterator parentItr = std::next(nodeStack.rbegin());
+					std::list<Node>::reverse_iterator parentItr = std::next(nodeStack.rbegin());
 					//if( debugPrint )
 					//{
 					//std::cout << parentItr->score << " " << -childItr->score << std::endl;
@@ -252,7 +252,10 @@ private:
 					}
 					else
 					{
-						parentItr->score = std::min<Score>(parentItr->score, childItr->score.Negate());
+						if (childItr->score.Negate() < parentItr->score)
+						{
+							parentItr->score = childItr->score.Negate();
+						}
 					}
 				}
 

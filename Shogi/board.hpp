@@ -80,7 +80,7 @@ public:
 	{
 		list.sort();
 	}
-private:
+public:
 	std::list<MOVE> list;
 };
 #endif
@@ -674,8 +674,7 @@ public:
 
 		if (move.to.pawn != PawnDef::NONE)
 		{
-			PAWN roll = move.to.pawn;
-			captured[turn][roll]++;
+			captured[turn][Down(move.to.pawn)]++;
 		}
 		if (move.from.pawn == PawnDef::GYOKU)
 		{
@@ -709,7 +708,7 @@ public:
 
 		if (move.to.pawn != PawnDef::NONE)
 		{
-			captured[enemy][move.to.pawn]--;
+			captured[enemy][Down(move.to.pawn)]--;
 
 			matrix[move.to.y][move.to.x].player = turn;
 			matrix[move.to.y][move.to.x].pawn = move.to.pawn;

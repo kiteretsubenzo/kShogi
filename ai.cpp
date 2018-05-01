@@ -70,15 +70,15 @@ void Ai::Start(Board boardValue)
 	if (mode == "scout" || mode == "scouttest")
 	{
 		std::list<MOVE> moves;
-		moves.push_back(PAWN_MOVE_ZERO);
+		moves.push_back(MOVE_ZERO);
 		bestScore = 0;
-		JOB job = { GetJobId(), { PAWN_MOVE_ZERO }, searchScore.Negate(), 4, board };
+		JOB job = { GetJobId(), { MOVE_ZERO }, searchScore.Negate(), 4, board };
 		jobs.push_back(job);
 	}
 	else if(mode == "minimax")
 	{
 		std::list<MOVE> moves;
-		moves.push_back(PAWN_MOVE_ZERO);
+		moves.push_back(MOVE_ZERO);
 		JOB job = { GetJobId(), moves, SCORE_NONE, 4, board };
 		jobs.push_back(job);
 	}
@@ -204,7 +204,7 @@ bool Ai::Tick()
 			else
 			{
 				bestScore = score;
-				JOB job = { GetJobId(), { PAWN_MOVE_ZERO }, bestScore.Negate(), 4, board };
+				JOB job = { GetJobId(), { MOVE_ZERO }, bestScore.Negate(), 4, board };
 				jobs.push_back(job);
 			}
 		}

@@ -25,20 +25,19 @@ public:
 	void SetSearchScore(const Score &score) { searchScore = score; }
 	void SetLimit(const bool &limitValue) { limit = limitValue; }
 	void SetDebug(const bool &debugValue) { debug = debugValue; }
-	void Start(Board board);
-	bool Tick();
-	MOVE GetMove() const { return move; }
+	void Start(Board boardValue);
 	void CallBack(const std::string &str);
 	void GetJob(std::string &job);
 	bool IsAlive(const std::string &jobId);
 	
 	void GetResult(Score &scoreValue);
 
+	bool Tick();
+
 	void Stop();
 	
 private:
 	Board board;
-	MOVE move;
 	
 	std::string mode = "minimax";
 	Score searchScore = Score(std::numeric_limits<int>::min());

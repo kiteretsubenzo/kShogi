@@ -4,21 +4,21 @@
 class MOVE
 {
 public:
-	class MOVE_PAWN_MEMORY
+	class MOVE_PAWN
 	{
 	public:
 		uchar x;
 		uchar y;
 		PAWN pawn;
 
-		MOVE_PAWN_MEMORY()
+		MOVE_PAWN()
 		{
 			x = 0;
 			y = 0;
 			pawn = PawnDef::NONE;
 		}
 
-		bool operator==(const MOVE_PAWN_MEMORY& rhs) const
+		bool operator==(const MOVE_PAWN& rhs) const
 		{
 			return (
 				x == rhs.x &&
@@ -26,12 +26,12 @@ public:
 				pawn == rhs.pawn
 				);
 		}
-		bool operator!=(const MOVE_PAWN_MEMORY& rhs) const
+		bool operator!=(const MOVE_PAWN& rhs) const
 		{
 			return !(*this == rhs);
 		}
 
-		bool operator<(const MOVE_PAWN_MEMORY& rhs) const
+		bool operator<(const MOVE_PAWN& rhs) const
 		{
 			if (x > rhs.x)
 			{
@@ -62,22 +62,22 @@ public:
 
 			return false;
 		}
-		bool operator>(const MOVE_PAWN_MEMORY& rhs) const
+		bool operator>(const MOVE_PAWN& rhs) const
 		{
 			return !(*this < rhs) && *this != rhs;
 		}
 	};
 
 	PAWN reserve;
-	MOVE_PAWN_MEMORY from;
-	MOVE_PAWN_MEMORY to;
+	MOVE_PAWN from;
+	MOVE_PAWN to;
 	bool upgrade = false;
 	int priority = 0;
 
 	MOVE() : reserve(PawnDef::NONE), upgrade(false), priority(0)
 	{
-		from = MOVE_PAWN_MEMORY();
-		to = MOVE_PAWN_MEMORY();
+		from = MOVE_PAWN();
+		to = MOVE_PAWN();
 	}
 
 	MOVE(PAWN reserveValue, uchar fromx, uchar fromy, uchar tox, uchar toy, PAWN fromPawn, PAWN toPawn, bool upgradeValue, int priorityValue)
@@ -118,7 +118,7 @@ public:
 			return "ZERO";
 		}
 
-		std::string str;
+		std::string str = "";
 		//uchar tox, toy;
 		str += numberToZenkaku[(uchar)to.x - 1] + numberToKanji[(uchar)to.y - 1];
 
@@ -245,7 +245,7 @@ public:
 	static const int MOVES_MAX = (BoardDef::WIDTH + BoardDef::HEIGHT - 2) * BoardDef::WIDTH * BoardDef::HEIGHT * 2 + (PawnDef::CAPTURE_MAX - 1) * BoardDef::WIDTH * BoardDef::HEIGHT;
 };
 
-static const MOVE PAWN_MOVE_ZERO(PawnDef::NONE, 0, 0, 0, 0, PawnDef::NONE, PawnDef::NONE, false, 99999);
+static const MOVE MOVE_ZERO(PawnDef::NONE, 0, 0, 0, 0, PawnDef::NONE, PawnDef::NONE, false, 99999);
 
 
 
