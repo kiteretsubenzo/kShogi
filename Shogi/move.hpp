@@ -1,7 +1,7 @@
 #ifndef PAWM_MOVE_H
 #define PAWM_MOVE_H
 
-class MOVE
+class Move
 {
 public:
 	class MOVE_PAWN
@@ -74,13 +74,13 @@ public:
 	bool upgrade = false;
 	int priority = 0;
 
-	MOVE() : reserve(PawnDef::NONE), upgrade(false), priority(0)
+	Move() : reserve(PawnDef::NONE), upgrade(false), priority(0)
 	{
 		from = MOVE_PAWN();
 		to = MOVE_PAWN();
 	}
 
-	MOVE(PAWN reserveValue, uchar fromx, uchar fromy, uchar tox, uchar toy, PAWN fromPawn, PAWN toPawn, bool upgradeValue, int priorityValue)
+	Move(PAWN reserveValue, uchar fromx, uchar fromy, uchar tox, uchar toy, PAWN fromPawn, PAWN toPawn, bool upgradeValue, int priorityValue)
 		: reserve(reserveValue), upgrade(upgradeValue), priority(priorityValue)
 	{
 		from.x = fromx;
@@ -91,7 +91,7 @@ public:
 		to.pawn = toPawn;
 	}
 
-	MOVE(std::string str)
+	Move(std::string str)
 	{
 		from.x = std::stoi(str.substr(0, 1));
 		from.y = std::stoi(str.substr(1, 1));
@@ -142,7 +142,7 @@ public:
 		return str;
 	}
 
-	bool operator==(const MOVE& rhs) const
+	bool operator==(const Move& rhs) const
 	{
 		return (
 			reserve == rhs.reserve &&
@@ -151,12 +151,12 @@ public:
 			upgrade == rhs.upgrade
 			);
 	}
-	bool operator!=(const MOVE& rhs) const
+	bool operator!=(const Move& rhs) const
 	{
 		return !(*this == rhs);
 	}
 
-	bool operator<(const MOVE& rhs) const
+	bool operator<(const Move& rhs) const
 	{
 		if (priority > rhs.priority)
 		{
@@ -208,7 +208,7 @@ public:
 
 		return false;
 	}
-	bool operator>(const MOVE& rhs) const
+	bool operator>(const Move& rhs) const
 	{
 		return !(*this < rhs) && *this != rhs;
 	}
@@ -245,7 +245,7 @@ public:
 	static const int MOVES_MAX = (BoardDef::WIDTH + BoardDef::HEIGHT - 2) * BoardDef::WIDTH * BoardDef::HEIGHT * 2 + (PawnDef::CAPTURE_MAX - 1) * BoardDef::WIDTH * BoardDef::HEIGHT;
 };
 
-static const MOVE MOVE_ZERO(PawnDef::NONE, 0, 0, 0, 0, PawnDef::NONE, PawnDef::NONE, false, 99999);
+static const Move MOVE_ZERO(PawnDef::NONE, 0, 0, 0, 0, PawnDef::NONE, PawnDef::NONE, false, 99999);
 
 
 

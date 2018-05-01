@@ -6,14 +6,14 @@ struct Score
 	static const int SCORE_WIN = 99999;
 
 	int score;
-	std::list<MOVE> moveList;
+	std::list<Move> moveList;
 
 	Score(const int &scoreValue)
 	{
 		score = scoreValue;
 	}
 
-	Score(const int &scoreValue, const std::list<MOVE> &moveListValue)
+	Score(const int &scoreValue, const std::list<Move> &moveListValue)
 	{
 		score = scoreValue;
 		moveList = moveListValue;
@@ -26,7 +26,7 @@ struct Score
 		std::list<std::string> moves = Json::fromJsonArray(strs["moves"]);
 		for (std::list<std::string>::const_iterator ite = moves.cbegin(); ite != moves.cend(); ++ite)
 		{
-			moveList.push_back(MOVE(*ite));
+			moveList.push_back(Move(*ite));
 		}
 	}
 
@@ -37,7 +37,7 @@ struct Score
 		if (0 < moveList.size())
 		{
 			str += ",moves:[";
-			std::list<MOVE>::const_iterator ite = moveList.cbegin();
+			std::list<Move>::const_iterator ite = moveList.cbegin();
 			str += (std::string)(*ite);
 			++ite;
 			while (ite != moveList.cend())
@@ -114,7 +114,7 @@ struct Score
 		str = std::to_string(score) + "(";
 		if (0 < moveList.size())
 		{
-			std::list<MOVE>::const_iterator ite = moveList.cbegin();
+			std::list<Move>::const_iterator ite = moveList.cbegin();
 			str += (std::string)(*ite);
 			++ite;
 			while (ite != moveList.cend())

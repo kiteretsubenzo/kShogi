@@ -154,7 +154,7 @@ int main()
 	"second"
   };
   board.Init(testProblem3test[2]);
-  std::list<MOVE> history;
+  std::list<Move> history;
   /*
   board.PrintBoard();
   if( board.IsEnd() )

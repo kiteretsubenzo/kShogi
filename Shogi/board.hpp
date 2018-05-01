@@ -32,11 +32,11 @@ public:
 	{
 		list.clear();
 	}
-	void push(const MOVE &move)
+	void push(const Move &move)
 	{
 		list.insert(move);
 	}
-	MOVE front() const
+	Move front() const
 	{
 		return *(list.begin());
 	}
@@ -46,7 +46,7 @@ public:
 	}
 	void sort() {}
 private:
-	std::multiset<MOVE> list;
+	std::multiset<Move> list;
 };
 #else
 class MoveList
@@ -64,11 +64,11 @@ public:
 	{
 		list.clear();
 	}
-	void push(const MOVE &move)
+	void push(const Move &move)
 	{
 		list.push_back(move);
 	}
-	MOVE front() const
+	Move front() const
 	{
 		return *(list.begin());
 	}
@@ -81,7 +81,7 @@ public:
 		list.sort();
 	}
 public:
-	std::list<MOVE> list;
+	std::list<Move> list;
 };
 #endif
 
@@ -650,7 +650,7 @@ public:
 		return moveList;
 	}
 
-	void Move(const MOVE &move)
+	void Forward(const Move &move)
 	{
 		if (move.reserve != PawnDef::NONE)
 		{
@@ -685,7 +685,7 @@ public:
 		SwitchTurn();
 	}
 
-	void Back(const MOVE &move)
+	void Back(const Move &move)
 	{
 		if (move.reserve != PawnDef::NONE)
 		{
@@ -732,7 +732,7 @@ public:
 	{
 		return (int)(moveList.size());
 	}
-	int GetPriority(const MOVE &move)
+	int GetPriority(const Move &move)
 	{
 		int priority = 0;
 #if USE_PRIORITY != PRIORITY_NONE
@@ -825,7 +825,7 @@ protected:
 			return false;
 		}
 
-		MOVE move(roll, fromx, fromy, tox, toy, matrix[fromy][fromx].pawn, matrix[toy][tox].pawn, upgrade, 0);
+		Move move(roll, fromx, fromy, tox, toy, matrix[fromy][fromx].pawn, matrix[toy][tox].pawn, upgrade, 0);
 		if (roll != PawnDef::NONE)
 		{
 			move.from.x = 0;
@@ -833,7 +833,7 @@ protected:
 			move.from.pawn = PawnDef::NONE;
 		}
 
-		Move(move);
+		Forward(move);
 		// 負ける手は指さない
 		if (IsEnd() == false)
 		{

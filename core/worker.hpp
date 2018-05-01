@@ -165,7 +165,7 @@ private:
 				std::list<Node>::reverse_iterator childItr = nodeStack.rbegin();
 
 				// 盤面を進める
-				board->Move(childItr->moves.front());
+				board->Forward(childItr->moves.front());
 
 				// 着手を取得
 				MoveList moveList = board->GetMoveList();

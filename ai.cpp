@@ -69,7 +69,7 @@ void Ai::Start(Board boardValue)
 	
 	if (mode == "scout" || mode == "scouttest")
 	{
-		std::list<MOVE> moves;
+		std::list<Move> moves;
 		moves.push_back(MOVE_ZERO);
 		bestScore = 0;
 		JOB job = { GetJobId(), { MOVE_ZERO }, searchScore.Negate(), 4, board };
@@ -77,7 +77,7 @@ void Ai::Start(Board boardValue)
 	}
 	else if(mode == "minimax")
 	{
-		std::list<MOVE> moves;
+		std::list<Move> moves;
 		moves.push_back(MOVE_ZERO);
 		JOB job = { GetJobId(), moves, SCORE_NONE, 4, board };
 		jobs.push_back(job);

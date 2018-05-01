@@ -233,7 +233,7 @@ bool Test()
 		Score scoutScore = SCORE_NONE;
 		ai.GetResult(scoutScore);
 
-		MOVE scoutMove = scoutScore.moveList.front();
+		Move scoutMove = scoutScore.moveList.front();
 		std::cout << scoutMove.DebugString() << " " << strs[1] << std::endl;
 		if (scoutMove.DebugString() != strs[1])
 		{
