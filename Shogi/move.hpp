@@ -4,21 +4,21 @@
 class Move
 {
 public:
-	class MOVE_PAWN
+	class MOVE_Pawn
 	{
 	public:
 		uchar x;
 		uchar y;
-		PAWN pawn;
+		Pawn pawn;
 
-		MOVE_PAWN()
+		MOVE_Pawn()
 		{
 			x = 0;
 			y = 0;
 			pawn = PawnDef::NONE;
 		}
 
-		bool operator==(const MOVE_PAWN& rhs) const
+		bool operator==(const MOVE_Pawn& rhs) const
 		{
 			return (
 				x == rhs.x &&
@@ -26,12 +26,12 @@ public:
 				pawn == rhs.pawn
 				);
 		}
-		bool operator!=(const MOVE_PAWN& rhs) const
+		bool operator!=(const MOVE_Pawn& rhs) const
 		{
 			return !(*this == rhs);
 		}
 
-		bool operator<(const MOVE_PAWN& rhs) const
+		bool operator<(const MOVE_Pawn& rhs) const
 		{
 			if (x > rhs.x)
 			{
@@ -62,25 +62,25 @@ public:
 
 			return false;
 		}
-		bool operator>(const MOVE_PAWN& rhs) const
+		bool operator>(const MOVE_Pawn& rhs) const
 		{
 			return !(*this < rhs) && *this != rhs;
 		}
 	};
 
-	PAWN reserve;
-	MOVE_PAWN from;
-	MOVE_PAWN to;
+	Pawn reserve;
+	MOVE_Pawn from;
+	MOVE_Pawn to;
 	bool upgrade = false;
 	int priority = 0;
 
 	Move() : reserve(PawnDef::NONE), upgrade(false), priority(0)
 	{
-		from = MOVE_PAWN();
-		to = MOVE_PAWN();
+		from = MOVE_Pawn();
+		to = MOVE_Pawn();
 	}
 
-	Move(PAWN reserveValue, uchar fromx, uchar fromy, uchar tox, uchar toy, PAWN fromPawn, PAWN toPawn, bool upgradeValue, int priorityValue)
+	Move(Pawn reserveValue, uchar fromx, uchar fromy, uchar tox, uchar toy, Pawn fromPawn, Pawn toPawn, bool upgradeValue, int priorityValue)
 		: reserve(reserveValue), upgrade(upgradeValue), priority(priorityValue)
 	{
 		from.x = fromx;
@@ -124,12 +124,12 @@ public:
 
 		if (reserve != PawnDef::NONE)
 		{
-			//PAWN_ROLL reserve;
-			str += " " + PAWN_KANJI[reserve] + " ‘Å‚¿";
+			//Pawn_ROLL reserve;
+			str += " " + Pawn_KANJI[reserve] + " ‘Å‚¿";
 		}
 		else
 		{
-			str += " " + PAWN_KANJI[from.pawn];
+			str += " " + Pawn_KANJI[from.pawn];
 			str += "(" + std::to_string(BoardDef::WIDTH - from.x + 1) + "," + std::to_string(from.y) + ")";
 
 			//bool upgrade;
@@ -221,15 +221,15 @@ public:
 		stream += std::to_string(from.y);
 		if (from.x == 0 && from.y == 0)
 		{
-			stream += PAWN_CHAR[reserve];
+			stream += Pawn_CHAR[reserve];
 		}
 		else
 		{
-			stream += PAWN_CHAR[from.pawn];
+			stream += Pawn_CHAR[from.pawn];
 		}
 		stream += std::to_string(to.x);
 		stream += std::to_string(to.y);
-		stream += PAWN_CHAR[to.pawn];
+		stream += Pawn_CHAR[to.pawn];
 		if (upgrade)
 		{
 			stream += "t";

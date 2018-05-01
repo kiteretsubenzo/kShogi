@@ -133,7 +133,7 @@ private:
 			if (next != nodeStack.end())
 			{
 			Board::MOVE moveTop = *(top->moves.begin());
-			if (moveTop.to.x == 7 && moveTop.to.y == 0 && moveTop.from.pawn == PAWN_RYU)
+			if (moveTop.to.x == 7 && moveTop.to.y == 0 && moveTop.from.pawn == Pawn_RYU)
 			{
 			debugPrint = true;
 			}

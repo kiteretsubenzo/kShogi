@@ -9,11 +9,11 @@
 
 struct CELL
 {
-	PLAYER player;
-	PAWN pawn;
+	Player player;
+	Pawn pawn;
 
 	CELL() {}
-	CELL(const PLAYER &playerValue, const PAWN &pawnValue) : player(playerValue), pawn(pawnValue) {}
+	CELL(const Player &playerValue, const Pawn &pawnValue) : player(playerValue), pawn(pawnValue) {}
 };
 
 #if USE_PRIORITY == PRIORITY_MULTISET
@@ -153,7 +153,7 @@ public:
 				else
 				{
 					char type;
-					PLAYER player = PlayerDef::NONE;
+					Player player = PlayerDef::NONE;
 					if (c[0] == '^')
 					{
 						player = PlayerDef::FIRST;
@@ -195,7 +195,7 @@ public:
 
 		for (int i = 0; i < PawnDef::CAPTURE_MAX; i++)
 		{
-			sout += PAWN_CHAR[i];
+			sout += Pawn_CHAR[i];
 			if (captured[PlayerDef::SECOND][i] < 10)
 			{
 				sout += '0';
@@ -212,11 +212,11 @@ public:
 				if (matrix[j - 1][i].player == PlayerDef::FIRST)
 				{
 					sout += '^';
-					sout += PAWN_CHAR[matrix[j - 1][i].pawn];
+					sout += Pawn_CHAR[matrix[j - 1][i].pawn];
 				}
 				else if (matrix[j - 1][i].player == PlayerDef::SECOND)
 				{
-					sout += PAWN_CHAR[matrix[j - 1][i].pawn];
+					sout += Pawn_CHAR[matrix[j - 1][i].pawn];
 					sout += '_';
 				}
 				else
@@ -229,7 +229,7 @@ public:
 
 		for (int i = 0; i < PawnDef::CAPTURE_MAX; i++)
 		{
-			sout += PAWN_CHAR[i];
+			sout += Pawn_CHAR[i];
 			if (captured[PlayerDef::FIRST][i] < 10)
 			{
 				sout += '0';
@@ -285,7 +285,7 @@ public:
 				{
 					continue;
 				}
-				PAWN pawn = cell.pawn;
+				Pawn pawn = cell.pawn;
 				int x, y;
 				switch (pawn)
 				{
@@ -662,7 +662,7 @@ public:
 			return;
 		}
 
-		PAWN pawn = move.from.pawn;
+		Pawn pawn = move.from.pawn;
 		if (move.upgrade)
 		{
 			Upgrade(pawn);
@@ -698,7 +698,7 @@ public:
 			return;
 		}
 
-		PAWN pawn = move.from.pawn;
+		Pawn pawn = move.from.pawn;
 		if (move.upgrade)
 		{
 			Downgrade(pawn);
@@ -744,9 +744,9 @@ public:
 		}
 		SwitchTurn();
 		// 駒を取るか？
-		if (move.to.pawn != PAWN_NONE)
+		if (move.to.pawn != Pawn_NONE)
 		{
-			priority += (int)(move.to.pawn) + (int)PAWN_MAX;
+			priority += (int)(move.to.pawn) + (int)Pawn_MAX;
 		}
 		// 成るか？
 		if (move.upgrade)
@@ -761,7 +761,7 @@ public:
 	{
 		for (uchar i = 0; i < PawnDef::CAPTURE_MAX; i++)
 		{
-			std::cout << PAWN_KANJI[i] << ":" << (unsigned int)captured[PlayerDef::SECOND][i] << " ";
+			std::cout << Pawn_KANJI[i] << ":" << (unsigned int)captured[PlayerDef::SECOND][i] << " ";
 		}
 		std::cout << std::endl;
 		std::cout << "９８７６５４３２１" << std::endl;
@@ -772,10 +772,10 @@ public:
 				switch (matrix[j][i].player)
 				{
 				case PlayerDef::FIRST:
-					std::cout << "^" << PAWN_CHAR[matrix[j][i].pawn];
+					std::cout << "^" << Pawn_CHAR[matrix[j][i].pawn];
 					break;
 				case PlayerDef::SECOND:
-					std::cout << PAWN_CHAR[matrix[j][i].pawn] << "_";
+					std::cout << Pawn_CHAR[matrix[j][i].pawn] << "_";
 					break;
 				case PlayerDef::NONE:
 					std::cout << " .";
@@ -788,10 +788,10 @@ public:
 		}
 		for (uchar i = 0; i < PawnDef::CAPTURE_MAX; i++)
 		{
-			std::cout << PAWN_KANJI[i] << ":" << (unsigned int)captured[PlayerDef::FIRST][i] << " ";
+			std::cout << Pawn_KANJI[i] << ":" << (unsigned int)captured[PlayerDef::FIRST][i] << " ";
 		}
 		std::cout << std::endl;
-		//std::cout << PLAYER_STRING[(int)turn] << std::endl;
+		//std::cout << Player_STRING[(int)turn] << std::endl;
 		if (turn == PlayerDef::FIRST)
 		{
 			std::cout << "先手番" << std::endl;
@@ -818,7 +818,7 @@ public:
 	}
 
 protected:
-	bool AddMove(PAWN roll, int fromx, int fromy, int tox, int toy, bool upgrade, MoveList &moveList)
+	bool AddMove(Pawn roll, int fromx, int fromy, int tox, int toy, bool upgrade, MoveList &moveList)
 	{
 		if (matrix[toy][tox].player == turn || matrix[toy][tox].player == PlayerDef::WALL)
 		{
@@ -1200,8 +1200,8 @@ protected:
 	}
 	
 	CELL matrix[BoardDef::HEIGHT+2][BoardDef::WIDTH+2];
-	PLAYER turn;
-	PLAYER enemy;
+	Player turn;
+	Player enemy;
 
 private:
 	uchar captured[PlayerDef::MAX][PawnDef::CAPTURE_MAX];
@@ -1209,23 +1209,23 @@ private:
 	uchar gyokux[PlayerDef::MAX];
 	uchar gyokuy[PlayerDef::MAX];
 
-	static void Upgrade(PAWN &type)
+	static void Upgrade(Pawn &type)
 	{
 		type |= 0x08;
 	}
-	static void Downgrade(PAWN &type)
+	static void Downgrade(Pawn &type)
 	{
 		type &= 0x07;
 	}
-	static PAWN Down(const PAWN type)
+	static Pawn Down(const Pawn type)
 	{
 		return (type & 0x07);
 	}
-	static bool IsUpgrade(const PAWN type)
+	static bool IsUpgrade(const Pawn type)
 	{
 		return ((type & 0x08) != 0);
 	}
-	static bool IsGyokuKinUpgrade(const PAWN type)
+	static bool IsGyokuKinUpgrade(const Pawn type)
 	{
 		return (PawnDef::KIN <= type);
 	}

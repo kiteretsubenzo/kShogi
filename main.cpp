@@ -213,7 +213,7 @@ int main()
   */
   
   /*
-  Board::MOVE move{ PAWN_ROLL::NONE, 6, 1, 7, 1, PAWN_TYPE::RYU, PAWN_TYPE::NONE, false };
+  Board::MOVE move{ Pawn_ROLL::NONE, 6, 1, 7, 1, Pawn_TYPE::RYU, Pawn_TYPE::NONE, false };
 
   std::cout << board.BoardToString() << std::endl;
   std::cout << (std::string)move << std::endl;

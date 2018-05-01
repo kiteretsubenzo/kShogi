@@ -2,8 +2,8 @@
 #define DEFINITIONS_H
 
 typedef unsigned char uchar;
-typedef unsigned char PAWN;
-typedef unsigned char PLAYER;
+typedef unsigned char Pawn;
+typedef unsigned char Player;
 
 class BoardDef
 {
@@ -15,47 +15,47 @@ public:
 class PawnDef
 {
 public:
-	static const PAWN HU = 0;
-	static const PAWN KYOH = 1;
-	static const PAWN KEI = 2;
-	static const PAWN GIN = 3;
-	static const PAWN KAKU = 4;
-	static const PAWN HI = 5;
-	static const PAWN KIN = 6;
-	static const PAWN GYOKU = 7;
-	static const PAWN HUN = 8;
-	static const PAWN KYOHN = 9;
-	static const PAWN KEIN = 10;
-	static const PAWN GINN = 11;
-	static const PAWN UMA = 12;
-	static const PAWN RYU = 13;
-	static const PAWN MAX = 14;
-	static const PAWN NONE = MAX;
-	static const PAWN CAPTURE_MAX = GYOKU;
+	static const Pawn HU = 0;
+	static const Pawn KYOH = 1;
+	static const Pawn KEI = 2;
+	static const Pawn GIN = 3;
+	static const Pawn KAKU = 4;
+	static const Pawn HI = 5;
+	static const Pawn KIN = 6;
+	static const Pawn GYOKU = 7;
+	static const Pawn HUN = 8;
+	static const Pawn KYOHN = 9;
+	static const Pawn KEIN = 10;
+	static const Pawn GINN = 11;
+	static const Pawn UMA = 12;
+	static const Pawn RYU = 13;
+	static const Pawn MAX = 14;
+	static const Pawn NONE = MAX;
+	static const Pawn CAPTURE_MAX = GYOKU;
 };
 
 class PlayerDef
 {
 public:
-	static const PLAYER FIRST = 0;
-	static const PLAYER SECOND = 1;
-	static const PLAYER NONE = 2;
-	static const PLAYER WALL = 3;
+	static const Player FIRST = 0;
+	static const Player SECOND = 1;
+	static const Player NONE = 2;
+	static const Player WALL = 3;
 
-	static const PLAYER MAX = 2;
+	static const Player MAX = 2;
 };
 
-static const char PAWN_CHAR[PawnDef::MAX + 1] =
+static const char Pawn_CHAR[PawnDef::MAX + 1] =
 {
 	'h', 'y', 'e', 'g', 'u', 'r', 'k', 'o', 'H', 'Y', 'E', 'G', 'U', 'R', 'n'
 };
 
-static const std::string PAWN_KANJI[PawnDef::MAX] =
+static const std::string Pawn_KANJI[PawnDef::MAX] =
 {
 	"•à", "ˆÇ", "Œj", "‹â", "Šp", "”ò", "‹à", "‹Ê", "‚Æ", "—ß", "‰î", "‘S", "”n", "—´"
 };
 
-static const PAWN charToPawn[256] =
+static const Pawn charToPawn[256] =
 {
 	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,
 	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,	PawnDef::NONE,
