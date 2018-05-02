@@ -90,14 +90,14 @@ private:
 			return index + 1;
 		}
 
-		Node* rbegin()
+		Node& front()
 		{
-			return &nodeStack[index];
+			return nodeStack[index];
 		}
 
-		Node* parent()
+		Node& parent()
 		{
-			return &nodeStack[index-1];
+			return nodeStack[index-1];
 		}
 
 		void pop_back()
@@ -209,11 +209,10 @@ private:
 				}
 
 				// 子ノードを取得
-				//std::list<Node>::reverse_iterator childItr = nodeStack.rbegin();
-				Node* childItr = nodeStack.rbegin();
+				Node& childItr = nodeStack.front();
 
 				// 盤面を進める
-				board->Forward(childItr->moves.front());
+				board->Forward(childItr.moves.front());
 
 				// 着手を取得
 				MoveList moveList = board->GetMoveList();
@@ -221,9 +220,9 @@ private:
 				// 新しい盤面に着手が無かったら勝負あり
 				if (moveList.empty())
 				{
-					childItr->score = Score::SCORE_WIN;
-					childItr->score.moveList.clear();
-					nodeStack.GetHistory(childItr->score.moveList);
+					childItr.score = Score::SCORE_WIN;
+					childItr.score.moveList.clear();
+					nodeStack.GetHistory(childItr.score.moveList);
 					break;
 				}
 
@@ -231,15 +230,15 @@ private:
 				{
 					// 新しい子が末端だったら追加せずに評価
 					// 評価
-					nodeStack.GetHistory(childItr->score.moveList);
+					nodeStack.GetHistory(childItr.score.moveList);
 
 					// 親ノードに得点をマージ
 					Score score = Score(board->GetEvaluate(moveList));
-					if (score != SCORE_NONE || (limit == true && (window.Negate() == childItr->score || window.Negate() < childItr->score)))
+					if (score != SCORE_NONE || (limit == true && (window.Negate() == childItr.score || window.Negate() < childItr.score)))
 					{
-						if (score.Negate() < childItr->score)
+						if (score.Negate() < childItr.score)
 						{
-							childItr->score = score.Negate();
+							childItr.score = score.Negate();
 						}
 					}
 
@@ -259,32 +258,31 @@ private:
 				}
 
 				// 子ノードを取得
-				//std::list<Node>::reverse_iterator childItr = nodeStack.rbegin();
-				Node* childItr = nodeStack.rbegin();
+				Node& childItr = nodeStack.front();
 
 				// 親ノードに得点をマージ
-				if (2 <= nodeStack.size() && childItr->score != SCORE_NONE)
+				if (2 <= nodeStack.size() && childItr.score != SCORE_NONE)
 				{
 					//std::list<Node>::reverse_iterator parentItr = std::next(nodeStack.rbegin());
-					Node* parentItr = nodeStack.parent();
-					if (parentItr->score == SCORE_NONE || (limit == true && (window.Negate() == parentItr->score || window.Negate() < parentItr->score)))
+					Node& parentItr = nodeStack.parent();
+					if (parentItr.score == SCORE_NONE || (limit == true && (window.Negate() == parentItr.score || window.Negate() < parentItr.score)))
 					{
-						parentItr->score = childItr->score.Negate();
+						parentItr.score = childItr.score.Negate();
 					}
 					else
 					{
-						if (childItr->score.Negate() < parentItr->score)
+						if (childItr.score.Negate() < parentItr.score)
 						{
-							parentItr->score = childItr->score.Negate();
+							parentItr.score = childItr.score.Negate();
 						}
 					}
 				}
 
 				// 子ノードの着手を戻す
-				board->Back(childItr->moves.front());
+				board->Back(childItr.moves.front());
 
 				// スコアがwindowの外側だったら終わり
-				if (childItr->score != SCORE_NONE && window != SCORE_NONE && (limit == false || childItr->score < window.Negate()))
+				if (childItr.score != SCORE_NONE && window != SCORE_NONE && (limit == false || childItr.score < window.Negate()))
 				{
 					Score windowTmp = window;
 
@@ -293,17 +291,17 @@ private:
 						windowTmp = window.Negate();
 					}
 
-					if (windowTmp < childItr->score)
+					if (windowTmp < childItr.score)
 					{
-						childItr->moves.clear();
+						childItr.moves.clear();
 					}
 				}
 
 				// 次の指し手を取得
-				if (1 < childItr->moves.size())
+				if (1 < childItr.moves.size())
 				{
-					childItr->moves.pop_front();
-					childItr->score = SCORE_NONE;
+					childItr.moves.pop_front();
+					childItr.score = SCORE_NONE;
 					break;
 				}
 
@@ -314,7 +312,7 @@ private:
 				// ルートノードなので終わり
 				if (nodeStack.size() <= 1)
 				{
-					CallBack("jobid:" + jobId + ",score:" + nodeStack.rbegin()->score.toJson() + ",count:" + std::to_string(i));
+					CallBack("jobid:" + jobId + ",score:" + nodeStack.front().score.toJson() + ",count:" + std::to_string(i));
 					return true;
 				}
 			}
