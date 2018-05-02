@@ -4,8 +4,9 @@
 #define PRIORITY_NONE		0
 #define PRIORITY_LIST		1
 #define PRIORITY_MULTISET	2
+#define PRIORITY_BUFFER		3
 
-#define USE_PRIORITY PRIORITY_NONE
+#define USE_PRIORITY PRIORITY_BUFFER
 
 struct CELL
 {
@@ -48,6 +49,45 @@ public:
 private:
 	std::multiset<Move> list;
 };
+#elif USE_PRIORITY == PRIORITY_BUFFER
+class MoveList
+{
+public:
+	bool empty() const
+	{
+		return first == last;
+	}
+	unsigned int size() const
+	{
+		return last - first;
+	}
+	void clear()
+	{
+		first = 0;
+		last = 0;
+	}
+	void push(const Move &move)
+	{
+		list[last] = move;
+		last++;
+	}
+	Move front() const
+	{
+		return list[first];
+	}
+	void pop_front()
+	{
+		first++;
+	}
+	void sort()
+	{
+		//list.sort();
+	}
+private:
+	Move list[1024];
+	int first = 0;
+	int last = 0;
+};
 #else
 class MoveList
 {
@@ -80,7 +120,7 @@ public:
 	{
 		list.sort();
 	}
-public:
+private:
 	std::list<Move> list;
 };
 #endif
@@ -735,7 +775,7 @@ public:
 	int GetPriority(const Move &move)
 	{
 		int priority = 0;
-#if USE_PRIORITY != PRIORITY_NONE
+#if USE_PRIORITY != PRIORITY_NONE && USE_PRIORITY != PRIORITY_BUFFER
 		// 王手がかかってるか？
 		SwitchTurn();
 		if (IsEnd())
