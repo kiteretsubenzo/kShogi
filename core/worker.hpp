@@ -57,6 +57,9 @@ public:
 	}
 		
 private:
+
+	static const int DEEP_MAX = 64;
+
 	struct Node
 	{
 		MoveList moves;
@@ -64,6 +67,76 @@ private:
 
 		Node() : score(SCORE_NONE) {}
 		Node(const MoveList &movesValue, const Score &scoreValue) : moves(movesValue), score(scoreValue) {}
+	};
+
+	class NodeStack
+	{
+	public:
+		NodeStack() {}
+
+		void clear()
+		{
+			index = -1;
+		}
+
+		void push_back(const Node &node)
+		{
+			index++;
+			nodeStack[index] = node;
+		}
+
+		unsigned int size() const
+		{
+			return index + 1;
+		}
+
+		Node* rbegin()
+		{
+			return &nodeStack[index];
+		}
+
+		Node* parent()
+		{
+			return &nodeStack[index-1];
+		}
+
+		void pop_back()
+		{
+			index--;
+		}
+
+		void GetHistory(std::list<Move> &moveList) const
+		{
+			for (unsigned int i = 0; i < size(); i++)
+			{
+				if (0 < nodeStack[i].moves.size())
+				{
+					moveList.push_back(nodeStack[i].moves.front());
+				}
+			}
+		}
+
+		void debugPrint() const
+		{
+			//std::cout << '\r' << std::flush;
+			for (unsigned int i=0; i<size(); i++)
+			{
+				Node ite = nodeStack[i];
+				if (0 < ite.moves.size())
+				{
+					std::cout << ":" << ite.moves.front().DebugString() << "(" << (std::string)(ite.score) << ")";
+				}
+				else
+				{
+					std::cout << ":EMPTY(" << (std::string)(ite.score) << ")";
+				}
+			}
+			std::cout << std::endl;
+		}
+
+	private:
+		Node nodeStack[64];
+		int index = 0;
 	};
 
 	enum STATE
@@ -80,7 +153,8 @@ private:
 	unsigned int deep = 0;
 	bool limit = false;
 
-	std::list<Node> nodeStack;
+	//std::list<Node> nodeStack;
+	NodeStack nodeStack;
 
 	void SearchInit(const std::string &job)
 	{
@@ -125,44 +199,18 @@ private:
 		for (int i = 0; i < 0xffff; i++)
 		{
 			bool debugPrint = true && debug;
-			/*
-			if ( 1 < nodeStack.size() )
-			{
-			std::list<NODE>::iterator top = nodeStack.begin();
-			std::list<NODE>::iterator next = ++top;
-			if (next != nodeStack.end())
-			{
-			Board::MOVE moveTop = *(top->moves.begin());
-			if (moveTop.to.x == 7 && moveTop.to.y == 0 && moveTop.from.pawn == Pawn_RYU)
-			{
-			debugPrint = true;
-			}
-			}
-			}
-			*/
 
 			// forward
 			while (true)
 			{
 				if (debugPrint)
 				{
-					//std::cout << '\r' << std::flush;
-					for (std::list<Node>::iterator ite = nodeStack.begin(); ite != nodeStack.end(); ++ite)
-					{
-						if (0 < ite->moves.size())
-						{
-							std::cout << ":" << ite->moves.front().DebugString() << "(" << (std::string)(ite->score) << ")";
-						}
-						else
-						{
-							std::cout << ":EMPTY(" << (std::string)(ite->score) << ")";
-						}
-					}
-					std::cout << std::endl;
+					nodeStack.debugPrint();
 				}
 
 				// 子ノードを取得
-				std::list<Node>::reverse_iterator childItr = nodeStack.rbegin();
+				//std::list<Node>::reverse_iterator childItr = nodeStack.rbegin();
+				Node* childItr = nodeStack.rbegin();
 
 				// 盤面を進める
 				board->Forward(childItr->moves.front());
@@ -175,13 +223,7 @@ private:
 				{
 					childItr->score = Score::SCORE_WIN;
 					childItr->score.moveList.clear();
-					for (std::list<Node>::const_iterator ite = nodeStack.cbegin(); ite != nodeStack.cend(); ++ite)
-					{
-						if (0 < ite->moves.size())
-						{
-							childItr->score.moveList.push_back(ite->moves.front());
-						}
-					}
+					nodeStack.GetHistory(childItr->score.moveList);
 					break;
 				}
 
@@ -189,13 +231,7 @@ private:
 				{
 					// 新しい子が末端だったら追加せずに評価
 					// 評価
-					for (std::list<Node>::const_iterator ite = nodeStack.cbegin(); ite != nodeStack.cend(); ++ite)
-					{
-						if (0 < ite->moves.size())
-						{
-							childItr->score.moveList.push_back(ite->moves.front());
-						}
-					}
+					nodeStack.GetHistory(childItr->score.moveList);
 
 					// 親ノードに得点をマージ
 					Score score = Score(board->GetEvaluate(moveList));
@@ -219,33 +255,18 @@ private:
 			{
 				if (debugPrint)
 				{
-					//std::cout << '\r' << std::flush;
-					for (std::list<Node>::iterator ite = nodeStack.begin(); ite != nodeStack.end(); ++ite)
-					{
-						if (0 < ite->moves.size())
-						{
-							std::cout << ":" << ite->moves.front().DebugString() << "(" << (std::string)(ite->score) << ")";
-						}
-						else
-						{
-							std::cout << ":EMPTY(" << (std::string)(ite->score) << ")";
-						}
-					}
-					std::cout << std::endl;
+					nodeStack.debugPrint();
 				}
 
 				// 子ノードを取得
-				std::list<Node>::reverse_iterator childItr = nodeStack.rbegin();
+				//std::list<Node>::reverse_iterator childItr = nodeStack.rbegin();
+				Node* childItr = nodeStack.rbegin();
 
 				// 親ノードに得点をマージ
 				if (2 <= nodeStack.size() && childItr->score != SCORE_NONE)
 				{
-					std::list<Node>::reverse_iterator parentItr = std::next(nodeStack.rbegin());
-					//if( debugPrint )
-					//{
-					//std::cout << parentItr->score << " " << -childItr->score << std::endl;
-					//}
-
+					//std::list<Node>::reverse_iterator parentItr = std::next(nodeStack.rbegin());
+					Node* parentItr = nodeStack.parent();
 					if (parentItr->score == SCORE_NONE || (limit == true && (window.Negate() == parentItr->score || window.Negate() < parentItr->score)))
 					{
 						parentItr->score = childItr->score.Negate();
@@ -293,7 +314,7 @@ private:
 				// ルートノードなので終わり
 				if (nodeStack.size() <= 1)
 				{
-					CallBack("jobid:" + jobId + ",score:" + childItr->score.toJson() + ",count:" + std::to_string(i));
+					CallBack("jobid:" + jobId + ",score:" + nodeStack.rbegin()->score.toJson() + ",count:" + std::to_string(i));
 					return true;
 				}
 			}

@@ -153,7 +153,7 @@ int main()
 	"h00 y00 e00 g00 u00 r00 k01\n"
 	"second"
   };
-  board.Init(testProblem3test[2]);
+  board.Init(testProblem3test[0]);
   std::list<Move> history;
   /*
   board.PrintBoard();
@@ -239,10 +239,10 @@ int main()
 	Score aiScore = SCORE_NONE;
 
 	ai.SetMode("scouttest");
-	ai.SetSearchScore(-SCORE_WIN);
+	ai.SetSearchScore(-Score::SCORE_WIN);
 	//ai.SetSearchScore(Score("{score:99999,moves:[n0701o0700Rf,k0000n0601nf]}"));
 	//ai.SetLimit(true);
-	ai.SetDebug(true);
+	ai.SetDebug(false);
 	ai.Start(board);
 
 	while (ai.Tick() == false) {
@@ -251,12 +251,12 @@ int main()
 
 	ai.GetResult(aiScore);
 
-	MOVE aiMove = aiScore.moveList.front();
+	Move aiMove = aiScore.moveList.front();
 
 	std::cout << "best move is " << aiMove.DebugString() << std::endl;
 	std::cout << "best score is " << aiScore.toJson() << std::endl;
 	board.PrintBoard();
-	for (std::list<MOVE>::const_iterator ite = aiScore.moveList.cbegin(); ite != aiScore.moveList.cend(); ++ite)
+	for (std::list<Move>::const_iterator ite = aiScore.moveList.cbegin(); ite != aiScore.moveList.cend(); ++ite)
 	{
 		std::cout << ite->DebugString() << " : ";
 	}
