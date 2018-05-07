@@ -107,6 +107,7 @@ private:
 
 		void GetHistory(std::list<Move> &moveList) const
 		{
+			moveList.clear();
 			for (unsigned int i = 0; i < size(); i++)
 			{
 				if (0 < nodeStack[i].moves.size())
@@ -119,19 +120,20 @@ private:
 		void debugPrint() const
 		{
 			//std::cout << '\r' << std::flush;
+			std::string str = "";
 			for (unsigned int i=0; i<size(); i++)
 			{
 				Node ite = nodeStack[i];
 				if (0 < ite.moves.size())
 				{
-					std::cout << ":" << ite.moves.front().DebugString() << "(" << (std::string)(ite.score) << ")";
+					str += ":" + ite.moves.front().DebugString() + "(" + (std::string)(ite.score) + ")";
 				}
 				else
 				{
-					std::cout << ":EMPTY(" << (std::string)(ite.score) << ")";
+					str += ":EMPTY(" + (std::string)(ite.score) + ")";
 				}
 			}
-			std::cout << std::endl;
+			std::cout << str << std::endl;
 		}
 
 	private:
@@ -196,7 +198,7 @@ private:
 
 	bool SearchImplementation()
 	{
-		for (int i = 0; i < 0xffff; i++)
+		for (int i = 0; i < 0xff; i++)
 		{
 			bool debugPrint = true && debug;
 
@@ -221,7 +223,6 @@ private:
 				if (moveList.empty())
 				{
 					childItr.score = Score::SCORE_WIN;
-					childItr.score.moveList.clear();
 					nodeStack.GetHistory(childItr.score.moveList);
 					break;
 				}
@@ -234,7 +235,7 @@ private:
 
 					// 親ノードに得点をマージ
 					Score score = Score(board->GetEvaluate(moveList));
-					if (score != SCORE_NONE || (limit == true && (window.Negate() == childItr.score || window.Negate() < childItr.score)))
+					if (score != SCORE_NONE || (limit == true && window.Negate() <= childItr.score))
 					{
 						if (score.Negate() < childItr.score)
 						{
@@ -265,7 +266,7 @@ private:
 				{
 					//std::list<Node>::reverse_iterator parentItr = std::next(nodeStack.rbegin());
 					Node& parentItr = nodeStack.parent();
-					if (parentItr.score == SCORE_NONE || (limit == true && (window.Negate() == parentItr.score || window.Negate() < parentItr.score)))
+					if (parentItr.score == SCORE_NONE || (limit == true && window.Negate() <= parentItr.score))
 					{
 						parentItr.score = childItr.score.Negate();
 					}

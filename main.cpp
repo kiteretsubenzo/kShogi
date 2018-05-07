@@ -153,7 +153,7 @@ int main()
 	"h00 y00 e00 g00 u00 r00 k01\n"
 	"second"
   };
-  board.Init(testProblem3test[0]);
+  board.Init(boardInits[4]);
   std::list<Move> history;
   /*
   board.PrintBoard();
@@ -239,10 +239,10 @@ int main()
 	Score aiScore = SCORE_NONE;
 
 	ai.SetMode("scouttest");
-	ai.SetSearchScore(-Score::SCORE_WIN);
-	//ai.SetSearchScore(Score("{score:99999,moves:[n0701o0700Rf,k0000n0601nf]}"));
+	ai.SetSearchScore(Score::SCORE_WIN);
+	//ai.SetSearchScore(Score("{score:99999,moves:[82o93nf,81R84hf]}"));
 	//ai.SetLimit(true);
-	ai.SetDebug(false);
+	ai.SetDebug(true);
 	ai.Start(board);
 
 	while (ai.Tick() == false) {

@@ -358,13 +358,16 @@ public:
 				case PawnDef::KEI:
 					x = i - 1;
 					y = j - forward - forward;
-					if (y != lineTop && y != lineMid)
+					if (0 < y && y < BoardDef::HEIGHT + 1)
 					{
-						AddMove(PawnDef::NONE, i, j, x, y, false, moveList);
-					}
-					if (lineMin <= y && y <= lineMax)
-					{
-						AddMove(PawnDef::NONE, i, j, x, y, true, moveList);
+						if (y != lineTop && y != lineMid)
+						{
+							AddMove(PawnDef::NONE, i, j, x, y, false, moveList);
+						}
+						if (lineMin <= y && y <= lineMax)
+						{
+							AddMove(PawnDef::NONE, i, j, x, y, true, moveList);
+						}
 					}
 					break;
 				case PawnDef::GIN:
@@ -676,7 +679,6 @@ public:
 						default:
 							break;
 						}
-						break;
 					}
 
 					break;

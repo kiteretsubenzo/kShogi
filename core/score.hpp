@@ -6,6 +6,7 @@ struct Score
 	static const int SCORE_WIN = 99999;
 
 	int score;
+	// TODO: 固定バッファ化する
 	std::list<Move> moveList;
 
 	Score(const int &scoreValue)
@@ -106,6 +107,16 @@ struct Score
 	bool operator>(const Score& rhs) const
 	{
 		return !(*this < rhs) && *this != rhs;
+	}
+
+	bool operator<=(const Score& rhs) const
+	{
+		return *this < rhs || *this == rhs;
+	}
+
+	bool operator>=(const Score& rhs) const
+	{
+		return *this > rhs || *this == rhs;
 	}
 
 	operator std::string() const
