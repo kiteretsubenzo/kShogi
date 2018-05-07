@@ -4,6 +4,7 @@
 struct Score
 {
 	static const int SCORE_WIN = 99999;
+	static const int SCORE_UNVALUED = (std::numeric_limits<int>::max() - 1);
 
 	int score;
 	// TODO: 固定バッファ化する
@@ -55,8 +56,31 @@ struct Score
 		return str + "}";
 	}
 
+	static Score &Min(Score &lhs, Score &rhs)
+	{
+		if (lhs.score != SCORE_UNVALUED && rhs.score != SCORE_UNVALUED)
+		{
+			if (lhs < rhs)
+			{
+				return lhs;
+			}
+			return rhs;
+		}
+
+		if (lhs.score == SCORE_UNVALUED)
+		{
+			return rhs;
+		}
+
+		return lhs;
+	}
+
 	Score Negate() const
 	{
+		if (score == SCORE_UNVALUED)
+		{
+			return *this;
+		}
 		return Score(-score, moveList);
 	}
 
@@ -139,6 +163,6 @@ struct Score
 	}
 };
 
-static const Score SCORE_NONE(std::numeric_limits<int>::max() - 1);
+static const Score SCORE_NONE(Score::SCORE_UNVALUED);
 
 #endif // SCORE_H

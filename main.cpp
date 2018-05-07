@@ -233,15 +233,15 @@ int main()
 #endif
 	Ai ai;
 	ai.AddWorker();
-#if false
+#if true
 	std::chrono::system_clock::time_point start, end;
 
 	Score aiScore = SCORE_NONE;
 
 	ai.SetMode("scouttest");
-	ai.SetSearchScore(Score::SCORE_WIN);
-	//ai.SetSearchScore(Score("{score:99999,moves:[82o93nf,81R84hf]}"));
-	//ai.SetLimit(true);
+	//ai.SetSearchScore(Score::SCORE_WIN);
+	ai.SetSearchScore(Score("{score:99999,moves:[82o93nf,81R84hf]}"));
+	ai.SetLimit(true);
 	ai.SetDebug(true);
 	ai.Start(board);
 

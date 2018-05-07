@@ -65,7 +65,11 @@ private:
 		MoveList moves;
 		Score score;
 
-		Node() : score(SCORE_NONE) {}
+		Node() : score(SCORE_NONE)
+		{
+			moves.clear();
+		}
+		Node(const MoveList &movesValue) : moves(movesValue), score(SCORE_NONE) {}
 		Node(const MoveList &movesValue, const Score &scoreValue) : moves(movesValue), score(scoreValue) {}
 	};
 
@@ -191,9 +195,9 @@ private:
 
 		nodeStack.clear();
 		// ルート
-		nodeStack.push_back(Node( MoveList(), SCORE_NONE ));
+		nodeStack.push_back(Node( MoveList() ));
 		// 自分
-		nodeStack.push_back(Node( board->GetMoveList(), SCORE_NONE ));
+		nodeStack.push_back(Node( board->GetMoveList() ));
 	}
 
 	bool SearchImplementation()
@@ -235,19 +239,16 @@ private:
 
 					// 親ノードに得点をマージ
 					Score score = Score(board->GetEvaluate(moveList));
-					if (score != SCORE_NONE || (limit == true && window.Negate() <= childItr.score))
+					if (limit == false || window.Negate() <= childItr.score)
 					{
-						if (score.Negate() < childItr.score)
-						{
-							childItr.score = score.Negate();
-						}
+						childItr.score = Score::Min(childItr.score, score.Negate());
 					}
 
 					break;
 				}
 
 				// 子供を追加してもう一回
-				nodeStack.push_back(Node( std::move(moveList), SCORE_NONE ));
+				nodeStack.push_back(Node( std::move(moveList) ));
 			}
 
 			// back
@@ -262,20 +263,16 @@ private:
 				Node& childItr = nodeStack.front();
 
 				// 親ノードに得点をマージ
-				if (2 <= nodeStack.size() && childItr.score != SCORE_NONE)
+				if (2 <= nodeStack.size())
 				{
-					//std::list<Node>::reverse_iterator parentItr = std::next(nodeStack.rbegin());
 					Node& parentItr = nodeStack.parent();
-					if (parentItr.score == SCORE_NONE || (limit == true && window.Negate() <= parentItr.score))
+					if (limit == true && window.Negate() <= parentItr.score)
 					{
 						parentItr.score = childItr.score.Negate();
 					}
 					else
 					{
-						if (childItr.score.Negate() < parentItr.score)
-						{
-							parentItr.score = childItr.score.Negate();
-						}
+						parentItr.score = Score::Min(parentItr.score, childItr.score.Negate());
 					}
 				}
 
@@ -283,7 +280,7 @@ private:
 				board->Back(childItr.moves.front());
 
 				// スコアがwindowの外側だったら終わり
-				if (childItr.score != SCORE_NONE && window != SCORE_NONE && (limit == false || childItr.score < window.Negate()))
+				if (window != SCORE_NONE && (limit == false || childItr.score < window.Negate()))
 				{
 					Score windowTmp = window;
 
