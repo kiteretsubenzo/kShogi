@@ -240,6 +240,7 @@ bool Test()
 			std::cout << "NO." << (i + 1) << std::endl;
 			board.PrintBoard();
 			std::cout << strs[1] << " -> " << scoutMove.DebugString() << " -> false" << std::endl;
+			std::cout << (std::string)scoutMove << std::endl;
 			return false;
 		}
 	}

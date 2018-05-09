@@ -109,7 +109,7 @@ private:
 			index--;
 		}
 
-		void GetHistory(std::list<Move> &moveList) const
+		void GetHistory(ScoreMoveList &moveList) const
 		{
 			moveList.clear();
 			for (unsigned int i = 0; i < size(); i++)
@@ -142,7 +142,7 @@ private:
 
 	private:
 		Node nodeStack[64];
-		int index = 0;
+		int index = -1;
 	};
 
 	enum STATE
@@ -195,7 +195,7 @@ private:
 
 		nodeStack.clear();
 		// ルート
-		nodeStack.push_back(Node( MoveList() ));
+		nodeStack.push_back(Node());
 		// 自分
 		nodeStack.push_back(Node( board->GetMoveList() ));
 	}

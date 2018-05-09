@@ -242,7 +242,7 @@ int main()
 	//ai.SetSearchScore(Score::SCORE_WIN);
 	ai.SetSearchScore(Score("{score:99999,moves:[82o93nf,81R84hf]}"));
 	ai.SetLimit(true);
-	ai.SetDebug(true);
+	ai.SetDebug(false);
 	ai.Start(board);
 
 	while (ai.Tick() == false) {
@@ -255,12 +255,10 @@ int main()
 
 	std::cout << "best move is " << aiMove.DebugString() << std::endl;
 	std::cout << "best score is " << aiScore.toJson() << std::endl;
+
 	board.PrintBoard();
-	for (std::list<Move>::const_iterator ite = aiScore.moveList.cbegin(); ite != aiScore.moveList.cend(); ++ite)
-	{
-		std::cout << ite->DebugString() << " : ";
-	}
-	std::cout << std::endl;
+	std::cout << aiScore.moveList.DebugString() << std::endl;
+	std::cout << (std::string)aiScore.moveList << std::endl;
   
 	ai.Stop();
   

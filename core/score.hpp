@@ -1,21 +1,134 @@
 #ifndef SCORE_H
 #define SCORE_H
 
+class ScoreMoveList
+{
+public:
+	ScoreMoveList() {}
+
+	void clear()
+	{
+		index = -1;
+	}
+
+	void push_back(const Move &move)
+	{
+		index++;
+		moveList[index] = move;
+	}
+
+	unsigned int size() const
+	{
+		return index + 1;
+	}
+
+	void pop_back()
+	{
+		index--;
+	}
+
+	Move& front()
+	{
+		return moveList[0];
+	}
+
+	std::string DebugString() const
+	{
+		std::string str = "";
+		for (unsigned int i = 0; i<size(); i++)
+		{
+			str += moveList[i].DebugString() + " : ";
+		}
+		return str;
+	}
+
+	bool operator<(const ScoreMoveList& rhs) const
+	{
+		if (size() > rhs.size())
+		{
+			return true;
+		}
+		if (size() < rhs.size())
+		{
+			return false;
+		}
+
+		for (unsigned int i=0; i<size(); i++)
+		{
+			if (moveList[i] < rhs.moveList[i])
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool operator==(const ScoreMoveList& rhs) const
+	{
+		if (index != rhs.index)
+		{
+			return false;
+		}
+
+		for (int i = 0; i < index; i++)
+		{
+			if (moveList[i] != rhs.moveList[i])
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	std::string toJson() const
+	{
+		std::string str = "moves:[";
+		if (0 < size())
+		{
+			str += (std::string)(moveList[0]);
+			for (unsigned int i=1; i<size(); i++)
+			{
+				str += "," + (std::string)(moveList[i]);
+			}
+		}
+		str += "]";
+		return str;
+	}
+
+	operator std::string() const
+	{
+		std::string str = "(";
+		if (0 < size())
+		{
+			str += (std::string)(moveList[0]);
+			for (unsigned int i = 1; i<size(); i++)
+			{
+				str += "," + (std::string)(moveList[i]);
+			}
+		}
+		str += ")";
+		return str;
+	}
+
+private:
+	Move moveList[64];
+	int index = -1;
+};
+
 struct Score
 {
 	static const int SCORE_WIN = 99999;
 	static const int SCORE_UNVALUED = (std::numeric_limits<int>::max() - 1);
 
 	int score;
-	// TODO: 固定バッファ化する
-	std::list<Move> moveList;
+	ScoreMoveList moveList;
 
 	Score(const int &scoreValue)
 	{
 		score = scoreValue;
 	}
 
-	Score(const int &scoreValue, const std::list<Move> &moveListValue)
+	Score(const int &scoreValue, const ScoreMoveList &moveListValue)
 	{
 		score = scoreValue;
 		moveList = moveListValue;
@@ -36,23 +149,7 @@ struct Score
 	{
 		std::string str = "{";
 		str += "score:" + std::to_string(score);
-		if (0 < moveList.size())
-		{
-			str += ",moves:[";
-			std::list<Move>::const_iterator ite = moveList.cbegin();
-			str += (std::string)(*ite);
-			++ite;
-			while (ite != moveList.cend())
-			{
-				str += "," + (std::string)(*ite);
-				++ite;
-			}
-			str += "]";
-		}
-		else
-		{
-			str += ",moves:[]";
-		}
+		str += "," + moveList.toJson();
 		return str + "}";
 	}
 
@@ -107,27 +204,9 @@ struct Score
 		{
 			return false;
 		}
-		if (moveList.size() > rhs.moveList.size())
-		{
-			return true;
-		}
-		if (moveList.size() < rhs.moveList.size())
-		{
-			return false;
-		}
-#if false
-		for (std::list<MOVE>::const_iterator ite = moveList.cbegin(), rhsite = rhs.moveList.cbegin(); ite != moveList.cend() && rhsite != rhs.moveList.cend(); ++ite, ++rhsite)
-		{
-			if (*ite < *rhsite)
-			{
-				return true;
-			}
-		}
-		return false;
-#else
 		return (moveList < rhs.moveList);
-#endif
 	}
+
 	bool operator>(const Score& rhs) const
 	{
 		return !(*this < rhs) && *this != rhs;
@@ -146,19 +225,8 @@ struct Score
 	operator std::string() const
 	{
 		std::string str;
-		str = std::to_string(score) + "(";
-		if (0 < moveList.size())
-		{
-			std::list<Move>::const_iterator ite = moveList.cbegin();
-			str += (std::string)(*ite);
-			++ite;
-			while (ite != moveList.cend())
-			{
-				str += "," + (std::string)(*ite);
-				++ite;
-			}
-		}
-		str += ")";
+		str = std::to_string(score);
+		str += (std::string)(moveList);
 		return str;
 	}
 };
