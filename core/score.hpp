@@ -17,6 +17,12 @@ public:
 		moveList[index] = move;
 	}
 
+	void copy(const ScoreMoveList &moveListValue)
+	{
+		memcpy(moveList, moveListValue.moveList, moveListValue.size()*sizeof(Move));
+		index = moveListValue.index;
+	}
+
 	unsigned int size() const
 	{
 		return index + 1;
@@ -63,6 +69,11 @@ public:
 		return false;
 	}
 
+	bool operator>(const ScoreMoveList& rhs) const
+	{
+		return !(*this < rhs) && *this != rhs;
+	}
+
 	bool operator==(const ScoreMoveList& rhs) const
 	{
 		if (index != rhs.index)
@@ -78,6 +89,11 @@ public:
 			}
 		}
 		return true;
+	}
+
+	bool operator!=(const ScoreMoveList& rhs) const
+	{
+		return !(*this == rhs);
 	}
 
 	std::string toJson() const
@@ -123,6 +139,12 @@ struct Score
 	int score;
 	ScoreMoveList moveList;
 
+	Score(const Score &scoreValue)
+	{
+		score = scoreValue.score;
+		moveList.copy(scoreValue.moveList);
+	}
+
 	Score(const int &scoreValue)
 	{
 		score = scoreValue;
@@ -131,7 +153,7 @@ struct Score
 	Score(const int &scoreValue, const ScoreMoveList &moveListValue)
 	{
 		score = scoreValue;
-		moveList = moveListValue;
+		moveList.copy(moveListValue);
 	}
 
 	Score(const std::string &json)
