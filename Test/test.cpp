@@ -230,7 +230,7 @@ bool Test()
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 
-		Score scoutScore = SCORE_NONE;
+		Score scoutScore;
 		ai.GetResult(scoutScore);
 
 		Move scoutMove = scoutScore.moveList.front();

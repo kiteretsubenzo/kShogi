@@ -44,7 +44,7 @@ private:
 	bool limit = false;
 	bool debug = true;
 
-	Score bestScore = SCORE_NONE;
+	Score bestScore;
 	
 	std::list<std::shared_ptr<WorkerController>> workers;
 	std::mutex mtx;

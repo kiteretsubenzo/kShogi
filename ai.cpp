@@ -79,7 +79,7 @@ void Ai::Start(Board boardValue)
 	{
 		std::list<Move> moves;
 		moves.push_back(MOVE_ZERO);
-		JOB job = { GetJobId(), moves, SCORE_NONE, 4, board };
+		JOB job = { GetJobId(), moves, Score(), 4, board };
 		jobs.push_back(job);
 	}
 

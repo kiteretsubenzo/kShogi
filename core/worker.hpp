@@ -60,6 +60,7 @@ private:
 
 	static const int DEEP_MAX = 64;
 	MoveList moveListTmp;
+	Score windowTmp;
 
 	struct Node
 	{
@@ -167,7 +168,7 @@ private:
 
 	std::string jobId = "";
 	bool debug = true;
-	Score window = SCORE_NONE;
+	Score window;
 	unsigned int deep = 0;
 	bool limit = false;
 
@@ -199,7 +200,7 @@ private:
 		}
 		else
 		{
-			window = SCORE_NONE;
+			window.clear();
 		}
 
 		deep = std::stoi(deepStr);
@@ -294,9 +295,9 @@ private:
 				board->Back(childItr.moves.front());
 
 				// スコアがwindowの外側だったら終わり
-				if (window != SCORE_NONE && (limit == false || childItr.score < window.Negate()))
+				if (window.score != Score::SCORE_UNVALUED && (limit == false || childItr.score < window.Negate()))
 				{
-					Score windowTmp = window;
+					windowTmp.copy(window);
 
 					if ((nodeStack.size() & 01) == 1)
 					{
@@ -313,7 +314,7 @@ private:
 				if (1 < childItr.moves.size())
 				{
 					childItr.moves.pop_front();
-					childItr.score = SCORE_NONE;
+					childItr.score.clear();
 					break;
 				}
 

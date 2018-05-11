@@ -236,7 +236,7 @@ int main()
 #if true
 	std::chrono::system_clock::time_point start, end;
 
-	Score aiScore = SCORE_NONE;
+	Score aiScore;
 
 	ai.SetMode("scouttest");
 	ai.SetSearchScore(-Score::SCORE_WIN);
@@ -288,7 +288,7 @@ int main()
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 
-		Score scoutScore = SCORE_NONE;
+		Score scoutScore;
 		ai.GetResult(scoutScore);
 
 		std::cout << (std::string)scoutScore << std::endl;
