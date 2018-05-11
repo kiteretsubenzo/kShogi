@@ -59,6 +59,7 @@ public:
 private:
 
 	static const int DEEP_MAX = 64;
+	MoveList moveListTmp;
 
 	struct Node
 	{
@@ -234,11 +235,10 @@ private:
 				board->Forward(childItr.moves.front());
 
 				// 着手を取得
-				MoveList moveList;
-				board->GetMoveList(moveList);
+				board->GetMoveList(moveListTmp);
 
 				// 新しい盤面に着手が無かったら勝負あり
-				if (moveList.empty())
+				if (moveListTmp.empty())
 				{
 					childItr.score = Score::SCORE_WIN;
 					nodeStack.GetHistory(childItr.score.moveList);
@@ -254,7 +254,7 @@ private:
 					// 親ノードに得点をマージ
 					if (limit == false || window.Negate() <= childItr.score)
 					{
-						Score score = Score(board->GetEvaluate(moveList));
+						Score score = Score(board->GetEvaluate(moveListTmp));
 						childItr.score = Score::Min(childItr.score, score.Negate());
 					}
 
@@ -262,7 +262,7 @@ private:
 				}
 
 				// 子供を追加してもう一回
-				nodeStack.push_back(moveList);
+				nodeStack.push_back(moveListTmp);
 			}
 
 			// back
