@@ -53,6 +53,13 @@ private:
 class MoveList
 {
 public:
+	void copy(const MoveList &moveList)
+	{
+		int offset = moveList.first * sizeof(Move);
+		memcpy(list + offset, moveList.list + offset, moveList.size() * sizeof(Move));
+		first = moveList.first;
+		last = moveList.last;
+	}
 	bool empty() const
 	{
 		return first == last;
@@ -291,9 +298,9 @@ public:
 		return sout;
 	}
 	
-	MoveList GetMoveList()
+	MoveList GetMoveList(MoveList &moveList)
 	{
-		MoveList moveList;
+		moveList.clear();
 
 		uchar lineMax, lineMin, lineTop, lineMid;
 

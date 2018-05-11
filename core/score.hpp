@@ -139,6 +139,12 @@ struct Score
 	int score;
 	ScoreMoveList moveList;
 
+	Score()
+	{
+		score = SCORE_UNVALUED;
+		moveList.clear();
+	}
+
 	Score(const Score &scoreValue)
 	{
 		score = scoreValue.score;
@@ -148,6 +154,7 @@ struct Score
 	Score(const int &scoreValue)
 	{
 		score = scoreValue;
+		moveList.clear();
 	}
 
 	Score(const int &scoreValue, const ScoreMoveList &moveListValue)
@@ -161,6 +168,7 @@ struct Score
 		std::unordered_map<std::string, std::string> strs = Json::fromJson(json);
 		score = std::stoi(strs["score"]);
 		std::list<std::string> moves = Json::fromJsonArray(strs["moves"]);
+		moveList.clear();
 		for (std::list<std::string>::const_iterator ite = moves.cbegin(); ite != moves.cend(); ++ite)
 		{
 			moveList.push_back(Move(*ite));
@@ -173,6 +181,18 @@ struct Score
 		str += "score:" + std::to_string(score);
 		str += "," + moveList.toJson();
 		return str + "}";
+	}
+
+	void copy(const Score &scoreValue)
+	{
+		score = scoreValue.score;
+		moveList.copy(scoreValue.moveList);
+	}
+
+	void clear()
+	{
+		score = SCORE_UNVALUED;
+		moveList.clear();
 	}
 
 	static Score &Min(Score &lhs, Score &rhs)

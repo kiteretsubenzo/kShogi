@@ -65,12 +65,17 @@ private:
 		MoveList moves;
 		Score score;
 
-		Node() : score(SCORE_NONE)
+		Node()
 		{
 			moves.clear();
+			score.clear();
 		}
-		Node(const MoveList &movesValue) : moves(movesValue), score(SCORE_NONE) {}
-		Node(const MoveList &movesValue, const Score &scoreValue) : moves(movesValue), score(scoreValue) {}
+
+		void setMoves(const MoveList &movesValue)
+		{
+			moves.copy(movesValue);
+			score.clear();
+		}
 	};
 
 	class NodeStack
@@ -87,6 +92,12 @@ private:
 		{
 			index++;
 			nodeStack[index] = node;
+		}
+
+		void push_back(const MoveList &moveList)
+		{
+			index++;
+			nodeStack[index].setMoves(moveList);
 		}
 
 		unsigned int size() const
@@ -127,7 +138,7 @@ private:
 			std::string str = "";
 			for (unsigned int i=0; i<size(); i++)
 			{
-				Node ite = nodeStack[i];
+				const Node& ite = nodeStack[i];
 				if (0 < ite.moves.size())
 				{
 					str += ":" + ite.moves.front().DebugString() + "(" + (std::string)(ite.score) + ")";
@@ -197,7 +208,9 @@ private:
 		// ルート
 		nodeStack.push_back(Node());
 		// 自分
-		nodeStack.push_back(Node( board->GetMoveList() ));
+		MoveList moveList;
+		board->GetMoveList(moveList);
+		nodeStack.push_back(moveList);
 	}
 
 	bool SearchImplementation()
@@ -221,7 +234,8 @@ private:
 				board->Forward(childItr.moves.front());
 
 				// 着手を取得
-				MoveList moveList = board->GetMoveList();
+				MoveList moveList;
+				board->GetMoveList(moveList);
 
 				// 新しい盤面に着手が無かったら勝負あり
 				if (moveList.empty())
@@ -238,9 +252,9 @@ private:
 					nodeStack.GetHistory(childItr.score.moveList);
 
 					// 親ノードに得点をマージ
-					Score score = Score(board->GetEvaluate(moveList));
 					if (limit == false || window.Negate() <= childItr.score)
 					{
+						Score score = Score(board->GetEvaluate(moveList));
 						childItr.score = Score::Min(childItr.score, score.Negate());
 					}
 
@@ -248,7 +262,7 @@ private:
 				}
 
 				// 子供を追加してもう一回
-				nodeStack.push_back(Node( std::move(moveList) ));
+				nodeStack.push_back(moveList);
 			}
 
 			// back

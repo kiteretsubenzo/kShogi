@@ -4,21 +4,21 @@
 class Move
 {
 public:
-	class MOVE_Pawn
+	class MovePawn
 	{
 	public:
 		uchar x;
 		uchar y;
 		Pawn pawn;
 
-		MOVE_Pawn()
+		MovePawn()
 		{
 			x = 0;
 			y = 0;
 			pawn = PawnDef::NONE;
 		}
 
-		bool operator==(const MOVE_Pawn& rhs) const
+		bool operator==(const MovePawn& rhs) const
 		{
 			return (
 				x == rhs.x &&
@@ -26,12 +26,12 @@ public:
 				pawn == rhs.pawn
 				);
 		}
-		bool operator!=(const MOVE_Pawn& rhs) const
+		bool operator!=(const MovePawn& rhs) const
 		{
 			return !(*this == rhs);
 		}
 
-		bool operator<(const MOVE_Pawn& rhs) const
+		bool operator<(const MovePawn& rhs) const
 		{
 			if (x > rhs.x)
 			{
@@ -62,22 +62,22 @@ public:
 
 			return false;
 		}
-		bool operator>(const MOVE_Pawn& rhs) const
+		bool operator>(const MovePawn& rhs) const
 		{
 			return !(*this < rhs) && *this != rhs;
 		}
 	};
 
 	Pawn reserve;
-	MOVE_Pawn from;
-	MOVE_Pawn to;
+	MovePawn from;
+	MovePawn to;
 	bool upgrade = false;
 	int priority = 0;
 
 	Move() : reserve(PawnDef::NONE), upgrade(false), priority(0)
 	{
-		from = MOVE_Pawn();
-		to = MOVE_Pawn();
+		from = MovePawn();
+		to = MovePawn();
 	}
 
 	Move(Pawn reserveValue, uchar fromx, uchar fromy, uchar tox, uchar toy, Pawn fromPawn, Pawn toPawn, bool upgradeValue, int priorityValue)
