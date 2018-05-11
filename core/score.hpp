@@ -175,6 +175,12 @@ struct Score
 		}
 	}
 
+	void setScore(int scoreValue)
+	{
+		score = scoreValue;
+		moveList.clear();
+	}
+
 	std::string toJson() const
 	{
 		std::string str = "{";
@@ -264,6 +270,11 @@ struct Score
 		return *this > rhs || *this == rhs;
 	}
 
+	void operator=(const Score& rhs)
+	{
+		copy(rhs);
+	}
+
 	operator std::string() const
 	{
 		std::string str;
@@ -272,7 +283,5 @@ struct Score
 		return str;
 	}
 };
-
-static const Score SCORE_NONE(Score::SCORE_UNVALUED);
 
 #endif // SCORE_H

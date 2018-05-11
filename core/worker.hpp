@@ -60,7 +60,7 @@ private:
 
 	static const int DEEP_MAX = 64;
 	MoveList moveListTmp;
-	Score windowTmp;
+	Score scoreTmp;
 
 	struct Node
 	{
@@ -168,7 +168,7 @@ private:
 
 	std::string jobId = "";
 	bool debug = true;
-	Score window;
+	Score window, windowNega;
 	unsigned int deep = 0;
 	bool limit = false;
 
@@ -202,6 +202,7 @@ private:
 		{
 			window.clear();
 		}
+		windowNega = window.Negate();
 
 		deep = std::stoi(deepStr);
 		limit = (limitStr == "true");
@@ -253,10 +254,10 @@ private:
 					nodeStack.GetHistory(childItr.score.moveList);
 
 					// 親ノードに得点をマージ
-					if (limit == false || window.Negate() <= childItr.score)
+					if (limit == false || windowNega <= childItr.score)
 					{
-						Score score = Score(board->GetEvaluate(moveListTmp));
-						childItr.score = Score::Min(childItr.score, score.Negate());
+						scoreTmp.setScore(board->GetEvaluate(moveListTmp));
+						childItr.score = Score::Min(childItr.score, scoreTmp.Negate());
 					}
 
 					break;
@@ -281,7 +282,7 @@ private:
 				if (2 <= nodeStack.size())
 				{
 					Node& parentItr = nodeStack.parent();
-					if (limit == true && window.Negate() <= parentItr.score)
+					if (limit == true && windowNega <= parentItr.score)
 					{
 						parentItr.score = childItr.score.Negate();
 					}
@@ -295,18 +296,21 @@ private:
 				board->Back(childItr.moves.front());
 
 				// スコアがwindowの外側だったら終わり
-				if (window.score != Score::SCORE_UNVALUED && (limit == false || childItr.score < window.Negate()))
+				if (window.score != Score::SCORE_UNVALUED && (limit == false || childItr.score < windowNega))
 				{
-					windowTmp.copy(window);
-
-					if ((nodeStack.size() & 01) == 1)
+					if ((nodeStack.size() & 01) == 0)
 					{
-						windowTmp = window.Negate();
+						if (window < childItr.score)
+						{
+							childItr.moves.clear();
+						}
 					}
-
-					if (windowTmp < childItr.score)
+					else
 					{
-						childItr.moves.clear();
+						if (windowNega < childItr.score)
+						{
+							childItr.moves.clear();
+						}
 					}
 				}
 
