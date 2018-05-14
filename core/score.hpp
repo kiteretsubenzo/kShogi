@@ -189,12 +189,6 @@ struct Score
 		return str + "}";
 	}
 
-	void copy(const Score &scoreValue)
-	{
-		score = scoreValue.score;
-		moveList.copy(scoreValue.moveList);
-	}
-
 	void clear()
 	{
 		score = SCORE_UNVALUED;
@@ -272,7 +266,8 @@ struct Score
 
 	void operator=(const Score& rhs)
 	{
-		copy(rhs);
+		score = rhs.score;
+		moveList.copy(rhs.moveList);
 	}
 
 	operator std::string() const
