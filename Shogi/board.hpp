@@ -809,6 +809,50 @@ public:
 		return priority;
 	}
 
+	CELL GetCell(int x, int y) { return matrix[y][x]; }
+	bool GetCell(int tox, int toy, CELL &cell) const
+	{
+		if (matrix[toy][tox].player != turn)
+		{
+			return false;
+		}
+
+		cell = matrix[toy][tox];
+
+		return true;
+	}
+
+	Player GetPlayer()
+	{
+		return turn;
+	}
+
+	uchar GetReserve(Player player, Pawn pawn)
+	{
+		return captured[player][pawn];
+	}
+
+	static void Upgrade(Pawn &type)
+	{
+		type |= 0x08;
+	}
+	static void Downgrade(Pawn &type)
+	{
+		type &= 0x07;
+	}
+	static Pawn Down(const Pawn type)
+	{
+		return (type & 0x07);
+	}
+	static bool IsUpgrade(const Pawn type)
+	{
+		return ((type & 0x08) != 0);
+	}
+	static bool IsGyokuKinUpgrade(const Pawn type)
+	{
+		return (PawnDef::KIN <= type);
+	}
+
 	void PrintBoard() const
 	{
 		for (uchar i = 0; i < PawnDef::CAPTURE_MAX; i++)
@@ -1223,29 +1267,6 @@ protected:
 
 		return false;
 	}
-
-	CELL GetCell(int x, int y) { return matrix[y][x]; }
-	bool GetCell(int tox, int toy, CELL &cell) const
-	{
-		if (matrix[toy][tox].player != turn)
-		{
-			return false;
-		}
-
-		cell = matrix[toy][tox];
-
-		return true;
-	}
-
-	Player GetPlayer()
-	{
-		return turn;
-	}
-
-	uchar GetReserve(Player player, Pawn pawn)
-	{
-		return captured[player][pawn];
-	}
 	
 	void SwitchTurn()
 	{
@@ -1259,27 +1280,6 @@ protected:
 			turn = PlayerDef::FIRST;
 			enemy = PlayerDef::SECOND;
 		}
-	}
-
-	static void Upgrade(Pawn &type)
-	{
-		type |= 0x08;
-	}
-	static void Downgrade(Pawn &type)
-	{
-		type &= 0x07;
-	}
-	static Pawn Down(const Pawn type)
-	{
-		return (type & 0x07);
-	}
-	static bool IsUpgrade(const Pawn type)
-	{
-		return ((type & 0x08) != 0);
-	}
-	static bool IsGyokuKinUpgrade(const Pawn type)
-	{
-		return (PawnDef::KIN <= type);
 	}
 	
 	CELL matrix[BoardDef::HEIGHT+2][BoardDef::WIDTH+2];
