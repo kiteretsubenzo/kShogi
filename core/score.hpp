@@ -65,6 +65,10 @@ public:
 			{
 				return true;
 			}
+			if (moveList[i] > rhs.moveList[i])
+			{
+				return false;
+			}
 		}
 		return false;
 	}

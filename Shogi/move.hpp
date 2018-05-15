@@ -33,11 +33,11 @@ public:
 
 		bool operator<(const MovePawn& rhs) const
 		{
-			if (x > rhs.x)
+			if (x < rhs.x)
 			{
 				return true;
 			}
-			if (x < rhs.x)
+			if (x > rhs.x)
 			{
 				return false;
 			}

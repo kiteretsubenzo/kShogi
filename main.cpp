@@ -237,19 +237,20 @@ int main()
 #if true
 	std::chrono::system_clock::time_point start, end;
 
-	Score aiScore;
-
 	ai.SetMode("scouttest");
+	ai.SetDebug(false);
+
 	ai.SetSearchScore(Score::SCORE_WIN);
 	//ai.SetSearchScore(Score("{score:99999,moves:[82o93nf,81R84hf]}"));
-	//ai.SetLimit(true);
-	ai.SetDebug(false);
+	ai.SetSearchScore(Score("{score:99999,moves:[82o81Rf,00k72nf]}"));
+	ai.SetLimit(true);
 	ai.Start(board);
 
 	while (ai.Tick() == false) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 
+	Score aiScore;
 	ai.GetResult(aiScore);
 
 	Move aiMove = aiScore.moveList.front();
