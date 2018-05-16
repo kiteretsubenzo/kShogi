@@ -170,7 +170,7 @@ private:
 	bool debug = true;
 	Score window, windowNega;
 	unsigned int deep = 0;
-	bool limit = false;
+	Score limit;
 
 	//std::list<Node> nodeStack;
 	NodeStack nodeStack;
@@ -205,7 +205,15 @@ private:
 		windowNega = window.Negate();
 
 		deep = std::stoi(deepStr);
-		limit = (limitStr == "true");
+
+		if (limitStr != "")
+		{
+			limit = Score(limitStr);
+		}
+		else
+		{
+			limit.clear();
+		}
 
 		nodeStack.clear();
 		// ルート
@@ -252,7 +260,7 @@ private:
 					// 新しい子が末端だったら追加せずに評価
 
 					// 親ノードに評価をマージ
-					if (limit == false || windowNega <= childItr.score)
+					if (limit.score == Score::SCORE_UNVALUED || limit <= childItr.score)
 					{
 						scoreTmp.setScore(board->GetEvaluate(moveListTmp));
 						childItr.score = Score::Min(childItr.score, scoreTmp.Negate());
@@ -282,21 +290,36 @@ private:
 				if (2 <= nodeStack.size())
 				{
 					Node& parentItr = nodeStack.parent();
-					if (limit == true && windowNega <= parentItr.score)
+					
+					if (limit.score != Score::SCORE_UNVALUED && limit <= parentItr.score && childItr.score.Negate() < limit)
 					{
 						parentItr.score = childItr.score.Negate();
 					}
 					else
 					{
 						parentItr.score = Score::Min(parentItr.score, childItr.score.Negate());
+						int a = 0;
 					}
+					/*
+					if (limit.score != Score::SCORE_UNVALUED)
+					{
+						if (limit <= parentItr.score && childItr.score.Negate() < limit)
+						{
+							parentItr.score = childItr.score.Negate();
+						}
+					}
+					else
+					{
+						parentItr.score = Score::Min(parentItr.score, childItr.score.Negate());
+					}
+					*/
 				}
 
 				// 子ノードの着手を戻す
 				board->Back(childItr.moves.front());
 
 				// スコアがwindowの外側だったら終わり
-				if (window.score != Score::SCORE_UNVALUED && (limit == false || childItr.score < windowNega))
+				if (window.score != Score::SCORE_UNVALUED && (limit.score == Score::SCORE_UNVALUED || childItr.score < limit))
 				{
 					if ((nodeStack.size() & 01) == 0)
 					{

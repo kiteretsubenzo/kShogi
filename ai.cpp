@@ -72,14 +72,14 @@ void Ai::Start(Board boardValue)
 		std::list<Move> moves;
 		moves.push_back(MOVE_ZERO);
 		bestScore = 0;
-		JOB job = { GetJobId(), { MOVE_ZERO }, searchScore.Negate(), 4, board };
+		JOB job = { GetJobId(), { MOVE_ZERO }, searchScore.Negate(), limit, 4, board };
 		jobs.push_back(job);
 	}
 	else if(mode == "minimax")
 	{
 		std::list<Move> moves;
 		moves.push_back(MOVE_ZERO);
-		JOB job = { GetJobId(), moves, Score(), 4, board };
+		JOB job = { GetJobId(), moves, Score(), limit, 4, board };
 		jobs.push_back(job);
 	}
 
@@ -126,14 +126,8 @@ void Ai::GetJob(std::string &job)
 		job = "jobid:" + jobIdString;
 		job += ",window:" + jobStruct.window.toJson();
 		job += ",deep:" + std::to_string(jobStruct.deep);
-		if (limit)
-		{
-			job += ",limit:true";
-		}
-		else
-		{
-			job += ",limit:false";
-		}
+		job += ",limit:" + jobStruct.limit.toJson();
+
 		if (debug)
 		{
 			job += ",debug:true";
@@ -204,7 +198,7 @@ bool Ai::Tick()
 			else
 			{
 				bestScore = score;
-				JOB job = { GetJobId(), { MOVE_ZERO }, bestScore.Negate(), 4, board };
+				JOB job = { GetJobId(), { MOVE_ZERO }, bestScore.Negate(), limit, 4, board };
 				jobs.push_back(job);
 			}
 		}

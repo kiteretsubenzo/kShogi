@@ -11,6 +11,7 @@ public:
 		unsigned int jobId;
 		std::list<Move> moves;
 		Score window;
+		Score limit;
 		int deep;
 		Board board;
 	};
@@ -23,7 +24,7 @@ public:
 	void SetBoard(const Board &boardValue) { board = boardValue; }
 	void SetMode(const std::string &modeValue) { mode = modeValue; }
 	void SetSearchScore(const Score &score) { searchScore = score; }
-	void SetLimit(const bool &limitValue) { limit = limitValue; }
+	void SetLimit(const Score &limitValue) { limit = limitValue; }
 	void SetDebug(const bool &debugValue) { debug = debugValue; }
 	void Start(Board boardValue);
 	void CallBack(const std::string &str);
@@ -41,7 +42,7 @@ private:
 	
 	std::string mode = "minimax";
 	Score searchScore = Score(std::numeric_limits<int>::min());
-	bool limit = false;
+	Score limit = Score();
 	bool debug = true;
 
 	Score bestScore;

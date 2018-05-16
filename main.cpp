@@ -152,22 +152,9 @@ int main()
 	" . . . . . . . . .\n"
 	"h00 y00 e00 g00 u00 r00 k01\n"
 	"second"
-	,
-	"h16 y02 e04 g04 u02 r01 k03\n"
-	" . . . . . . .^Ry_\n"
-	" . . . . . . ...h_\n"
-	" . . . . . . . . .\n"
-	" . .o_ . . . .h_ .\n"
-	" . . . . . . .^h .\n"
-	" . . . . . .^y . .\n"
-	" . . . . . . . . .\n"
-	" . . . . . . . . .\n"
-	" . . . . . . . . .\n"
-	"h00 y00 e00 g00 u00 r00 k01\n"
-	"second"
   };
   //board.Init(testProblem3test[0]);
-  board.Init(boardInits[5]);
+  board.Init(boardInits[4]);
   std::list<Move> history;
   /*
   board.PrintBoard();
@@ -251,12 +238,14 @@ int main()
 	std::chrono::system_clock::time_point start, end;
 
 	ai.SetMode("scouttest");
-	ai.SetDebug(false);
+	ai.SetDebug(true);
 
 	ai.SetSearchScore(Score::SCORE_WIN);
-	//ai.SetSearchScore(Score("{score:99999,moves:[82o93nf,81R84hf]}"));
+	ai.SetSearchScore(Score("{score:99999,moves:[82o93nf,81R84hf]}"));
 	//ai.SetSearchScore(Score("{score:99999,moves:[82o81Rf,00k72nf]}"));
-	ai.SetLimit(false);
+	ai.SetLimit(Score());
+	//ai.SetLimit(Score("{score:99999,moves:[82o93nf,81R84hf]}"));
+	//ai.SetLimit(Score("{score:99999,moves:[82o81Rf,00k72nf]}"));
 	ai.Start(board);
 
 	while (ai.Tick() == false) {
