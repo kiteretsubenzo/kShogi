@@ -218,6 +218,37 @@ struct Score
 		return lhs;
 	}
 
+	static Score &NegaMin(Score &lhs, Score &rhs)
+	{
+		rhs.score *= -1;
+
+		if (lhs.score != SCORE_UNVALUED && rhs.score != SCORE_UNVALUED)
+		{
+			if (lhs.score < rhs.score)
+			{
+				return lhs;
+			}
+			if (lhs.score > rhs.score)
+			{
+				return rhs;
+			}
+
+			if (lhs.moveList < rhs.moveList)
+			{
+				return rhs;
+			}
+
+			return lhs;
+		}
+
+		if (lhs.score == SCORE_UNVALUED)
+		{
+			return rhs;
+		}
+
+		return lhs;
+	}
+
 	Score Negate() const
 	{
 		if (score == SCORE_UNVALUED)

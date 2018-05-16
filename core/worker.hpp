@@ -263,7 +263,7 @@ private:
 					if (limit.score == Score::SCORE_UNVALUED || limit <= childItr.score)
 					{
 						scoreTmp.setScore(board->GetEvaluate(moveListTmp));
-						childItr.score = Score::Min(childItr.score, scoreTmp.Negate());
+						childItr.score = Score::NegaMin(childItr.score, scoreTmp);
 					}
 
 					nodeStack.GetHistory(childItr.score.moveList);
@@ -297,8 +297,8 @@ private:
 					}
 					else
 					{
-						parentItr.score = Score::Min(parentItr.score, childItr.score.Negate());
-						int a = 0;
+						scoreTmp = childItr.score;
+						parentItr.score = Score::NegaMin(parentItr.score, scoreTmp);
 					}
 					/*
 					if (limit.score != Score::SCORE_UNVALUED)

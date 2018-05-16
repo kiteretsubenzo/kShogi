@@ -238,13 +238,13 @@ int main()
 	std::chrono::system_clock::time_point start, end;
 
 	ai.SetMode("scouttest");
-	ai.SetDebug(true);
+	ai.SetDebug(false);
 
 	ai.SetSearchScore(Score::SCORE_WIN);
-	ai.SetSearchScore(Score("{score:99999,moves:[82o93nf,81R84hf]}"));
+	//ai.SetSearchScore(Score("{score:99999,moves:[82o93nf,81R84hf]}"));
 	//ai.SetSearchScore(Score("{score:99999,moves:[82o81Rf,00k72nf]}"));
-	ai.SetLimit(Score());
-	//ai.SetLimit(Score("{score:99999,moves:[82o93nf,81R84hf]}"));
+	//ai.SetLimit(Score());
+	ai.SetLimit(Score("{score:99999,moves:[82o93nf,81R84hf]}"));
 	//ai.SetLimit(Score("{score:99999,moves:[82o81Rf,00k72nf]}"));
 	ai.Start(board);
 
