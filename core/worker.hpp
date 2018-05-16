@@ -263,7 +263,7 @@ private:
 					if (limit.score == Score::SCORE_UNVALUED || limit <= childItr.score)
 					{
 						scoreTmp.setScore(board->GetEvaluate(moveListTmp));
-						childItr.score = Score::NegaMin(childItr.score, scoreTmp);
+						childItr.score = Score::NegaAndMin(childItr.score, scoreTmp);
 					}
 
 					nodeStack.GetHistory(childItr.score.moveList);
@@ -290,29 +290,26 @@ private:
 				if (2 <= nodeStack.size())
 				{
 					Node& parentItr = nodeStack.parent();
-					
-					if (limit.score != Score::SCORE_UNVALUED && limit <= parentItr.score && childItr.score.Negate() < limit)
-					{
-						parentItr.score = childItr.score.Negate();
-					}
-					else
-					{
-						scoreTmp = childItr.score;
-						parentItr.score = Score::NegaMin(parentItr.score, scoreTmp);
-					}
-					/*
 					if (limit.score != Score::SCORE_UNVALUED)
 					{
-						if (limit <= parentItr.score && childItr.score.Negate() < limit)
+						if (childItr.score.Negate() < limit)
 						{
-							parentItr.score = childItr.score.Negate();
+							if (parentItr.score.score == Score::SCORE_UNVALUED || limit <= parentItr.score)
+							{
+								parentItr.score = childItr.score.Negate();
+							}
+							else
+							{
+								scoreTmp = childItr.score;
+								parentItr.score = Score::NegaAndMin(parentItr.score, scoreTmp);
+							}
 						}
 					}
 					else
 					{
-						parentItr.score = Score::Min(parentItr.score, childItr.score.Negate());
+						scoreTmp = childItr.score;
+						parentItr.score = Score::NegaAndMin(parentItr.score, scoreTmp);
 					}
-					*/
 				}
 
 				// 子ノードの着手を戻す

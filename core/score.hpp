@@ -218,7 +218,8 @@ struct Score
 		return lhs;
 	}
 
-	static Score &NegaMin(Score &lhs, Score &rhs)
+	// rhs‚Í”j‰ó‚³‚ê‚Ü‚·
+	static Score &NegaAndMin(Score &lhs, Score &rhs)
 	{
 		rhs.score *= -1;
 

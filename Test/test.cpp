@@ -207,7 +207,7 @@ bool Test()
 	}
 	*/
 	// 3手詰めテスト
-#if false
+#if true
 	std::chrono::system_clock::time_point  start, end;
 	start = std::chrono::system_clock::now();
 
