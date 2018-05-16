@@ -250,15 +250,15 @@ private:
 				if (deep <= nodeStack.size())
 				{
 					// 新しい子が末端だったら追加せずに評価
-					// 評価
-					nodeStack.GetHistory(childItr.score.moveList);
 
-					// 親ノードに得点をマージ
+					// 親ノードに評価をマージ
 					if (limit == false || windowNega <= childItr.score)
 					{
 						scoreTmp.setScore(board->GetEvaluate(moveListTmp));
 						childItr.score = Score::Min(childItr.score, scoreTmp.Negate());
 					}
+
+					nodeStack.GetHistory(childItr.score.moveList);
 
 					break;
 				}
