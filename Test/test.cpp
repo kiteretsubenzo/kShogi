@@ -22,6 +22,7 @@
 #include "escape.h"
 #include "scout.h"
 #include "problem_3.h"
+#include "limit.h"
 
 bool Test()
 {
@@ -248,6 +249,53 @@ bool Test()
 	end = std::chrono::system_clock::now();
 	long long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 	std::cout << milliseconds << std::endl;
+#endif
+	// リミットテスト
+#if true
+	ai.SetDebug(false);
+	std::cout << "limit test" << std::endl;
+	for (unsigned int i = 0; i < testLimit.size(); i++)
+	{
+		std::cout << "NO." << (i + 1) << std::endl;
+
+		std::vector<std::string> strs = Json::split(testLimit[i], ';');
+
+		board.Init(strs[0]);
+
+		std::vector<std::string> tests = Json::split(strs[1], '\n');
+		
+		// 点数を求める
+		Score limit = Score();
+		for (int j = 0; j < tests.size(); j++)
+		{
+			ai.SetMode("scouttest");
+			ai.SetSearchScore(Score::SCORE_WIN);
+			ai.SetLimit(limit);
+			ai.Start(board);
+
+			while (ai.Tick() == false) {
+				std::this_thread::sleep_for(std::chrono::milliseconds(1));
+			}
+
+			Score scoutScore;
+			ai.GetResult(scoutScore);
+
+			scoutScore.score *= -1;
+
+			std::cout << (std::string)scoutScore << std::endl;
+
+			if (scoutScore != Score(tests[j]))
+			{
+				std::cout << "NO." << (i + 1) << std::endl;
+				board.PrintBoard();
+				std::cout << (std::string)Score(tests[j]) << " -> " << (std::string)scoutScore << " -> false" << std::endl;
+				std::cout << (std::string)scoutScore << std::endl;
+				return false;
+			}
+
+			limit.copy(scoutScore);
+		}
+	}
 #endif
 	
 	return true;

@@ -322,7 +322,14 @@ struct Score
 		return *this > rhs || *this == rhs;
 	}
 
+	/*
 	void operator=(const Score& rhs)
+	{
+		score = rhs.score;
+		moveList.copy(rhs.moveList);
+	}
+	*/
+	void copy(const Score& rhs)
 	{
 		score = rhs.score;
 		moveList.copy(rhs.moveList);

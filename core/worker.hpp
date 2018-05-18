@@ -250,7 +250,7 @@ private:
 				// 新しい盤面に着手が無かったら勝負あり
 				if (moveListTmp.empty())
 				{
-					childItr.score = Score::SCORE_WIN;
+					childItr.score.copy(Score::SCORE_WIN);
 					nodeStack.GetHistory(childItr.score.moveList);
 					break;
 				}
@@ -263,7 +263,7 @@ private:
 					if (limit.score == Score::SCORE_UNVALUED || limit <= childItr.score)
 					{
 						scoreTmp.setScore(board->GetEvaluate(moveListTmp));
-						childItr.score = Score::NegaAndMin(childItr.score, scoreTmp);
+						childItr.score.copy(Score::NegaAndMin(childItr.score, scoreTmp));
 					}
 
 					nodeStack.GetHistory(childItr.score.moveList);
@@ -296,19 +296,19 @@ private:
 						{
 							if (parentItr.score.score == Score::SCORE_UNVALUED || limit <= parentItr.score)
 							{
-								parentItr.score = childItr.score.Negate();
+								parentItr.score.copy(childItr.score.Negate());
 							}
 							else
 							{
-								scoreTmp = childItr.score;
-								parentItr.score = Score::NegaAndMin(parentItr.score, scoreTmp);
+								scoreTmp.copy(childItr.score);
+								parentItr.score.copy(Score::NegaAndMin(parentItr.score, scoreTmp));
 							}
 						}
 					}
 					else
 					{
-						scoreTmp = childItr.score;
-						parentItr.score = Score::NegaAndMin(parentItr.score, scoreTmp);
+						scoreTmp.copy(childItr.score);
+						parentItr.score.copy(Score::NegaAndMin(parentItr.score, scoreTmp));
 					}
 				}
 
