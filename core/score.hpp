@@ -130,7 +130,7 @@ public:
 		return str;
 	}
 
-private:
+public:
 	Move moveList[64];
 	int index = -1;
 };
@@ -237,6 +237,28 @@ struct Score
 			if (lhs.moveList < rhs.moveList)
 			{
 				return rhs;
+			}
+
+
+			if (lhs.moveList.size() > rhs.moveList.size())
+			{
+				return lhs;
+			}
+			if (lhs.moveList.size() < rhs.moveList.size())
+			{
+				return rhs;
+			}
+
+			for (unsigned int i = 0; i<lhs.moveList.size(); i++)
+			{
+				if (lhs.moveList.moveList[i] < rhs.moveList.moveList[i])
+				{
+					return rhs;
+				}
+				if (lhs.moveList.moveList[i] > rhs.moveList.moveList[i])
+				{
+					return lhs;
+				}
 			}
 
 			return lhs;
