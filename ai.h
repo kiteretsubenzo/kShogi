@@ -13,6 +13,7 @@ public:
 		Score limit;
 		int deep;
 		Board board;
+		std::string parameter;
 	};
 
 	Ai();
@@ -56,7 +57,7 @@ private:
 
 	std::list<JOB> jobs;
 	//std::unordered_map<std::string, std::list<Move>> waits;
-	std::unordered_map<std::string, bool> waits;
+	std::unordered_map<std::string, std::string> waits;
 	std::list<std::string> results;
 
 	unsigned int jobId = 0;

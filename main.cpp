@@ -165,9 +165,22 @@ int main()
 	" . . . . . . . . .\n"
 	"h01 y00 e00 g00 u00 r00 k01\n"
 	"second"
+	,
+	"h00 y00 e00 g00 u00 r00 k00\n"
+	" . . . . . .^r . .\n"
+	" . . . .k_ .o_ . .\n"
+	" . . . . . . . . .\n"
+	" . . . . . .^e . .\n"
+	" . . . .^h . . .u_\n"
+	" . . . . . . .^r .\n"
+	" . . . . . . . . .\n"
+	" . . . . . . . . .\n"
+	" . . . . . . . . .\n"
+	"h00 y00 e00 g00 u00 r00 k01\n"
+	"second"
   };
   //board.Init(testProblem3test[0]);
-  board.Init(boardInits[4]);
+  board.Init(boardInits[6]);
   std::list<Move> history;
   /*
   board.PrintBoard();
@@ -247,7 +260,7 @@ int main()
 #endif
 	Ai ai;
 	ai.AddWorker();
-#if true
+#if false
 	std::chrono::system_clock::time_point start, end;
 
 	ai.SetMode("scouttest");
@@ -288,7 +301,7 @@ int main()
   
 	std::cout << "end" << std::endl;
 #endif
-#if false
+#if true
 	std::chrono::system_clock::time_point start, end;
 
 	ai.SetMode("ranking");

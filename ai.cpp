@@ -80,12 +80,14 @@ void Ai::Start(Board boardValue)
 	}
 	else if (mode == "ranking")
 	{
+		board.PrintBoard();
 		MoveList moveList;
 		board.GetMoveList(moveList);
 		for (int i = 0; i < moveList.size(); i++)
 		{
+			std::cout << moveList.at(i).DebugString() << std::endl;
 			board.Forward(moveList.at(i));
-			JOB job = { GetJobId(), Score(), Score(), 3, board };
+			JOB job = { GetJobId(), Score(), Score(), 4, board, (std::string)moveList.at(i) };
 			jobs.push_back(job);
 			board.Back(moveList.at(i));
 		}
@@ -145,7 +147,7 @@ void Ai::GetJob(std::string &job)
 			job += ",debug:false";
 		}
 		job += ",board:" + jobStruct.board.BoardToString();
-		waits[jobIdString] = true;
+		waits[jobIdString] = jobStruct.parameter;
 		jobs.pop_front();
 	}
 	else
@@ -233,6 +235,8 @@ bool Ai::Tick()
 		{
 			if (debugAi)
 			{
+				Move move(waits[jobId]);
+				std::cout << move.DebugString() << std::endl;
 				std::cout << "score is " << (std::string)score << " best score is " << (std::string)bestScore << std::endl;
 			}
 			if (bestScore < score.Negate())
