@@ -9,7 +9,7 @@ public:
 	struct JOB
 	{
 		unsigned int jobId;
-		std::list<Move> moves;
+		//std::list<Move> moves;
 		Score window;
 		Score limit;
 		int deep;
@@ -53,7 +53,8 @@ private:
 	bool ready = true;
 
 	std::list<JOB> jobs;
-	std::unordered_map<std::string, std::list<Move>> waits;
+	//std::unordered_map<std::string, std::list<Move>> waits;
+	std::unordered_map<std::string, bool> waits;
 	std::list<std::string> results;
 
 	unsigned int jobId = 0;
