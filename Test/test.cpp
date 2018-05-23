@@ -208,7 +208,7 @@ bool Test()
 	}
 	*/
 	// 3手詰めテスト
-#if true
+#if false
 	std::chrono::system_clock::time_point  start, end;
 	start = std::chrono::system_clock::now();
 
@@ -251,7 +251,7 @@ bool Test()
 	std::cout << milliseconds << std::endl;
 #endif
 	// リミットテスト
-#if true
+#if false
 	ai.SetDebug(false);
 	std::cout << "limit test" << std::endl;
 	for (unsigned int i = 0; i < testLimit.size(); i++)

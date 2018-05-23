@@ -90,6 +90,10 @@ public:
 	{
 		//list.sort();
 	}
+	Move& at(int index)
+	{
+		return list[index];
+	}
 private:
 	Move list[1024];
 	int first = 0;

@@ -9,7 +9,6 @@ public:
 	struct JOB
 	{
 		unsigned int jobId;
-		//std::list<Move> moves;
 		Score window;
 		Score limit;
 		int deep;

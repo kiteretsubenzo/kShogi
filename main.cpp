@@ -247,7 +247,7 @@ int main()
 #endif
 	Ai ai;
 	ai.AddWorker();
-#if true
+#if false
 	std::chrono::system_clock::time_point start, end;
 
 	ai.SetMode("scouttest");
@@ -285,6 +285,35 @@ int main()
   
 	ai.Stop();
   
+	std::cout << "end" << std::endl;
+#endif
+#if true
+	std::chrono::system_clock::time_point start, end;
+
+	ai.SetMode("ranking");
+	ai.SetDebug(false);
+
+	ai.SetSearchScore(Score::SCORE_WIN);
+	ai.Start(board);
+
+	while (ai.Tick() == false) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	}
+
+	Score aiScore;
+	ai.GetResult(aiScore);
+
+	Move aiMove = aiScore.moveList.front();
+
+	std::cout << "best move is " << aiMove.DebugString() << std::endl;
+	std::cout << "best score is " << aiScore.toJson() << std::endl;
+
+	board.PrintBoard();
+	std::cout << aiScore.moveList.DebugString() << std::endl;
+	std::cout << (std::string)aiScore.moveList << std::endl;
+
+	ai.Stop();
+
 	std::cout << "end" << std::endl;
 #endif
 #if false

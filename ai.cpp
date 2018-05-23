@@ -78,6 +78,18 @@ void Ai::Start(Board boardValue)
 		JOB job = { GetJobId(), Score(), limit, 4, board };
 		jobs.push_back(job);
 	}
+	else if (mode == "ranking")
+	{
+		MoveList moveList;
+		board.GetMoveList(moveList);
+		for (int i = 0; i < moveList.size(); i++)
+		{
+			board.Forward(moveList.at(i));
+			JOB job = { GetJobId(), Score(), Score(), 3, board };
+			jobs.push_back(job);
+			board.Back(moveList.at(i));
+		}
+	}
 
 	ready = true;
 	cv.notify_all();
@@ -207,6 +219,17 @@ bool Ai::Tick()
 			bestScore = score.Negate();
 		}
 		else if(mode == "minimax")
+		{
+			if (debug)
+			{
+				std::cout << "score is " << (std::string)score << " best score is " << (std::string)bestScore << std::endl;
+			}
+			if (bestScore < score.Negate())
+			{
+				bestScore = score.Negate();
+			}
+		}
+		else if (mode == "ranking")
 		{
 			if (debug)
 			{
