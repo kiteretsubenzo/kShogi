@@ -24,7 +24,8 @@ public:
 	void SetMode(const std::string &modeValue) { mode = modeValue; }
 	void SetSearchScore(const Score &score) { searchScore = score; }
 	void SetLimit(const Score &limitValue) { limit = limitValue; }
-	void SetDebug(const bool &debugValue) { debug = debugValue; }
+	void SetDebugAi(const bool &debugValue) { debugAi = debugValue; }
+	void SetDebugWorker(const bool &debugValue) { debugWorker = debugValue; }
 	void Start(Board boardValue);
 	void CallBack(const std::string &str);
 	void GetJob(std::string &job);
@@ -42,7 +43,9 @@ private:
 	std::string mode = "minimax";
 	Score searchScore = Score(std::numeric_limits<int>::min());
 	Score limit = Score();
-	bool debug = true;
+	//bool debug = true;
+	bool debugAi = false;
+	bool debugWorker = false;
 
 	Score bestScore;
 	

@@ -208,11 +208,13 @@ bool Test()
 	}
 	*/
 	// 3手詰めテスト
-#if false
+#if true
 	std::chrono::system_clock::time_point  start, end;
 	start = std::chrono::system_clock::now();
 
-	ai.SetDebug(false);
+	ai.SetDebugAi(false);
+	ai.SetDebugWorker(false);
+
 	std::cout << "problem 3 test" << std::endl;
 	for (unsigned int i = 0; i < testProblem3.size(); i++)
 	{
@@ -251,8 +253,9 @@ bool Test()
 	std::cout << milliseconds << std::endl;
 #endif
 	// リミットテスト
-#if false
-	ai.SetDebug(false);
+#if true
+	ai.SetDebugAi(false);
+	ai.SetDebugWorker(false);
 	std::cout << "limit test" << std::endl;
 	for (unsigned int i = 0; i < testLimit.size(); i++)
 	{

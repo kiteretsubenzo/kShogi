@@ -247,11 +247,12 @@ int main()
 #endif
 	Ai ai;
 	ai.AddWorker();
-#if false
+#if true
 	std::chrono::system_clock::time_point start, end;
 
 	ai.SetMode("scouttest");
-	ai.SetDebug(false);
+	ai.SetDebugAi(false);
+	ai.SetDebugWorker(false);
 
 	ai.SetSearchScore(Score::SCORE_WIN);
 	/*
@@ -287,11 +288,12 @@ int main()
   
 	std::cout << "end" << std::endl;
 #endif
-#if true
+#if false
 	std::chrono::system_clock::time_point start, end;
 
 	ai.SetMode("ranking");
-	ai.SetDebug(false);
+	ai.SetDebugAi(true);
+	ai.SetDebugWorker(false);
 
 	ai.SetSearchScore(Score::SCORE_WIN);
 	ai.Start(board);

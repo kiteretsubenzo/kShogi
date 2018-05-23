@@ -136,7 +136,7 @@ void Ai::GetJob(std::string &job)
 		job += ",deep:" + std::to_string(jobStruct.deep);
 		job += ",limit:" + jobStruct.limit.toJson();
 
-		if (debug)
+		if (debugWorker)
 		{
 			job += ",debug:true";
 		}
@@ -194,7 +194,7 @@ bool Ai::Tick()
 		Score score(scoreString);
 		if (mode == "scout")
 		{
-			if (debug)
+			if (debugAi)
 			{
 				std::cout << "score is " << (std::string)score << " best score is " << (std::string)bestScore << std::endl;
 			}
@@ -212,7 +212,7 @@ bool Ai::Tick()
 		}
 		else if (mode == "scouttest")
 		{
-			if (debug)
+			if (debugAi)
 			{
 				std::cout << "score is " << (std::string)score << " best score is " << (std::string)bestScore << std::endl;
 			}
@@ -220,7 +220,7 @@ bool Ai::Tick()
 		}
 		else if(mode == "minimax")
 		{
-			if (debug)
+			if (debugAi)
 			{
 				std::cout << "score is " << (std::string)score << " best score is " << (std::string)bestScore << std::endl;
 			}
@@ -231,7 +231,7 @@ bool Ai::Tick()
 		}
 		else if (mode == "ranking")
 		{
-			if (debug)
+			if (debugAi)
 			{
 				std::cout << "score is " << (std::string)score << " best score is " << (std::string)bestScore << std::endl;
 			}
@@ -255,7 +255,7 @@ bool Ai::Tick()
 		return false;
 	}
 	
-	if (debug)
+	if (debugAi)
 	{
 		std::cout << "-> best score is " << (std::string)bestScore << std::endl;
 	}
