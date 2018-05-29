@@ -87,9 +87,10 @@ void Ai::Start(Board boardValue)
 		{
 			std::cout << moveList.at(i).DebugString() << std::endl;
 			board.Forward(moveList.at(i));
-			JOB job = { GetJobId(), Score(), Score(), 4, board, (std::string)moveList.at(i) };
+			JOB job = { GetJobId(), searchScore.Negate(), Score(), 4, board, (std::string)moveList.at(i) + ";" + Score().toJson() };
 			jobs.push_back(job);
 			board.Back(moveList.at(i));
+			break;
 		}
 	}
 
@@ -208,7 +209,8 @@ bool Ai::Tick()
 			else
 			{
 				bestScore = score;
-				JOB job = { GetJobId(), bestScore.Negate(), limit, 4, board };
+				std::cout << bestScore.toJson() << std::endl;
+				JOB job = { GetJobId(), bestScore, limit, 4, board };
 				jobs.push_back(job);
 			}
 		}
@@ -235,14 +237,27 @@ bool Ai::Tick()
 		{
 			if (debugAi)
 			{
-				Move move(waits[jobId]);
+				std::vector<std::string> parameters = Json::split(waits[jobId], ';');
+				Move move(parameters[0]);
+				Score scoreBefore(parameters[1]);
 				std::cout << move.DebugString() << std::endl;
-				std::cout << "score is " << (std::string)score << " best score is " << (std::string)bestScore << std::endl;
+				std::cout << "score is " << (std::string)score << " scoreBefore is " << (std::string)scoreBefore << std::endl;
+				if (scoreBefore == score)
+				{
+					std::cout << "end" << std::endl;
+				}
+				else
+				{
+					JOB job = { GetJobId(), score, Score(), 4, board, (std::string)move + ";" + score.toJson() };
+					jobs.push_back(job);
+				}
 			}
+			/*
 			if (bestScore < score.Negate())
 			{
 				bestScore = score.Negate();
 			}
+			*/
 		}
 
 		waits.erase(jobId);

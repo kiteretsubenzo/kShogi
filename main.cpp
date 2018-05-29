@@ -178,9 +178,22 @@ int main()
 	" . . . . . . . . .\n"
 	"h00 y00 e00 g00 u00 r00 k01\n"
 	"second"
+	,
+	"h00 y00 e00 g00 u00 r01 k00\n"
+	" . . . . . .o_ . .\n"
+	" . . . .k_ . . . .\n"
+	" . . . . . . . . .\n"
+	" . . . . . .^e . .\n"
+	" . . . .^h . . .u_\n"
+	" . . . . . . .^r .\n"
+	" . . . . . . . . .\n"
+	" . . . . . . . . .\n"
+	" . . . . . . . . .\n"
+	"h00 y00 e00 g00 u00 r00 k01\n"
+	"first"
   };
   //board.Init(testProblem3test[0]);
-  board.Init(boardInits[6]);
+  board.Init(boardInits[7]);
   std::list<Move> history;
   /*
   board.PrintBoard();
@@ -260,14 +273,16 @@ int main()
 #endif
 	Ai ai;
 	ai.AddWorker();
-#if false
+#if true
 	std::chrono::system_clock::time_point start, end;
 
 	ai.SetMode("scouttest");
 	ai.SetDebugAi(false);
-	ai.SetDebugWorker(false);
+	ai.SetDebugWorker(true);
 
-	ai.SetSearchScore(Score::SCORE_WIN);
+	//ai.SetSearchScore(Score::SCORE_WIN);
+	//ai.SetSearchScore(Score("{score:-94,moves:[00k11nf,95u86rf,11k21nf]}"));
+	ai.SetSearchScore(Score("{score:99999,moves:[86r81nt,71o81Rf,00k82nf]}"));
 	/*
 	//ai.SetSearchScore(Score("{score:99999,moves:[82o93nf,81R84hf]}"));
 	//ai.SetSearchScore(Score("{score:99999,moves:[82o81Rf,00k72nf]}"));
@@ -277,7 +292,6 @@ int main()
 	*/
 
 	ai.SetLimit(Score());
-
 
 	ai.Start(board);
 
@@ -301,7 +315,7 @@ int main()
   
 	std::cout << "end" << std::endl;
 #endif
-#if true
+#if false
 	std::chrono::system_clock::time_point start, end;
 
 	ai.SetMode("ranking");

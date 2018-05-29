@@ -260,11 +260,11 @@ private:
 					// 新しい子が末端だったら追加せずに評価
 
 					// 親ノードに評価をマージ
-					if (limit.score == Score::SCORE_UNVALUED || limit <= childItr.score)
-					{
+					//if (limit.score == Score::SCORE_UNVALUED || limit <= childItr.score)
+					//{
 						scoreTmp.setScore(board->GetEvaluate(moveListTmp));
 						childItr.score.copy(Score::NegaAndMin(childItr.score, scoreTmp));
-					}
+					//}
 
 					nodeStack.GetHistory(childItr.score.moveList);
 
@@ -290,6 +290,7 @@ private:
 				if (2 <= nodeStack.size())
 				{
 					Node& parentItr = nodeStack.parent();
+					/*
 					if (limit.score != Score::SCORE_UNVALUED)
 					{
 						if (childItr.score.Negate() < limit)
@@ -307,16 +308,17 @@ private:
 					}
 					else
 					{
+					*/
 						scoreTmp.copy(childItr.score);
 						parentItr.score.copy(Score::NegaAndMin(parentItr.score, scoreTmp));
-					}
+					//}
 				}
 
 				// 子ノードの着手を戻す
 				board->Back(childItr.moves.front());
 
 				// スコアがwindowの外側だったら終わり
-				if (window.score != Score::SCORE_UNVALUED && (limit.score == Score::SCORE_UNVALUED || childItr.score < limit))
+				if (window.score != Score::SCORE_UNVALUED/* && (limit.score == Score::SCORE_UNVALUED || childItr.score < limit)*/)
 				{
 					if ((nodeStack.size() & 01) == 0)
 					{
